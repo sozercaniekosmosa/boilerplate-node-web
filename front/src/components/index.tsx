@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import './style.css'
 import ProgressBar from './ProgressBar/ProgressBar';
 import {ERR, LOG, OK, PopupMessage, WARN} from "./PopupMessage/PopupMessage.tsx";
@@ -11,6 +11,7 @@ import DraggableList from "./DraggableList/DraggableList.tsx";
 import CodeEditor from "./CodeEditor/CodeEditor.tsx";
 import {Editor, TEventEditor} from "./Editor/Editor.tsx";
 import styled, {createGlobalStyle} from "styled-components";
+import {createExcelFile, readExcelFile} from "../lib/excel/excel.ts";
 
 function Index() {
     const [progress, setProgress] = useState(0)
@@ -50,31 +51,52 @@ function Index() {
     `
 
 
+    async function readExcel(e) {
+
+        const file = e.target.files[0];
+        const reader = new FileReader();
+
+        // Читаем файл как ArrayBuffer
+        reader.onload = async (event) => {
+            const buffer = event.target.result;
+            // await readExcelFile(buffer)
+            e.target.value = null
+        };
+
+        reader.readAsArrayBuffer(file);
+
+// Запускаем диалог выбора файла
+//         input.click();
+    }
+
     return (
         <div className="d-flex flex-column h-100">
             <GlobalStyle/>
             {progress >= 0 && <ProgressBar progress={progress}/>}
-            <Tabs defaultActiveKey="editor" className="mb-1">
+            <Tabs defaultActiveKey="excel" className="mb-1">
+                <Tab eventKey="excel" title="excel" style={{flex: 1}} className="h-100">
+                    {/*<input type="file" accept=".xlsx, .xlsm, .xltx, .xltm" onChange={e => readExcel(e)}/>*/}
+                    <Button className="btn btn-secondary btn-sm " onClick={readExcelFile}>Excel</Button>
+                </Tab>
+
                 <Tab eventKey="editor" title="editor" style={{flex: 1}} className="h-100">
                     <div className="d-flex gap-1 m-1">
                         <Button className="btn btn-secondary btn-sm " onClick={() => {
                             setNewNode({
                                 nodeName: 'Подогрев нефти',
-                                arrIn: ['T', 'P'], arrOut: ['Продукт',],
+                                arrIn: ['T', 'P'],
+                                arrOut: ['Продукт',],
                                 color: '#d7d7d7'
                             })
                         }}>ПН</Button>
                         <Button className="btn btn-secondary btn-sm" onClick={() => {
-                            setNewNode({
-                                nodeName: 'УУН',
-                                arrIn: ['in'], arrOut: ['V м3', 'M кг'],
-                                color: '#efc3a7'
-                            })
+                            setNewNode({nodeName: 'УУН', arrIn: ['in'], arrOut: ['V м3', 'M кг'], color: '#efc3a7'})
                         }}>УУН</Button>
                         <Button className="btn btn-secondary btn-sm" onClick={() => {
                             setNewNode({
                                 nodeName: 'C-1',
-                                arrIn: ['in'], arrOut: ['L', 'T', 'Lн', 'Lг', 'Lв'],
+                                arrIn: ['in'],
+                                arrOut: ['L', 'T', 'Lн', 'Lг', 'Lв'],
                                 color: '#a7cbef'
                             })
                         }}>C-1</Button>

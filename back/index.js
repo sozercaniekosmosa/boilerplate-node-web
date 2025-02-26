@@ -19,7 +19,7 @@ const port = +process.env.PORT || +PORT;
 global.root = __dirname;
 global.port = port
 global.webDir = path.join(__dirname, WEB_DIR);
-global.db = new noSQL('.\\db\\db.json');
+global.db = new noSQL('..\\db\\db.json');
 
 const {app} = await createWebServer(3000, webDir, ({type, ws, arrActiveConnection, mess, host}) => {
     console.log('ws:', type, ws, arrActiveConnection, mess, host)

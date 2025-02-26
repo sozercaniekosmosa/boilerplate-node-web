@@ -1,45 +1,21 @@
 import {saveUnitArrayAsFile} from "../fs.ts";
-import dialog from "../../components/Dialog/Dialog.tsx";
 
-await import( "./exceljs.min.js")
+export const readExcelFile = async (buffer) => {
 
-export const readExcelFile = async () => {
-
-    // const a = await fetch("./test.xlsx")
-    const resData = await fetch("src/lib/excel/template.xlsx")
-
-    const buffer = await resData.arrayBuffer();
-
+    await import( "./exceljs.min.js")
     // @ts-ignore
     const workbook = new ExcelJS.Workbook();
     // Загружаем данные в workbook
     await workbook.xlsx.load(buffer);
 
     let worksheet = workbook.getWorksheet(1);
+    // Modify/Add individual cell
+    let cell = worksheet.getCell('C1');
+    cell.value = 'ответ';
 
-    // let cell = worksheet.getCell('C1');
-    // cell.value = 'ответ';
-
-    const lastRow = worksheet.lastRow.number;
-    const lastColumn = worksheet.lastColumn.number;
-
-    const arrFn = ['list', 'sum'];
-
-    const data = [];
-    for (let row = 1; row <= lastRow; row++) {
-        for (let col = 1; col <= lastColumn; col++) {
-            const cell = worksheet.getCell(row, col);
-            arrFn.forEach(fn => {
-                if (cell.value?.includes(fn))
-                    data.push([col, row])
-            });
-        }
-    }
-
-    console.log(data)
-
-    // const wbuffer = await workbook.xlsx.writeBuffer()
-    // saveUnitArrayAsFile('test.xlsx', wbuffer)
+    const wbuffer = await workbook.xlsx.writeBuffer()
+    // console.log(wbuffer)
+    saveUnitArrayAsFile('test.xlsx', wbuffer)
 
 }
 
