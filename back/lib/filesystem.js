@@ -3,6 +3,11 @@ import PATH from "path";
 import * as console from "node:console";
 import * as util from "node:util";
 
+// Промисификация fs.readdir
+const readdir = util.promisify(fs.readdir);
+// Промисификация fs.stat
+const stat = util.promisify(fs.stat);
+
 export const readFileAsync = async (path, options) => {
     try {
         const data = await fsPromises.readFile(path, options);
@@ -90,23 +95,6 @@ export const removeFile = async (path) => {
     }
 };
 
-
-export const readData = async (path, options) => {
-    try {
-        const data = await readFileAsync(path, options);
-        return data;
-    } catch (error) {
-        throw error;
-    }
-};
-export const writeData = (path, data) => {
-    try {
-        writeFileAsync(pathResolveRoot(path), data);
-    } catch (error) {
-        throw error;
-    }
-};
-
 export const copyFile = async (pathSrc, pathDest) => {
     try {
         try {
@@ -162,11 +150,6 @@ export async function saveTextToFile(filePath, text) {
         console.error('Ошибка при сохранении файла:', error);
     }
 }
-
-// Промисификация fs.readdir
-const readdir = util.promisify(fs.readdir);
-// Промисификация fs.stat
-const stat = util.promisify(fs.stat);
 
 export const getDirAll = async (directory) => {
     const len = directory.length;

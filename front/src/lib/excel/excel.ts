@@ -53,17 +53,14 @@ const insertLines = (worksheet, {indexRow, quantity}) => {
         for (let x = 1; x <= lastColumn; x++) {
             const cell = worksheet.getCell(y, x);
             const merged = getMergeRangeForCell(worksheet, y, x);
-            if (merged) {
-                console.log(merged)
-            } else {
-                arrStore.push([y, x, cell.value, {...cell.style}]);
-                cell.value = '';
-                cell.style = {};
-            }
+            arrStore.push([y, x, cell.value, {...cell.style}, merged]);
+            cell.value = '';
+            cell.style = {};
+
         }
     }
     let newRow = indexRow + quantity;
-    arrStore.forEach(([y, x, val, style]) => {
+    arrStore.forEach(([y, x, val, style, merged]) => {
         const cell = worksheet.getCell(y + newRow, x);
         cell.style = style;
         cell.value = val;
