@@ -113,7 +113,9 @@ export const getArrImageUrl = async (searchRequest, {img_cookie, img_xbrows_vali
 
         const _arr = Object.values(obj) //откидываем ключи оставляем значения и представляем как массив каждый элемент которого тоже массив но об этом далее
         const _indexArr = getMostFrequentLengthArray(_arr); //находим самый часто встречающийся размер подмассива это в финале и будут массивы которые содержат ссылки на картинки
+        // @ts-ignore
         const _arrImg = _arr.filter(v => v.length === _indexArr) //фильтруем подмассивы с нужно  длинной
+        // @ts-ignore
         const _arrImgFlat = _arrImg.map(a => a.flat(5)) //так как каждый под массив содержит некую вложенность подмассиво делаем его плоским для удобства
         const __arrImg = _arrImgFlat.map(a => a.filter(it => (it + '').startsWith("https"))) //отыскиваем подмассивы которые содежат ссылки и мапим только их в новый массив
         return __arrImg.map(a => a.filter(it => !(it + '').startsWith("https://encrypted"))).flat(); //оставляем только прямые ссылки на кртинки

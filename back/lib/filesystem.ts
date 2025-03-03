@@ -3,12 +3,7 @@ import PATH from "path";
 import * as console from "node:console";
 import * as util from "node:util";
 
-// Промисификация fs.readdir
-const readdir = util.promisify(fs.readdir);
-// Промисификация fs.stat
-const stat = util.promisify(fs.stat);
-
-export const readFileAsync = async (path, options) => {
+export const readFileAsync = async (path, options?) => {
     try {
         const data = await fsPromises.readFile(path, options);
         return data;
@@ -86,6 +81,24 @@ const isFileAvailable = async (path) => {
     }
 };
 
+export const renameFile = async (path, toPath) => {
+    new Promise<void>((resolve, reject) => {
+        try {
+            fs.rename(path, toPath, function (err) {
+                if (err) {
+                    console.log('ERROR: ' + err);
+                    reject(err)
+                } else {
+                    resolve()
+                }
+            });
+        } catch (error) {
+            reject(error)
+            throw error;
+        }
+    })
+};
+
 export const removeFile = async (path) => {
     try {
         fs.unwatchFile(path)
@@ -150,6 +163,11 @@ export async function saveTextToFile(filePath, text) {
         console.error('Ошибка при сохранении файла:', error);
     }
 }
+
+// Промисификация fs.readdir
+const readdir = util.promisify(fs.readdir);
+// Промисификация fs.stat
+const stat = util.promisify(fs.stat);
 
 export const getDirAll = async (directory) => {
     const len = directory.length;
@@ -219,17 +237,6 @@ export const findExtFilesAbs = async (directory, ext = 'png') => {
 
     await traverseDirectory(directory);
     return files;
-};
-
-export const removeFragmentsFromUrl = (url) => {
-    // Создаем объект URL
-    let urlObj = new URL(url);
-
-    // Удаляем фрагмент
-    urlObj.hash = '';
-
-    // Возвращаем очищенный URL
-    return urlObj.toString();
 };
 
 export async function removeDir(targetPath) {

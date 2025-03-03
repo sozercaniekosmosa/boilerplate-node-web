@@ -126,3 +126,14 @@ export const throttle = (clb, ms) => {
 
     return wrapper;
 }
+
+export const removeFragmentsFromUrl = (url) => {
+    // Создаем объект URL
+    let urlObj = new URL(url);
+
+    // Удаляем фрагмент
+    urlObj.hash = '';
+
+    // Возвращаем очищенный URL
+    return urlObj.toString();
+};

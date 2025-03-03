@@ -1,8 +1,8 @@
 import ffmpeg from 'fluent-ffmpeg'
 // import libffmpeg from '@ffmpeg-installer/ffmpeg'
 import libffprobe from '@ffprobe-installer/ffprobe'
-import {removeDir, removeFile, renameFile} from "../utils.js";
 import fs from "fs";
+import {removeDir, removeFile, renameFile} from "../filesystem";
 
 // ffmpeg.setFfmpegPath(libffmpeg.path); // в библиотеке из npm не поддерживаются некоторые функции
 ffmpeg.setFfmpegPath("lib-ffmpeg\\ffmpeg.exe"); //поэтому берем более новую и подключаем вручную
@@ -13,13 +13,13 @@ const getPathOut = path => {
     arrDir[arrDir.length - 1] = '_' + arrDir.at(-1)
     return arrDir.join('\\')
 };
-const getDuration = async (path) => new Promise((resolve, reject) => ffmpeg(path).ffprobe((err, metadata) => !err ? resolve(metadata.streams[0].duration) : reject(err)))
-const getFrames = async (path) => new Promise((resolve, reject) => ffmpeg(path).ffprobe((err, metadata) => !err ? resolve(metadata.streams[0].nb_frames) : reject(err)))
+const getDuration = async (path): Promise<number> => new Promise((resolve, reject) => ffmpeg(path).ffprobe((err, metadata) => !err ? resolve(+metadata.streams[0].duration) : reject(err)))
+const getFrames = async (path): Promise<number> => new Promise((resolve, reject) => ffmpeg(path).ffprobe((err, metadata) => !err ? resolve(+metadata.streams[0].nb_frames) : reject(err)))
 const getDataVideo = async (path) => new Promise((resolve, reject) => ffmpeg(path).ffprobe((err, metadata) => !err ? resolve(metadata) : reject(err)))
 
 const videoFromImage = async ({
                                   pathInput, pathOut, dur = 5, fps = 30, scale = 1.2, w = 1920, h = 1080, clb
-                              }) => new Promise((resolve, reject) => ffmpeg(pathInput)
+                              }) => new Promise<void>((resolve, reject) => ffmpeg(pathInput)
     .inputOption(["-vsync 0",/* "-hwaccel nvdec",*//* "-hwaccel cuvid",*/ "-hwaccel_device 0"])
     // .size('1920x1080').autopad('#cc0000').keepPixelAspect()
     .videoFilter(`scale=${w * 4}x${h * 4}:force_original_aspect_ratio=decrease,zoompan=z='min(zoom+${scale - 1}/(${fps}*${dur}),${scale})':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=${fps}*${dur}:fps=${fps},scale=${w}:${h}`)
@@ -40,6 +40,7 @@ const videoFromImage = async ({
 
 async function getArrDataVideo(arrPath) {
     const promiseArrDataVideo = arrPath.map(path => getDataVideo(path));
+    // @ts-ignore
     const arrDataVideo = (await Promise.allSettled(promiseArrDataVideo)).map(it => it.value)
     return arrDataVideo.map(dataVideo => {
         const duration = dataVideo.streams[0].duration;
@@ -49,7 +50,7 @@ async function getArrDataVideo(arrPath) {
 }
 
 async function videoConcat({arrPath, pathOut, maxDuration, tmTrans, clb}) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
         let out, outa;
         const arrDurFrame = await getArrDataVideo(arrPath);
         const frameAll = arrDurFrame.reduce((acc, {frames}) => acc + frames, 0)
@@ -69,7 +70,7 @@ async function videoConcat({arrPath, pathOut, maxDuration, tmTrans, clb}) {
         let ff = ffmpeg()
 
         arrPath.forEach(path => ff.input(path))
-        const _arr = Array(arrPath.length - 1).fill(); // для цикла
+        const _arr = Array(arrPath.length - 1).fill(null); // для цикла
         let arrOffset = _arr.map((it, i) => arrDurFrame.slice(0, i + 1).reduce((acc, {duration}) => acc + duration - tmTrans, 0));// offset
         ff.complexFilter(_arr.map((it, i) => getBlendFilter(i, tmTrans, arrOffset[i])))
 
@@ -177,7 +178,7 @@ const buildVideo = async ({
 }
 
 const concatAudio = async ({arrPath, pathOut, clb}) => {
-    return new Promise(async (resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
         const ff = ffmpeg();
 
         arrPath.forEach(path => ff.input(path))
@@ -198,10 +199,10 @@ const concatAudio = async ({arrPath, pathOut, clb}) => {
 }
 
 const addTextToVideo = async ({path, arrText, clb}) => {
-    return new Promise(async (resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
         const pathOut = getPathOut(path)
 
-        const framesAll = await getFrames(path)
+        const framesAll: number = await getFrames(path) ?? 1
 
         const ff = ffmpeg(path)
 
@@ -237,7 +238,7 @@ const addTextToVideo = async ({path, arrText, clb}) => {
 }
 
 const addImageToVideo = async ({path, pathImg, w = 100, h = 100, x = 'W-w-10', y = 'H-h-10', from = 0, to, clb}) => {
-    return new Promise(async (resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
         const pathOut = getPathOut(path)
 
         const framesAll = await getFrames(path)
@@ -273,7 +274,7 @@ const addImageToVideo = async ({path, pathImg, w = 100, h = 100, x = 'W-w-10', y
     })
 }
 const mergeVideoAudio = async ({pathv, patha, replace = true, fps = 25, clb}) => {
-    return new Promise(async (resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
 
         const pathOut = getPathOut(pathv)
 
@@ -342,7 +343,7 @@ const mergeVideoAudio = async ({pathv, patha, replace = true, fps = 25, clb}) =>
 }
 
 async function concatMediaFiles({arrPath, pathOut, fps = 25, clb}) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
         let path = arrPath.find(it => it === pathOut) ? getPathOut(pathOut) : pathOut;
 
         const ff = ffmpeg();
@@ -350,10 +351,14 @@ async function concatMediaFiles({arrPath, pathOut, fps = 25, clb}) {
         const arrVideoData = (await Promise.allSettled(arrPath.map(async path => {
             ff.input(path)
             return await getDataVideo(path)
-        }))).map(({value}) => value);
+        })))
+        // @ts-ignore
+        arrVideoData.map(({value}) => value);
 
+        // @ts-ignore
         const isAudioExist = arrVideoData[0].streams[1].codec_type === 'audio';
 
+        // @ts-ignore
         const framesAll = arrVideoData.reduce((acc, {streams}) => acc + streams[0].nb_frames, 0)
 
         ff
@@ -418,6 +423,7 @@ export const createAnVideo = async ({
 
         await mergeVideoAudio({pathv: pathVideo, patha: pathAudio, replace: true, clb})
 
+        // @ts-ignore
         await addImageToVideo({path: pathVideo, pathImg: pathLogo, y: '10', w: 100, h: 70, clb})
 
         return duration;

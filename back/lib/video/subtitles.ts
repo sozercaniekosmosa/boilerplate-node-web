@@ -1,3 +1,5 @@
+import {secondsToTime} from "../time";
+
 export const createSubtitleFmtASS = async text => {
     let _text = text.replaceAll(/[\r\n]/g, ' ')
     _text = _text.replaceAll(/\s\s/g, ' ')

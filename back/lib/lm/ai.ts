@@ -1,6 +1,6 @@
 import axios from "axios";
 import path from "path";
-import {readFileAsync, writeFileAsync} from "../utils.js";
+import {readFileAsync, writeFileAsync} from "../filesystem.js";
 
 export async function yandexGPT(prompt, text, folder_id) {
     const iam_token = await getIAM();
@@ -75,6 +75,7 @@ export async function yandexToSpeech({text, path, voice = 'marina', speed = 1.4,
             method: 'POST', url, headers: {
                 'Authorization': `Bearer ${iam_token}`
             }, responseType: 'arraybuffer',  // Получаем данные как бинарный массив
+            // @ts-ignore
             data: new URLSearchParams({
                 text, lang: 'ru-RU', voice,
                 //voice: 'jane', // voice: 'ermil',
@@ -93,7 +94,7 @@ export async function yandexToSpeech({text, path, voice = 'marina', speed = 1.4,
 }
 
 let iamToken, dtExpMs;
-const getIAM = async (oauth_token) => { //для работы нужен AIM для его получения нужен OAUTH его можно взять тут: https://oauth.yandex.ru/verification_code
+const getIAM = async (oauth_token = null) => { //для работы нужен AIM для его получения нужен OAUTH его можно взять тут: https://oauth.yandex.ru/verification_code
     let expiresAt, dtNowMs = (new Date()).getTime();
     const filePath = path.join('./', 'iam.json');
 

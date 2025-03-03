@@ -22,11 +22,12 @@ export async function renderToBrowser({
 
         await page.goto(urlTemplate);
 
+        // @ts-ignore
         const videoDur = await page.evaluate((data) => window?.render(data), data) ?? 0;
 
         if (!debug) {
             // const savePath = join('.\\', `${Date.now()}.mp4`);
-            if (videoDur > 0) capture = await saveVideo(page, pathOut, {fps});
+            if (videoDur > 0) capture = await saveVideo(page, pathOut, {followPopups: false, fps});
 
             if (videoDur === 0) {
                 await page.screenshot({path: pathOut})

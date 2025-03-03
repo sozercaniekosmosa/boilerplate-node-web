@@ -11,11 +11,14 @@ export class noSQL {
 
     #__id = 0;
     #base64Language = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    dumpFilePath: any;
+    private db: any;
+    debouncedDumpDatabase: any;
 
     constructor(dumpFilePath = './news_dump.json') {
         this.dumpFilePath = pathResolveRoot(dumpFilePath);
 
-        const strDump = this.getDumpDatabaseSync(this.dumpFilePath)?.toString();
+        const strDump = this.getDumpDatabaseSync()?.toString();
         if (!strDump) this.writeFileAsync(this.dumpFilePath, '{}')
         this.db = JSON.parse(strDump ? strDump : '{}');
 
@@ -73,21 +76,6 @@ export class noSQL {
 
     }
 
-    // Get news with sorting and optional date range filter
-    getNews({fromDate = 0, toDate = Date.now()} = {}) { //TODO: убрать оставить только getAll
-        const arrVal = Object.values(this.db);
-        const newsList = [];
-
-        for (let i = 0; i < arrVal.length; i++) {
-            const val = arrVal[i];
-            if (val && val.date >= fromDate && val.date <= toDate) {
-                newsList.push(val);
-            }
-        }
-
-        return newsList.sort((a, b) => b.date - a.date);
-    }
-
     // Get filter items
     getAll(clbFilter) {
         const arrVal = Object.values(this.db);
@@ -120,7 +108,7 @@ export class noSQL {
         console.log('Database dumped to file:', this.dumpFilePath);
     }
 
-    readFileAsync = async (path, options) => {
+    readFileAsync = async (path, options?) => {
         try {
             const data = await fsPromises.readFile(path, options);
             return data;
@@ -142,19 +130,6 @@ export class noSQL {
             throw 'Ошибка записи файла: ' + filePath
         }
     };
-
-    // Dump database to a file
-    // async getDumpDatabaseAsync(table) {
-    //     const keys = await this.keysAsync(`${table}:*`);
-    //     const data = {};
-    //
-    //     for (const key of keys) {
-    //         data[key] = await this.hgetallAsync(key);
-    //     }
-    //
-    //     fs.writeFileSync(this.dumpFilePath, JSON.stringify(data, null, 2));
-    //     console.log('Database dumped to file:', this.dumpFilePath);
-    // }
 }
 
 // Пример использования

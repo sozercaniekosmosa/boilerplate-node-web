@@ -3,6 +3,7 @@ import Sqlite3 from "sqlite3";
 
 export class Database {
     db = null;
+    private databaseFile: any;
 
     constructor(databaseFile) {
         this.databaseFile = databaseFile;
@@ -12,7 +13,7 @@ export class Database {
 
     // Метод для подключения к базе данных
     connect() {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             const sql = Sqlite3.verbose();
             this.db = new sql.Database(this.databaseFile, (err) => {
                 if (err) {
@@ -66,7 +67,7 @@ export class Database {
 
     // Метод для закрытия соединения с базой данных
     close() {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             this.db.close((err) => {
                 if (err) {
                     reject(err.message);

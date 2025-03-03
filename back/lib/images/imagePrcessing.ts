@@ -1,17 +1,5 @@
-import fs, {promises as fsPromises} from 'fs'
 import * as console from "node:console";
 import sharp from "sharp";
-import {removeFile} from "../utils/utils.js";
-
-
-async function checkFileExists(filePath) {
-    try {
-        await fs.access(filePath);
-        return true;
-    } catch {
-        return false;
-    }
-}
 
 export async function resizeImage({
                                       inputArrBufOrPath,
@@ -20,7 +8,7 @@ export async function resizeImage({
                                       height = null,
                                       maxWidth = 1920,
                                       maxHeight = 1080,
-                                      fit = 'inside',
+                                      fit = sharp.fit.inside,
                                       background = true,
                                       withoutEnlargement = true,
                                       position
@@ -31,21 +19,28 @@ export async function resizeImage({
             withoutEnlargement,
             position
         }).toBuffer();
+
+        // @ts-ignore
         image = await sharp(image).flatten({background: '#454545'}).toFormat('png');
 
+        // @ts-ignore
         const {width: _w, height: _h} = await image.metadata();
 
         if (width && (_w !== width || _h !== height) && background) {
+            // @ts-ignore
             const resizeImageBlur = image.clone().resize({width, height, fit: 'fill'});
             const imgBackBlur = await resizeImageBlur.blur(25).toBuffer();
 
             const foregroundImage = await image
+                // @ts-ignore
                 .resize({width, height, fit: "contain", background: {r: 128, g: 200, b: 255, alpha: 0.5}})
                 .toBuffer();
 
+            // @ts-ignore
             image = await sharp(imgBackBlur)
                 .composite([{input: foregroundImage, gravity: 'center'}])
         }
+        // @ts-ignore
         const {width: w, height: h} = await image.metadata()
 
         let outPath = outputFilePath;
@@ -53,6 +48,7 @@ export async function resizeImage({
         const arrPathPart = outPath.split(isExist ? /-(\d+)x(\d+)\.png/ : /\.png/);
         outPath = arrPathPart[0] + `-${w}x${h}.png`;
 
+        // @ts-ignore
         await image.normalize().sharpen().toFile(outPath);
 
         // console.log('Изображение успешно обработано и сохранено в', outputFilePath);

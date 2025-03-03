@@ -42,3 +42,4 @@ dist-ssr
 /db/
 *.css
 *.css.map
+/back/lib/lm/models/

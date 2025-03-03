@@ -1,9 +1,9 @@
 import express from "express";
 import path from "path";
 import bodyParser from "body-parser";
-import {WEBSocket} from "./WebSocket.js";
+import {WEBSocket} from "./WebSocket";
 
-export async function createWebServer(port, webDir, clbWebSocket) {
+export function createWebServer(port, webDir, clbWebSocket): { app: any, ws: any } | null {
     const app = express();
 
     app.use(express.static(webDir)); // путь к web-страницам

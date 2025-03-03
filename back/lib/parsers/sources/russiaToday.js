@@ -1,5 +1,4 @@
-import {getHashCyrb53, removeFragmentsFromUrl, writeData} from "../utils/utils.js";
-import {connectDB, getDocument, getHtmlUrl} from "../parser.js";
+import {getDocument, getHtmlUrl} from "../parser.ts";
 
 
 const listTask = {

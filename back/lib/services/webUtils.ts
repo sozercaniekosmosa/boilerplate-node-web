@@ -1,5 +1,5 @@
 import {domainToASCII} from "node:url";
-import net from "net";
+import net, {Server} from "net";
 import axios from "axios";
 import isLocalhost from "is-localhost-ip";
 
@@ -9,10 +9,11 @@ export const isAllowHostPort = async (host, port) => {
         if (isLocal) {
             return new Promise((resolve) => {
 
-                const server = net.createServer();
+                const server: Server = net.createServer();
 
-                server.once('error', function (err) {
-                    if (err.code === 'EADDRINUSE') {
+                server.once('error', function (err: Error) {
+                    // @ts-ignore
+                    if (err.code == 'EADDRINUSE') {
                         resolve(false)
                     }
                 });

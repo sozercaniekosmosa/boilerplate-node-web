@@ -1,7 +1,22 @@
 import TelegramBot from "node-telegram-bot-api";
-import {formatDateTime, getRandomRange} from "./utils/utils.js";
+import {formatDateTime, getRandomRange} from "../time";
+
+interface PublishedMessages {
+    channelID: string,
+    arrMessage: [],
+    text: string,
+    publishTime: Date,
+    strTime: string
+}
 
 export class TelegramChannelBot {
+    private bot: TelegramBot;
+    private groupStorageID: string;
+    private groupStorageThreadID: string;
+    private scheduledMessages: {};
+    private publishedMessages: {};
+    private dbTB: any;
+
     constructor(token, groupStorageID, groupStorageThreadID, db) {
         this.bot = new TelegramBot(token, {interval: 3000, timeout: 10, limit: 20});
         // this.bot = new TelegramBot(token, {polling: true});
@@ -78,23 +93,27 @@ export class TelegramChannelBot {
     }
 
     async #checkScheduledMessages() {
-        const now = new Date(Date.now() - getRandomRange(1e4, 3e5));
+        const now = (new Date(Date.now() - getRandomRange(1e4, 3e5))).getTime();
         if (!this.scheduledMessages) return;
         const arr = Object.entries(this.scheduledMessages)
         for (let i = 0; i < arr.length; i++) {
             const [messageId, message] = arr[i];
-            if (new Date(message.publishTime) + 36e5 < now) continue;// новост протухла
+            // @ts-ignore
+            if ((new Date(message.publishTime)).getTime() + 36e5 < now) continue;// новост протухла
+            // @ts-ignore
             if (new Date(message.publishTime) <= now) {
                 try {
+                    // @ts-ignore
                     let arrSentMessage = await this.#sendStorageMessage(message.channelID, null, message.text, message.arrImgID);
                     const arrMessage = arrSentMessage.map(({message_id}) => message_id)
 
                     this.publishedMessages[messageId] = {
+                        // @ts-ignore
                         channelID: message.channelID,
                         arrMessage,
                         text: arrSentMessage[0].caption,
-                        publishTime: message.publishTime,
-                        strTime: message.strTime
+                        // @ts-ignore
+                        publishTime: message.publishTime, strTime: message.strTime
                     };
 
                     delete this.scheduledMessages[messageId];

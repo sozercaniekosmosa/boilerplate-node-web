@@ -1,5 +1,4 @@
-import {getHashCyrb53, removeFragmentsFromUrl} from "../utils.js";
-import {getPathSourceNews, NewsUpdater} from "../../parser.js";
+import {removeFragmentsFromUrl} from "../utils.js";
 
 export class Parser {
     _listCompare = new Set();
@@ -7,24 +6,24 @@ export class Parser {
     counter = 0;
     max = 1;
     HOST;
-    getArrUrlOfType = () => console.error('not init getArrUrlOfType method');
-    getDateAsMls = () => console.error('not init getDateAsMls method');
-    getTitle = () => console.error('not init getTitle method');
-    getArrTags = () => console.error('not init getArrTags method');
-    getTextContent = () => console.error('not init getTextContent method');
-    getHtmlUrl = () => {
+    getArrUrlOfType = (type: string, p0: any) => console.error('not init getArrUrlOfType method');
+    getDateAsMls = (doc: any): string | any => console.error('not init getDateAsMls method');
+    getTitle = (doc: any): string | any => console.error('not init getTitle method');
+    getArrTags = (doc: any): string | any => console.error('not init getArrTags method');
+    getTextContent = (doc: any): string | any => console.error('not init getTextContent method');
+    getHtmlUrl = (url: string): string | any => {
         console.error('not init getHtmlUrl method');
         return null
     };
-    getDocument = () => {
+    getDocument = (html: string) => {
         console.error('not init getDocument method');
         return null
     };
-    getSrcName = () => {
+    getSrcName = (doc: any): string | any => {
         console.error('not init getSrcName method');
         return null
     };
-    getID = () => {
+    getID = (any) => {
         console.error('not init getID method');
         return null
     };
@@ -76,6 +75,7 @@ export class Parser {
             const arrTask = Object.entries(typeNews.length ? {[typeNews]: this.listTask[typeNews]} : this.listTask);
             const promiseArrUrl = arrTask.map(([type, url]) => this.getArrUrlOfType(type, this.HOST + url));
             let arrListUrl = await Promise.allSettled(promiseArrUrl);
+            // @ts-ignore
             arrListUrl = arrListUrl.map(it => it.value)
 
             const _DEBUG_ = false;
@@ -87,6 +87,7 @@ export class Parser {
                     console.error(`Индекс с ошибкой ${i}`);
                     continue;
                 }
+                // @ts-ignore
                 const {type, arrUrl} = it;
                 this.max += arrUrl.length;
                 for (let i = 0; i < arrUrl.length; i++) {

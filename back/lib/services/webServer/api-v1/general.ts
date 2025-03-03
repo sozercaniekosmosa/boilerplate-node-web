@@ -1,7 +1,8 @@
 import {execFile} from "child_process";
 import express from "express";
 import axios from "axios";
-import {isAllowHostPort} from "../../webUtils.js";
+import {isAllowHostPort} from "../../webUtils";
+import {saveTextToFile} from "../../../filesystem";
 
 const routerGeneral = express.Router();
 
@@ -9,6 +10,7 @@ routerGeneral.post('/open-dir', async (req, res) => {
 
     try {
         const {body: {path}} = req;
+        // @ts-ignore
         execFile('explorer.exe', [path], {stdio: 'ignore'});
 
         res.send('ok');
