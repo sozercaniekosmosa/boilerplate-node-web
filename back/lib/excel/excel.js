@@ -1,45 +1,7 @@
 import Excel from "exceljs";
-import {dirname} from "path";
-
 
 // console.log(process.cwd())
 
-const fillData = (worksheet, offY, offX, data) => {
-
-    let arrData = data;
-
-    if (!Array.isArray(arrData)) {
-        arrData = [[arrData]];
-    }
-
-    if (!Array.isArray(arrData[0])) {
-        arrData = [arrData];
-    }
-
-    const arrMaskValues = worksheet.getRow(offY).model.cells.map(({value}) => value)
-
-    for (let i = 0; i < arrData.length; i++) {
-        const _arr = [...arrData[i]]
-        arrData[i] = [...arrMaskValues]
-        for (let j = 0; j < _arr.length; j++) {
-            arrData[i][j + offY - 1] = _arr[j]
-        }
-    }
-
-    arrData = arrData.reverse();
-
-    for (let i = 0; i < arrData[0].length; i++) {
-        const it = arrData[0][i];
-        worksheet.getCell(offY, i + 1).value = it;
-    }
-
-    for (let i = 1; i < arrData.length; i++) {
-        const line = arrData[i];
-        worksheet.insertRow(offY, line, 'o+');
-    }
-
-
-}
 
 function getMergeRangeForCell(worksheet, rowY, colX) {
     // @ts-ignore
@@ -54,6 +16,81 @@ function getMergeRangeForCell(worksheet, rowY, colX) {
     return null; // Если ячейка не принадлежит ни одному объединенному диапазону
 }
 
+function duplicateRows(ws, offRowY, quan) {
+    const arrRow = []
+    const colXLen = ws.lastColumn.number;
+
+    for (let colX = 1; colX <= colXLen; colX++) {
+        let cell = ws.getCell(offRowY, colX);
+        const {value, style, note} = cell
+        // console.log(value, style, note)
+        arrRow.push({value, style, note})
+    }
+
+    ws.duplicateRow(2, quan - 1, true)
+
+    // ws.mergeCells(2, 2, 2, 3);
+    // ws.mergeCells(3, 2, 3, 3);
+    // ws.mergeCells(4, 2, 4, 3);
+    // ws.mergeCells(5, 2, 5, 3);
+    // ws.mergeCells(6, 2, 6, 3);
+
+    console.log(arrRow)
+    for (let i = 0; i < quan; i++) {
+        const rowY = i + offRowY;
+        for (let j = 0; j < arrRow.length; j++) {
+            const colX = j + 1;
+            const {value, style, note} = arrRow[j];
+            const cell = ws.getCell(rowY, colX)
+            cell.value = value;
+            cell.style = style;
+            if (note) cell.note = note;
+
+            // if (note) {
+            //     const {h, w} = JSON.parse(note);
+            //     let dim = [rowY, j + 1, rowY + h, j + 1 + w];
+            //     ws.mergeCells(...dim);
+            //     // ws
+            // } else {
+            //
+            // }
+        }
+    }
+}
+
+function getListMerges(ws) {
+    const listMerges = {};
+
+    const merges = Object.entries(ws._merges).map(([addr, {top, bottom, left, right}]) => ({
+        addr, top, bottom, left, right
+    }));
+
+    for (let i = 0; i < merges.length; i++) {
+        const {addr, top, bottom, left, right} = merges[i];
+        const cell = ws.getCell(addr);
+        const key = `${top}.${left}`;
+        listMerges[key] = {addr, x: left, y: top, h: bottom - top, w: right - left, left, right}
+        cell.value += '|' + key
+        ws.unMergeCells(addr);
+    }
+    return listMerges;
+}
+
+function mergeApply(ws, rowYLen, colXLen, listMerges) {
+    for (let rowY = 1; rowY <= rowYLen; rowY++) {
+        for (let colX = 1; colX <= colXLen; colX++) {
+            const cell = ws.getCell(rowY, colX);
+            const [val, key] = (cell.value + '')?.split('|')
+            if (key && !cell.isMerged) {
+                cell.value = val;
+                const {h, w} = listMerges[key];
+                let dim = [rowY, colX, rowY + h, colX + w];
+                ws.mergeCells(...dim);
+            }
+        }
+    }
+}
+
 export const createExcelReport = async (data) => {
 
     const arrKeys = Object.keys(data);
@@ -61,35 +98,48 @@ export const createExcelReport = async (data) => {
     const workbook = new Excel.Workbook();
     await workbook.xlsx.readFile('template.xlsx');
     //
-    let worksheet = workbook.getWorksheet(1);
+
+    let ws = workbook.getWorksheet(1);
+    let rowYLen = ws.lastRow.number;
+    const colXLen = ws.lastColumn.number;
+
     // worksheet.addRow(2, [3, 'Sam', new Date()]);
-    //
     // worksheet.insertRow(2, [3, 'Sam', new Date()], 'o+');
-
-
     // insertLines(worksheet, {indexRow: 3, quantity: 10})
+    // console.log(Object.values(w._merges).map(it => it.model))
 
-    let rowYLen = worksheet.lastRow.number;
-    const colXLen = worksheet.lastColumn.number;
+    const listMerges = getListMerges(ws);
 
-    for (let rowY = 1; rowY <= rowYLen; rowY++) {
-        for (let colX = 1; colX <= colXLen; colX++) {
-            const cell = worksheet.getCell(rowY, colX);
-            for (let i = 0; i < arrKeys.length; i++) {
-                const key = arrKeys[i];
-                if (cell.value?.includes && cell.value?.includes(key)) {
-                    if (Array.isArray(data[key])) {
-                        fillData(worksheet, rowY, colX, data[key]);
-                        rowYLen = worksheet.lastRow.number;
-                        rowY += Array.isArray(data[key]) ? data[key].length : 0;
-                    } else {
-                        cell.value = data[key]
-                    }
-                }
+    const offRowY = 2;
+    const quan = 22
 
-            }
-        }
-    }
+    duplicateRows(ws, offRowY, quan);
+
+    // row.commit();
+
+    // for (let rowY = 1; rowY <= rowYLen; rowY++) {
+    //     for (let colX = 1; colX <= colXLen; colX++) {
+    //         const cell = ws.getCell(rowY, colX);
+    //         for (let i = 0; i < arrKeys.length; i++) {
+    //             const key = arrKeys[i];
+    //             if (cell.value?.includes && cell.value?.includes(key)) {
+    //                 if (Array.isArray(data[key])) {
+    //                     fillData(ws, rowY, colX, data[key]);
+    //                     rowYLen = ws.lastRow.number;
+    //                     rowY += Array.isArray(data[key]) ? data[key].length : 0;
+    //                 } else {
+    //                     cell.value = data[key]
+    //                 }
+    //             }
+    //
+    //         }
+    //     }
+    // }
+
+    mergeApply(ws, rowYLen + quan, colXLen, listMerges);
+
+    const r = ws.getRow(2)
+    console.log(r)
 
     // console.log(data)
 
@@ -97,6 +147,5 @@ export const createExcelReport = async (data) => {
 }
 
 await createExcelReport({
-    list: [[0, 1, 2,], [3, 4, 5,], [6, 7, 8,], [9, 10, 11,], [12, 13, 14,],],
-    sum: 321
+    list: [[0, 1, 2,], [3, 4, 5,], [6, 7, 8,], [9, 10, 11,], [12, 13, 14,],], sum: 321
 });
