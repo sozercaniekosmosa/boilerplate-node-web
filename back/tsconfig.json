@@ -21,9 +21,11 @@
     /* Type Checking */
     "strict": false,
     /* Completeness */
-//    "skipLibCheck": true,
+    //    "skipLibCheck": true,
 
-    "lib": ["ESNext"]
+    "lib": [
+      "ESNext"
+    ]
   },
   "tsc-alias": {
     //подключение плагина который добавляет .js в импортах при компиляции
@@ -34,6 +36,13 @@
     "index.ts",
     "lib/**/*",
     "src/**/*",
-    "nodes/**/*",
+    "nodes/**/*"
+  ],
+  "exclude": [
+    "./tmp",
+    "./tmp/",
+    "./tmp/**",
+    "./tmp/**/",
+    "./tmp/**/*",
   ]
 }

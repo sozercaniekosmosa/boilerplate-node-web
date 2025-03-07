@@ -2,7 +2,7 @@ import {execFile} from "child_process";
 import express from "express";
 import axios from "axios";
 import {isAllowHostPort} from "../../webUtils";
-import {saveTextToFile} from "../../../filesystem";
+import {removeFile, saveTextToFile} from "../../../filesystem";
 
 const routerGeneral = express.Router();
 
@@ -53,11 +53,11 @@ routerGeneral.get('/exist-endpoint', async (req, res) => {
     }
 });
 
-routerGeneral.get('/is-allow-host-port/:host/:port/:id', async (req, res) => {
+routerGeneral.get('/is-allow-host-port/:host/:port', async (req, res) => {
 
-    const {host, port, id} = req.params;
+    const {host, port} = req.params;
     try {
-        let isUse = await isAllowHostPort(host, port, id);
+        let isUse = await isAllowHostPort(host, port);
         res.send(isUse);
     } catch (error) {
         res.status(error?.status || 500).send({error: error?.message || error});

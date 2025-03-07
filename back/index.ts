@@ -4,32 +4,34 @@ import {config} from "dotenv";
 import {noSQL} from "./lib/db/noSQL";
 import {createWebServer} from "./lib/services/webServer/WebServer.js";
 import routerGeneral from "./lib/services/webServer/api-v1/general";
-import chalk from "chalk";
-import {addTaskToLLM} from "./lib/lm/llama";
+import {createExcelReport} from "./lib/reports/reports";
+import pg from "pg";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// console.log(pg)
 
-const env = config({override: true, path: '../.env'});
-const {
-    PORT,
-    WEB_DIR,
-} = env.parsed
-
-const port = +process.env.PORT || +PORT;
-
-global.root = __dirname;
-global.port = port
-global.webDir = path.join(__dirname, WEB_DIR);
-global.db = new noSQL('..\\db\\db.json');
-
-const {app} = createWebServer(3000, global.webDir, ({type, ws, arrActiveConnection, mess, host}) => {
-    // console.log('ws:', type, ws, arrActiveConnection, mess, host)
-});
-
-app.use('/api/v1', routerGeneral);
-
-console.log('OK')
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = dirname(__filename);
+//
+// const env = config({override: true, path: '../.env'});
+// const {
+//     PORT,
+//     WEB_DIR,
+// } = env.parsed
+//
+// const port = +process.env.PORT || +PORT;
+//
+// global.root = __dirname;
+// global.port = port
+// global.webDir = path.join(__dirname, WEB_DIR);
+// global.db = new noSQL('..\\db\\db.json');
+//
+// const {app} = createWebServer(3000, global.webDir, ({type, ws, arrActiveConnection, mess, host}) => {
+//     // console.log('ws:', type, ws, arrActiveConnection, mess, host)
+// });
+//
+// app.use('/api/v1', routerGeneral);
+//
+// console.log('OK')
 
 // const q1 = "Реши уравнение 2x-8=15";
 // console.log(chalk.yellow("User: ") + q1);
@@ -37,3 +39,31 @@ console.log('OK')
 //     if (type != 'process') console.log(chalk.yellow(type));
 //     process.stdout.write(chunk as string);
 // })
+
+
+// const connectDb = async () => {
+//     try {
+//         const {Client} = pg;
+//         const client = new Client({
+//             user: 'scadabd',
+//             host: '192.168.10.149',
+//             database: 'SIKN_XOLM',
+//             password: 'Asutp05k.,jqAsutp05k.,jqA',
+//             port: 5432,
+//         });
+//
+//         await client.connect();
+//
+//         const res = await client.query(
+//             `SELECT "reportDate", sumvol, summas, dens, densbik, temp, tempbik, press, pressbik FROM public."SIKNreports"`);
+//         console.log(res.rows);
+//
+//         await client.end();
+//     } catch (error) {
+//         console.error("Connection error", error.stack);
+//     }
+// };
+// await connectDb();
+
+
+await createExcelReport('../tmp/SMCO.xlsx', '../tmp/tst.xlsx');

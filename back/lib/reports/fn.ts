@@ -1,0 +1,69 @@
+import pg, {QueryResult} from "pg";
+import {addDay, addHour, formatDateTime, setDate} from "../time";
+
+// const data = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, 11], [12, 13, 14]];
+let arrData = [];
+let queryResult: QueryResult<any>;
+
+const round = (val, frc = 10) => Math.trunc(val * frc) / frc
+export const list = async () => {
+    let data;
+    arrData = [];
+    try {
+        const {Client} = pg;
+        const client = new Client({
+            user: 'scadabd',
+            host: '192.168.10.149',
+            port: 5432,
+        });
+
+        await client.connect();
+
+        queryResult = await client.query(
+            // `SELECT "reportDate", sumvol, summas, dens, densbik, temp, tempbik, press, pressbik FROM public."SIKNreports"`
+            `SELECT "recordNumber", "recordDate", "reportDate", "reportType", volline1, masline1, volline2, masline2, volline3, masline3, sumvol, summas, dens, densbik, volday, masday, temp, tempbik, press, pressbik, ratebik, maswithoutwater, watervol, massnetto, "reportNumber" FROM public."SIKNreports"`
+        );
+        console.log(queryResult.rows);
+        const arr = queryResult.rows;
+        await client.end();
+
+        let index = 1, _sumvol = 0, _summas = 0, _hours = setDate({hours: 0, minutes: 0});
+        // @ts-ignore
+        for (let i = 0; i < arr.length; i++) {
+            const {reportDate, sumvol, summas, dens, densbik, temp, tempbik, press, pressbik} = arr[i];
+            const date = formatDateTime(new Date(reportDate), 'dd.mm.yyyy')
+            const time = formatDateTime(_hours, 'hh:MM');
+            _hours = addHour(2, _hours);
+            const timeTo = formatDateTime(_hours, 'hh:MM');
+            const line = [
+                index,
+                date, time, timeTo,
+                _sumvol, sumvol,
+                _summas, summas,
+                sumvol - _sumvol,
+                summas - _summas,
+                round(temp), round(tempbik),
+                round(press, 100), round(pressbik, 100),
+                round(dens), round(densbik),
+            ];
+            _sumvol = sumvol;
+            _summas = summas;
+
+            if (time == '10:00' && timeTo == '12:00') arrData.push([++index, date, '00:00', timeTo, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,]);
+
+            arrData.push(line);
+
+            index++;
+        }
+
+    } catch (error) {
+        console.error("Connection error", error.stack);
+        return null;
+    }
+    return arrData;
+}
+
+export const sum = () => {
+    // return [[data.reduce((acc, [a, b, c]) => acc + a, 0)]]
+    return [[987]]
+}

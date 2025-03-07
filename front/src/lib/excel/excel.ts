@@ -1,6 +1,6 @@
-import {saveUnitArrayAsFile} from "../fs.ts";
-import dialog from "../../components/Dialog/Dialog.tsx";
+import {saveUnitArrayAsFile} from "../fs";
 
+// @ts-ignore
 await import( "./exceljs.min.js")
 
 const clearCellStyle = (worksheet, startCell, rowsCount, colsCount) => {

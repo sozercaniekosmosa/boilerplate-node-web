@@ -3,10 +3,10 @@ import path from "path";
 import bodyParser from "body-parser";
 import {WEBSocket} from "./WebSocket";
 
-export function createWebServer(port, webDir, clbWebSocket): { app: any, ws: any } | null {
+export function createWebServer(port, webDir?, clbWebSocket?): { app: any, ws: any } | null {
     const app = express();
 
-    app.use(express.static(webDir)); // путь к web-страницам
+    webDir && app.use(express.static(webDir)); // путь к web-страницам
 
     app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
     app.use(bodyParser.json({limit: '50mb'}));
@@ -19,15 +19,15 @@ export function createWebServer(port, webDir, clbWebSocket): { app: any, ws: any
         console.log(`API is listening on port ${port}`);
     });
 
-    app.get('/', (req, res) => {// путь к корневой директории
+    webDir && app.get('/', (req, res) => {// путь к корневой директории
         res.sendFile(path.join(webDir, 'index.html'));
     })
 
-    app.use((req, res, next) => {
+    webDir && app.use((req, res, next) => {
         res.status(404).send('Запрошеный ресурс не найден!');
     });
 
-    const ws = new WEBSocket(webServ, {
+    const ws = clbWebSocket && new WEBSocket(webServ, {
         clbAddConnection: async ({ws, arrActiveConnection}) => {
             clbWebSocket({type: 'connection', ws, arrActiveConnection})
         }, clbMessage: ({ws, arrActiveConnection, mess, host}) => {

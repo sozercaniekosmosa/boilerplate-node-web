@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev-front-bun": "bunx --bun vite",
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "front-dev-bun": "bunx --bun vite",
+    "front-dev": "vite",
+    "front-build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
