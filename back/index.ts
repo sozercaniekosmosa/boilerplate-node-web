@@ -41,29 +41,5 @@ import pg from "pg";
 // })
 
 
-// const connectDb = async () => {
-//     try {
-//         const {Client} = pg;
-//         const client = new Client({
-//             user: 'scadabd',
-//             host: '192.168.10.149',
-//             database: 'SIKN_XOLM',
-//             password: 'Asutp05k.,jqAsutp05k.,jqA',
-//             port: 5432,
-//         });
-//
-//         await client.connect();
-//
-//         const res = await client.query(
-//             `SELECT "reportDate", sumvol, summas, dens, densbik, temp, tempbik, press, pressbik FROM public."SIKNreports"`);
-//         console.log(res.rows);
-//
-//         await client.end();
-//     } catch (error) {
-//         console.error("Connection error", error.stack);
-//     }
-// };
-// await connectDb();
-
 
 await createExcelReport('../tmp/SMCO.xlsx', '../tmp/tst.xlsx');
