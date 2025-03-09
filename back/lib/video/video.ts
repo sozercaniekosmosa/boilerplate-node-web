@@ -17,12 +17,25 @@ const getDuration = async (path): Promise<number> => new Promise((resolve, rejec
 const getFrames = async (path): Promise<number> => new Promise((resolve, reject) => ffmpeg(path).ffprobe((err, metadata) => !err ? resolve(+metadata.streams[0].nb_frames) : reject(err)))
 const getDataVideo = async (path) => new Promise((resolve, reject) => ffmpeg(path).ffprobe((err, metadata) => !err ? resolve(metadata) : reject(err)))
 
+function getAspectRatio(width, height, div = 'x') {
+    // Находим наибольший общий делитель (НОД) для ширины и высоты
+    function gcd(a, b) {
+        return b === 0 ? a : gcd(b, a % b);
+    }
+
+    const divisor = gcd(width, height);
+    const aspectWidth = width / divisor;
+    const aspectHeight = height / divisor;
+
+    return `${aspectWidth}${div}${aspectHeight}`;
+}
+
 const videoFromImage = async ({
                                   pathInput, pathOut, dur = 5, fps = 30, scale = 1.2, w = 1920, h = 1080, clb
                               }) => new Promise<void>((resolve, reject) => ffmpeg(pathInput)
     .inputOption(["-vsync 0",/* "-hwaccel nvdec",*//* "-hwaccel cuvid",*/ "-hwaccel_device 0"])
     // .size('1920x1080').autopad('#cc0000').keepPixelAspect()
-    .videoFilter(`scale=${w * 4}x${h * 4}:force_original_aspect_ratio=decrease,zoompan=z='min(zoom+${scale - 1}/(${fps}*${dur}),${scale})':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=${fps}*${dur}:fps=${fps},scale=${w}:${h}`)
+    .videoFilter(`scale=${w * 4}x${h * 4}:force_original_aspect_ratio=decrease,zoompan=z='min(zoom+${scale - 1}/(${fps}*${dur}),${scale})':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=${fps}*${dur}:fps=${fps},setsar=ratio=(1/1),setdar=ratio=(${getAspectRatio(w, h, '/')}),scale=${w}:${h}`)
     .outputOptions('-c:v libx264')
     .output(pathOut)
     .on('start', (command) => clb && clb('start', 'VideoFromImage: ' + command))
@@ -387,6 +400,38 @@ async function concatMediaFiles({arrPath, pathOut, fps = 25, clb}) {
     });
 }
 
+const monoToStereoAudio = async ({path, clb}) => {
+    return new Promise<void>(async (resolve, reject) => {
+
+        const pathOut = getPathOut(path)
+
+        const ff = ffmpeg();
+
+        ff
+            .addInput(path)
+
+        ff
+            .audioFilters('pan=stereo|c0=c0|c1=c0') // Дублирует канал для стерео
+            .output(pathOut)
+            .on('stderr', (data) => console.log(data))
+            .on('start', (command) => clb && clb('start', 'monoToStereoAudio: ' + command))
+            .on('progress', ({percent}) => clb && clb('progress', Math.ceil(percent)))
+            .on('end', async () => {
+                clb && clb('progress', 100);
+                clb && clb('end', 'Обработка завершена');
+                await removeFile(path);
+                await renameFile(pathOut, path);
+                resolve();
+            })
+            .on('error', (err) => {
+                console.error('Ошибка:', err);
+                clb && clb('error', err);
+                reject(err);
+            })
+            .run();
+
+    })
+}
 
 export const createAnVideo = async ({
                                         pathSpeech, pathBridge, pathAudio, arrPathImg, pathVideo,
@@ -394,6 +439,8 @@ export const createAnVideo = async ({
                                         clb
                                     }) => {
     try {
+        await monoToStereoAudio({path: pathSpeech, clb: (type, mess) => console.log(type, mess)})
+
         await concatAudio({
             arrPath: [pathSpeech, pathBridge],
             pathOut: pathAudio,
