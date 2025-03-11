@@ -3,19 +3,19 @@ import React, {useEffect, useState} from "react";
 import {Button} from "react-bootstrap";
 import Dialog from "../Dialog/Dialog.tsx";
 
-function ButtonSpinner({
-                           style = {},
-                           className = '',
-                           onAction = null,
-                           onClick = null,
-                           disabled = false,
-                           hidden = false,
-                           variant = null,
-                           children,
-                           onConfirm = null,
-                           title = null,
-                           description = 'Добавьте текст...',
-                       }) {
+function ButtonEx({
+                      style = {},
+                      className = '',
+                      onAction = null,
+                      onClick = null,
+                      disabled = false,
+                      hidden = false,
+                      variant = null,
+                      children = null,
+                      onConfirm = null,
+                      title = null,
+                      description = 'Добавьте текст...',
+                  }) {
     const [_state, set_state] = useState(0)
     const [showAndDataEvent, setShowAndDataEvent] = useState<boolean | null | object>(false);
 
@@ -54,4 +54,4 @@ function ButtonSpinner({
     </>
 }
 
-export default ButtonSpinner;
+export default ButtonEx;

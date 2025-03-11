@@ -6,12 +6,12 @@ import {eventBus} from "../lib/events.ts";
 import DropFile from "./DropFile/DropFile.tsx";
 import SimpleTable from "./SimpleTable/SimpleTable.tsx";
 import {Button, Tab, Tabs} from "react-bootstrap";
-import ButtonSpinner from "./ButtonSpinner/ButtonSpinner.tsx";
+import ButtonEx from "./ButtonEx/ButtonEx.tsx";
 import DraggableList from "./DraggableList/DraggableList.tsx";
 import CodeEditor from "./CodeEditor/CodeEditor.tsx";
 import {Editor, TEventEditor} from "./Editor/Editor.tsx";
-import styled, {createGlobalStyle} from "styled-components";
-import {createExcelFile, readExcelFile} from "../lib/excel/excel.ts";
+import {createGlobalStyle} from "styled-components";
+import NestedList from "./Storytelling/Storytelling.tsx";
 
 function Index() {
     const [progress, setProgress] = useState(0)
@@ -69,14 +69,35 @@ function Index() {
 //         input.click();
     }
 
+    const [data, setData] = useState({
+        arr: [
+            {
+                arr: [
+                    {
+                        arr: [],
+                        data: {name: 'Child 1', value: 42}
+                    }
+                ],
+                data: {name: 'Parent 1', id: 1}
+            },
+            {
+                arr: [],
+                data: {name: 'Parent 2', id: 2}
+            }
+        ],
+        data: {root: true}
+    });
+
     return (
         <div className="d-flex flex-column h-100">
             <GlobalStyle/>
             {progress >= 0 && <ProgressBar progress={progress}/>}
-            <Tabs defaultActiveKey="excel" className="mb-1">
-                <Tab eventKey="excel" title="excel" style={{flex: 1}} className="h-100">
+            <Tabs defaultActiveKey="exp" className="mb-1">
+                <Tab eventKey="exp" title="exp" style={{flex: 1}} className="h-100">
                     {/*<input type="file" accept=".xlsx, .xlsm, .xltx, .xltm" onChange={e => readExcel(e)}/>*/}
-                    <Button className="btn btn-secondary btn-sm " onClick={readExcelFile}>Excel</Button>
+                    {/*<Button className="btn btn-secondary btn-sm " onClick={readExcelFile}>Excel</Button>*/}
+                    {/*@ts-ignore*/}
+                    <NestedList book={data} setBook={setData}/>
                 </Tab>
 
                 <Tab eventKey="editor" title="editor" style={{flex: 1}} className="h-100">
@@ -129,12 +150,12 @@ function Index() {
                     <div className="d-flex flex-column h-100 w-100 m-1">
                         <h6>Кнопки button-spinner:</h6>
                         <div className="d-flex flex-wrap flex-row gap-1">
-                            <ButtonSpinner className="btn btn-secondary" onAction={(a) => {
+                            <ButtonEx className="btn btn-secondary" onAction={(a) => {
                                 console.log(a)
-                            }}>Кнопка-спиннер</ButtonSpinner>
-                            <ButtonSpinner className="btn btn-secondary" onConfirm={(a) => {
+                            }}>Кнопка-спиннер</ButtonEx>
+                            <ButtonEx className="btn btn-secondary" onConfirm={(a) => {
                                 console.log(a)
-                            }} description="Выполнить действие">Кнопка-запрос</ButtonSpinner>
+                            }} description="Выполнить действие">Кнопка-запрос</ButtonEx>
                         </div>
                         <hr/>
                         <h6>Всплывающие сообщения:</h6>

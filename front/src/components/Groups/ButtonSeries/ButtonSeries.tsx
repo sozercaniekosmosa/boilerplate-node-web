@@ -1,9 +1,9 @@
-// import ButtonSpinner from "../ButtonSpinner/ButtonSpinner";
+// import ButtonEx from "../ButtonEx/ButtonEx";
 import React from "react";
 
 import {ButtonGroup} from "react-bootstrap";
 import {GeneratorList} from "../GeneratorList.tsx";
-import ButtonSpinner from "../../ButtonSpinner/ButtonSpinner.tsx";
+import ButtonEx from "../../ButtonEx/ButtonEx.tsx";
 
 
 export type TArrParam = Array<any> | Array<[any]>;
@@ -19,9 +19,9 @@ interface TPropsElement {
 function ButtonSeries({arrParam, onAction, className = '', style = {}}: TPropsElement) {
     return <ButtonGroup className={className} style={style}>
         <GeneratorList arrParam={arrParam} onGenerate={(...arrPar) =>
-            <ButtonSpinner variant="secondary btn-sm text-truncate" key={arrPar?.[arrPar.length - 1] ?? 0} onAction={() => onAction(...arrPar)}>
+            <ButtonEx variant="secondary btn-sm text-truncate" key={arrPar?.[arrPar.length - 1] ?? 0} onAction={() => onAction(...arrPar)}>
                 {arrPar[0]}
-            </ButtonSpinner>}/>
+            </ButtonEx>}/>
     </ButtonGroup>
 }
 

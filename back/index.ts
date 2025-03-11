@@ -40,6 +40,5 @@ import pg from "pg";
 //     process.stdout.write(chunk as string);
 // })
 
+// await createExcelReport('../tmp/SMCO.xlsx', '../tmp/tst.xlsx');
 
-
-await createExcelReport('../tmp/SMCO.xlsx', '../tmp/tst.xlsx');

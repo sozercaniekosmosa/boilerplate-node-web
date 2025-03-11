@@ -371,6 +371,7 @@ export class Svg {
         if (!this.tempNodeForHtml || !document.body.contains(this.tempNodeForHtml)) {
             this.tempNodeForHtml = document.querySelector('#' + id);
             if (!this.tempNodeForHtml) {
+                // @ts-ignore
                 this.tempNodeForHtml = document.createElement('div') as HTMLHtmlElement;
                 document.body.append(this.tempNodeForHtml)
             }
