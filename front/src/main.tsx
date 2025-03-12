@@ -52,4 +52,4 @@ async function createMessageSocket() {
     }
 }
 
-// await createMessageSocket();
+await createMessageSocket();

@@ -11,7 +11,9 @@ import DraggableList from "./DraggableList/DraggableList.tsx";
 import CodeEditor from "./CodeEditor/CodeEditor.tsx";
 import {Editor, TEventEditor} from "./Editor/Editor.tsx";
 import {createGlobalStyle} from "styled-components";
-import NestedList from "./Storytelling/Storytelling.tsx";
+import SpreadSheet from "./SpreadSheet/SpreadSheet.tsx";
+
+// import NestedList from "./Storytelling/Storytelling.tsx";
 
 function Index() {
     const [progress, setProgress] = useState(0)
@@ -92,12 +94,14 @@ function Index() {
         <div className="d-flex flex-column h-100">
             <GlobalStyle/>
             {progress >= 0 && <ProgressBar progress={progress}/>}
-            <Tabs defaultActiveKey="exp" className="mb-1">
+            <Tabs defaultActiveKey="excel" className="mb-1">
+                <Tab eventKey="excel" title="excel" style={{flex: 1}} className="h-100">
+                    <SpreadSheet/>
+                </Tab>
+
                 <Tab eventKey="exp" title="exp" style={{flex: 1}} className="h-100">
                     {/*<input type="file" accept=".xlsx, .xlsm, .xltx, .xltm" onChange={e => readExcel(e)}/>*/}
-                    {/*<Button className="btn btn-secondary btn-sm " onClick={readExcelFile}>Excel</Button>*/}
-                    {/*@ts-ignore*/}
-                    <NestedList book={data} setBook={setData}/>
+                    {/*<NestedList book={data} setBook={setData}/>*/}
                 </Tab>
 
                 <Tab eventKey="editor" title="editor" style={{flex: 1}} className="h-100">

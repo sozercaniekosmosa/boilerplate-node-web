@@ -1,21 +1,28 @@
 import pg, {QueryResult} from "pg";
 import {addDay, addHour, formatDateTime, setDate} from "../time";
+import {config} from "dotenv";
+import {fileURLToPath} from "url";
+import {dirname} from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const env = config({override: true, path: __dirname + '\\.env'});
+const {USER, HOST, DATABASE, PASSWORD, PORT,} = env.parsed
 
 // const data = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, 11], [12, 13, 14]];
+
 let arrData = [];
 let queryResult: QueryResult<any>;
 
 const round = (val, frc = 10) => Math.trunc(val * frc) / frc
 export const list = async () => {
+
     let data;
     arrData = [];
     try {
         const {Client} = pg;
-        const client = new Client({
-            user: 'scadabd',
-            host: '192.168.10.149',
-            port: 5432,
-        });
+        const client = new Client({user: USER, host: HOST, database: DATABASE, password: PASSWORD, port: +PORT,});
 
         await client.connect();
 
