@@ -1,8 +1,6 @@
 import Spreadsheet from "x-data-spreadsheet"
 import {useEffect, useRef} from "react";
 import ruRU from "./ru-RU.ts"
-import XLSX from "xlsx"
-import {xtos} from "./xlsxspread.ts";
 
 const SpreadSheet = () => {
     const refNodeSheet = useRef()
@@ -76,7 +74,7 @@ const SpreadSheet = () => {
         // @ts-ignore
         window.save = () => {
             // @ts-ignore
-            XLSX.writeFile(xtos(s.getData()), "SheetJS.xlsx");
+            // XLSX.writeFile(xtos(s.getData()), "SheetJS.xlsx");
         };
     }, []);
 

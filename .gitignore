@@ -43,5 +43,4 @@ dist-ssr
 *.css
 *.css.map
 /back/lib/lm/models/
-/front/src/components/Storytelling/
 /back/lib/reports/.env

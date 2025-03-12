@@ -12,6 +12,8 @@ import CodeEditor from "./CodeEditor/CodeEditor.tsx";
 import {Editor, TEventEditor} from "./Editor/Editor.tsx";
 import {createGlobalStyle} from "styled-components";
 import SpreadSheet from "./SpreadSheet/SpreadSheet.tsx";
+import NestedList from "./Storytelling/Storytelling.tsx";
+import Storytelling from "./Storytelling/Storytelling.tsx";
 
 // import NestedList from "./Storytelling/Storytelling.tsx";
 
@@ -71,37 +73,19 @@ function Index() {
 //         input.click();
     }
 
-    const [data, setData] = useState({
-        arr: [
-            {
-                arr: [
-                    {
-                        arr: [],
-                        data: {name: 'Child 1', value: 42}
-                    }
-                ],
-                data: {name: 'Parent 1', id: 1}
-            },
-            {
-                arr: [],
-                data: {name: 'Parent 2', id: 2}
-            }
-        ],
-        data: {root: true}
-    });
-
     return (
         <div className="d-flex flex-column h-100">
             <GlobalStyle/>
             {progress >= 0 && <ProgressBar progress={progress}/>}
-            <Tabs defaultActiveKey="excel" className="mb-1">
+            <Tabs defaultActiveKey="story" className="mb-1">
+
                 <Tab eventKey="excel" title="excel" style={{flex: 1}} className="h-100">
                     <SpreadSheet/>
                 </Tab>
 
-                <Tab eventKey="exp" title="exp" style={{flex: 1}} className="h-100">
+                <Tab eventKey="story" title="story" style={{flex: 1}} className="h-100">
                     {/*<input type="file" accept=".xlsx, .xlsm, .xltx, .xltm" onChange={e => readExcel(e)}/>*/}
-                    {/*<NestedList book={data} setBook={setData}/>*/}
+                    <Storytelling/>
                 </Tab>
 
                 <Tab eventKey="editor" title="editor" style={{flex: 1}} className="h-100">
