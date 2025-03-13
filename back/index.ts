@@ -4,8 +4,8 @@ import {config} from "dotenv";
 import {noSQL} from "./lib/db/noSQL";
 import {createWebServer} from "./lib/services/webServer/WebServer.js";
 import routerGeneral from "./lib/services/webServer/api-v1/general";
-import {createExcelReport} from "./lib/reports/reports";
-import pg from "pg";
+import {exportToExcel} from "./lib/reports/exp";
+import fs from "fs";
 
 // console.log(pg)
 
@@ -40,5 +40,14 @@ console.log('OK')
 //     process.stdout.write(chunk as string);
 // })
 
-await createExcelReport('../tmp/SMCO.xlsx', '../tmp/tst.xlsx');
+// await createExcelReport('../tmp/SMCO.xlsx', '../tmp/tst.xlsx');
+// await exportToExcel('../tmp/tst.xlsx');
 
+const wasmBuffer = fs.readFileSync('../tmp/tst.wasm');
+
+// @ts-ignore
+const wasmModule = await WebAssembly.instantiate(wasmBuffer)
+
+const exports = wasmModule.instance.exports;
+const sum = exports.add(5, 6);
+console.log(sum); // Outputs: 11
