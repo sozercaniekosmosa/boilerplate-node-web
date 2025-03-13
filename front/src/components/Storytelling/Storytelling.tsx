@@ -9,41 +9,44 @@ const Storytelling: React.FC<any> = () => {
     const [book, setBook] = useState({
         arr: [
             {
-                arr: [
-                    {
-                        arr: [],
-                        data: {name: 'Child 1', value: 42}
-                    }
-                ],
-                data: {name: 'Parent 1', id: 1}
+                arr: [],
+                data: {name: 'Parent 1', id: 1},
+                hide: true
             },
             {
                 arr: [],
-                data: {name: 'Parent 2', id: 2}
+                data: {name: 'Parent 2', id: 2},
+                hide: true
             }
         ],
-        data: {root: true}
+        data: {root: true},
+        hide: true
     });
 
-    return <NestedList obj={book} onInsert={(parent, item, index) => {
-        return <ButtonGroup className="flex-row pb-1">
-            {JSON.stringify(item.data)}
-            <Button className="btn btn-sm btn-secondary bi-plus-circle flex-grow-0"
-                    onClick={() => {
+    const stButton = {width: '1.8em', height: '1.8em'}
+    const clButton = ' btn btn-sm flex-grow-0 d-flex justify-content-center align-items-center'
 
-                        item.arr.push({
-                            arr: [],
-                            data: 'child'
-                        })
-
-                        setBook({...book})
-
-                    }}/>
-            <ButtonEx className="btn btn-sm btn-danger bi-x-lg flex-grow-0" onConfirm={() => {
-                parent.arr.splice(index, 1)
-                setBook({...book})
-            }} description="Удалить"/>
-        </ButtonGroup>
+    return <NestedList obj={book} onInsert={(parent, item, index, child) => {
+        const {data, hide, arr} = item;
+        return <div className="d-flex flex-column m-1">
+            <div className="d-flex flex-row gap-1 mb-1">
+                <Button style={stButton} className={`btn-secondary bi-${item.hide ? 'plus-' : ''}square` + clButton} onClick={() => {
+                    item.hide = !item.hide;
+                    setBook({...book})
+                }}/>
+                <Button style={stButton} className={"btn-secondary bi-plus-circle" + clButton} onClick={() => {
+                    arr.push({arr: [], data: 'child', hide: true});
+                    setBook({...book})
+                }}/>
+                <ButtonEx style={stButton} className="btn-danger btn-sm bi-x-lg flex-grow-0" description="Удалить" onConfirm={() => {
+                    parent.arr.splice(index, 1);
+                    setBook({...book});
+                }}/>
+            </div>
+            {!item.hide && <div className="flex-column border rounded p-1">
+                {child}
+            </div>}
+        </div>
     }}/>
 };
 
