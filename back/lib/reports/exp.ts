@@ -1,138 +1,91 @@
 import Excel from "exceljs";
 
-// const sheetData = {
-//     name: "sheet2",
-//     freeze: "A1",
-//     styles: [
-//         {align: "center"},
-//         {
-//             border: {
-//                 bottom: ["thin", "#000"],
-//                 top: ["thin", "#000"],
-//                 left: ["thin", "#000"],
-//                 right: ["thin", "#000"]
-//             }
-//         }, {
-//             align: "center",
-//             border: {
-//                 bottom: ["thin", "#000"],
-//                 top: ["thin", "#000"],
-//                 left: ["thin", "#000"],
-//                 right: ["thin", "#000"]
-//             }
-//         }, {
-//             border: {
-//                 bottom: ["thin", "#000"],
-//                 top: ["thin", "#000"],
-//                 left: ["thin", "#000"],
-//                 right: ["thin", "#000"]
-//             }, font: {bold: true}
-//         }],
-//     merges: ["A2:B2"],
-//     rows: {
-//         0: {cells: {0: {text: "1", style: 1}, 1: {text: "2", style: 3}}},
-//         1: {cells: {0: {merge: [0, 1], text: "3", style: 2}, 1: {style: 0}}},
-//         len: 100
-//     },
-//     cols: {len: 26},
-//     "validations": [],
-//     "autofilter": {}
-// }
-const sheetData = {
-    name: "sheet2",
-    freeze: "A1",
-    styles: [{align: "center"}, {
-        border: {
-            bottom: ["thin", "#000"],
-            top: ["thin", "#000"],
-            left: ["thin", "#000"],
-            right: ["thin", "#000"]
-        }
-    }, {
-        align: "center",
-        border: {bottom: ["thin", "#000"], top: ["thin", "#000"], left: ["thin", "#000"], right: ["thin", "#000"]}
-    }, {
-        border: {bottom: ["thin", "#000"], top: ["thin", "#000"], left: ["thin", "#000"], right: ["thin", "#000"]},
-        font: {bold: true}
-    }, {
-        align: "center",
-        border: {bottom: ["thin", "#000"], top: ["thin", "#000"], left: ["thin", "#000"], right: ["thin", "#000"]},
-        valign: "middle"
-    }, {align: "center", valign: "middle"}],
-    merges: ["A1:C1", "A2:B2", "B3:C3", "A3:A5", "B4:C5"],
-    rows: {
-        0: {cells: {0: {merge: [0, 2], style: 4, text: "1"}, 1: {style: 5}, 2: {style: 5}}},
-        1: {cells: {0: {merge: [0, 1], style: 4, text: "2"}, 1: {style: 5}, 2: {style: 4, text: "3"}}},
-        2: {cells: {0: {merge: [2, 0], style: 4, text: "4"}, 1: {merge: [0, 1], style: 4, text: "5"}, 2: {style: 5}}},
-        3: {cells: {0: {text: "4", style: 5}, 1: {merge: [1, 1], style: 4, text: "6"}, 2: {style: 5}}},
-        4: {cells: {0: {style: 5}, 1: {style: 4}, 2: {style: 4}}},
-        len: 100
-    },
-    cols: {len: 26},
-    validations: [],
-    autofilter: {}
+interface ExcelFont {
+    name: string;
+    size: number;
+    bold?: boolean;
+    italic?: boolean;
+    strike?: boolean;
+    underline?: boolean;
+    color?: { argb: string };
 }
 
-
-function hexToArgb(hex) {
-    if (!hex) return 'FF000000';
-    hex = hex.replace('#', '');
-    if (hex.length === 3) {
-        hex = hex.split('').map(c => c + c).join('');
-    }
-    return 'FF' + hex.padEnd(6, '0').toUpperCase();
+interface ExcelBorder {
+    style: string;
+    color: { argb: string };
 }
 
-function convertStyle(style) {
-    const excelStyle = {};
+interface ExcelStyle {
+    font?: ExcelFont;
+    alignment?: {
+        horizontal: string;
+        vertical: string;
+        wrapText?: boolean;
+    };
+    fill?: {
+        type: string;
+        pattern: string;
+        fgColor: { argb: string };
+    };
+    border?: Record<string, ExcelBorder>;
+}
 
-    // Font styles
-    if (style.font) {
-        // @ts-ignore
-        excelStyle.font = {
-            name: style.font.name || 'Arial',
-            size: style.font.size || 12,
-            bold: !!style.font.bold,
-            italic: !!style.font.italic,
-            color: {argb: hexToArgb(style.font.color)}
-        };
+interface CellStyle {
+    font?: {
+        name?: string;
+        size?: number;
+        bold?: boolean;
+        italic?: boolean;
+        color?: string;
+    };
+    align?: string;
+    valign?: string;
+    textwrap?: boolean;
+    strike?: boolean;
+    underline?: boolean;
+    bgcolor?: string;
+    border?: Record<string, { style?: string; color?: string }>;
+}
+
+const hexToArgb = (hex: string): string => {
+    const cleanedHex = (hex?.replace('#', '') || '000000').replace(
+        /^([a-f\d])([a-f\d])([a-f\d])$/i,
+        '$1$1$2$2$3$3'
+    );
+    return `FF${cleanedHex.padEnd(6, '0').toUpperCase()}`;
+};
+
+const createExcelFont = (style: CellStyle): ExcelFont | undefined => {
+    if (!style.font) return undefined;
+
+    return {
+        name: style.font.name || 'Arial',
+        size: style.font.size || 12,
+        ...(style.font.bold && {bold: true}),
+        ...(style.font.italic && {italic: true}),
+        ...(style.font.color && {color: {argb: hexToArgb(style.font.color)}})
+    };
+};
+
+const convertStyle = (style: CellStyle): ExcelStyle => {
+    const excelStyle: ExcelStyle = {};
+    const font = createExcelFont(style);
+
+    if (font) {
+        excelStyle.font = font;
+        if (style.strike) excelStyle.font.strike = true;
+        if (style.underline) excelStyle.font.underline = true;
     }
 
-    // Text alignment
-    if (style.align || style.valign) {
-        // @ts-ignore
+    if (style.align || style.valign || style.textwrap) {
         excelStyle.alignment = {
             horizontal: style.align || 'left',
-            vertical: style.valign || 'top'
+            vertical: style.valign || 'top',
+            ...(style.textwrap && {wrapText: true})
         };
     }
 
-    // Text wrapping
-    if (style.textwrap) {
-        // @ts-ignore
-        excelStyle.alignment = excelStyle.alignment || {};
-        // @ts-ignore
-        excelStyle.alignment.wrapText = true;
-    }
-
-    // Text decoration
-    if (style.strike) {
-        // @ts-ignore
-        excelStyle.font = excelStyle.font || {};
-        // @ts-ignore
-        excelStyle.font.strike = true;
-    }
-
-    if (style.underline) {
-        // @ts-ignore
-        excelStyle.font = excelStyle.font || {};
-        // @ts-ignore
-        excelStyle.font.underline = true;
-    }
-
-    // Background color
     if (style.bgcolor) {
-        // @ts-ignore
         excelStyle.fill = {
             type: 'pattern',
             pattern: 'solid',
@@ -140,66 +93,38 @@ function convertStyle(style) {
         };
     }
 
-    // Borders
     if (style.border) {
-        // @ts-ignore
-        excelStyle.border = {};
-        const sides = ['top', 'bottom', 'left', 'right'];
-        sides.forEach(side => {
-            if (style.border[side]) {
-                // @ts-ignore
-                excelStyle.border[side] = {
-                    style: style.border[side].style || 'thin',
-                    color: {argb: hexToArgb(style.border[side].color)}
-                };
-            }
-        });
+        excelStyle.border = Object.fromEntries(
+            Object.entries(style.border)
+                .filter(([_, value]) => value)
+                .map(([side, {style: s, color}]) => [
+                    side,
+                    {style: s || 'thin', color: {argb: hexToArgb(color || '#000000')}}
+                ])
+        );
     }
 
     return excelStyle;
-}
+};
 
-export async function exportToExcel(pathOut) {
-    // const wb = new Excel.Workbook();
-    // await wb.xlsx.readFile('../tmp/exp.xlsx');
-    // let ws = wb.getWorksheet(1);
-    // console.log(ws)
-
+export const exportToExcel = async (pathOut: string, sheetData: any) => {
     const workbook = new Excel.Workbook();
-    // await workbook.xlsx.readFile(fileName);
     const worksheet = workbook.addWorksheet('Sheet 1');
 
-    // Process rows and cells
-    if (sheetData.rows) {
-        const arrKVRows = Object.entries(sheetData.rows);
-        // @ts-ignore
-        arrKVRows.forEach(([key, row], rowIndex) => {
-            const rowNumber = rowIndex + 1;
-            // @ts-ignore
-            if (row.cells) {
-                // @ts-ignore
-                Object.keys(row.cells).forEach(colIndexStr => {
-                    const colIndex = parseInt(colIndexStr, 10);
-                    // @ts-ignore
-                    const cellData = row.cells[colIndex];
-                    const cell = worksheet.getCell(rowNumber, colIndex + 1);
+    Object.entries(sheetData.rows || {}).forEach(([rowIndex, row]: [string, any]) => {
+        const rowNumber = parseInt(rowIndex) + 1;
 
-                    // Set cell value
-                    cell.value = cellData.text;
+        Object.entries(row.cells || {}).forEach(([colIndex, cellData]: [string, any]) => {
+            const cell = worksheet.getCell(rowNumber, parseInt(colIndex) + 1);
+            cell.value = cellData.text;
 
-                    // Apply styles
-                    if (cellData.style) {
-                        const style = convertStyle(sheetData.styles[cellData.style]);
-                        Object.assign(cell, {style});
-                    }
-                });
+            if (cellData.style) {
+                const style = convertStyle(sheetData.styles[cellData.style]);
+                Object.assign(cell, {style});
             }
         });
-    }
+    });
 
-    // Process merged cells
-    sheetData.merges?.forEach(merge => worksheet.mergeCells(merge));
-
-    // Save to file
+    sheetData.merges?.forEach((merge: string) => worksheet.mergeCells(merge));
     await workbook.xlsx.writeFile(pathOut);
-}
+};
