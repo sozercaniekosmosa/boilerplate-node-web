@@ -44,3 +44,4 @@ dist-ssr
 *.css.map
 /back/lib/lm/models/
 /back/lib/reports/.env
+/assemblyScript/assembly/index.ts
