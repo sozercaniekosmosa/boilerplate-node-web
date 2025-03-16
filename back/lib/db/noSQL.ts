@@ -47,7 +47,13 @@ export class noSQL {
         return data;
     }
 
-    // Add an item
+    // free an item
+    free() {
+        this.db = {};
+        this.debouncedDumpDatabase();
+    }
+
+    // free an item
     del(id) {
         delete this.db[id];
         this.debouncedDumpDatabase();
