@@ -77,7 +77,7 @@ function Index() {
         <div className="d-flex flex-column h-100">
             <GlobalStyle/>
             {progress >= 0 && <ProgressBar progress={progress}/>}
-            <Tabs defaultActiveKey="excel" className="mb-1">
+            <Tabs defaultActiveKey="story" className="mb-1">
 
                 <Tab eventKey="excel" title="excel" style={{flex: 1}} className="h-100">
                     <SpreadSheet/>
