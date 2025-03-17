@@ -10,7 +10,6 @@ const __dirname = dirname(__filename);
 const env = config({override: true, path: __dirname + '\\.env'});
 const {USER, HOST, DATABASE, PASSWORD, PORT,} = env.parsed
 
-// const data = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, 11], [12, 13, 14]];
 
 let arrData = [];
 let queryResult: QueryResult<any>;

@@ -45,40 +45,61 @@ const SpreadSheet = () => {
         s.loadData([{
             name: "sheet2",
             freeze: "A1",
-            styles: [
-                {align: "center"},
-                {
-                    border: {
-                        bottom: ["thin", "#000"],
-                        top: ["thin", "#000"],
-                        left: ["thin", "#000"],
-                        right: ["thin", "#000"]
-                    }
-                }, {
-                    align: "center",
-                    border: {
-                        bottom: ["thin", "#000"],
-                        top: ["thin", "#000"],
-                        left: ["thin", "#000"],
-                        right: ["thin", "#000"]
-                    }
-                }, {
-                    border: {
-                        bottom: ["thin", "#000"],
-                        top: ["thin", "#000"],
-                        left: ["thin", "#000"],
-                        right: ["thin", "#000"]
-                    }, font: {bold: true}
-                }],
-            merges: ["A2:B2"],
+            styles: [{align: "center"}, {
+                border: {
+                    bottom: ["thin", "#000"],
+                    top: ["thin", "#000"],
+                    left: ["thin", "#000"],
+                    right: ["thin", "#000"]
+                }
+            }, {
+                align: "center",
+                border: {
+                    bottom: ["thin", "#000"],
+                    top: ["thin", "#000"],
+                    left: ["thin", "#000"],
+                    right: ["thin", "#000"]
+                }
+            }, {
+                border: {
+                    bottom: ["thin", "#000"],
+                    top: ["thin", "#000"],
+                    left: ["thin", "#000"],
+                    right: ["thin", "#000"]
+                }, font: {bold: true}
+            }],
+            merges: [],
             rows: {
-                0: {cells: {0: {text: "1", style: 1}, 1: {text: "2", style: 3}}},
-                1: {cells: {0: {merge: [0, 1], text: "3", style: 2}, 1: {style: 0}}},
+                0: {
+                    cells: {
+                        0: {text: "1"},
+                        1: {text: "2"},
+                        2: {text: "3"},
+                        3: {text: "4"},
+                        4: {text: "5"},
+                        5: {text: "6"},
+                        6: {text: "7"},
+                        7: {text: "8"},
+                        8: {text: "9"},
+                        9: {text: "10"},
+                        10: {text: "11"},
+                        11: {text: "12"},
+                        12: {text: "13"},
+                        13: {text: "14"},
+                        14: {text: "15"},
+                        15: {text: "16"}
+                    }
+                },
+                1: {
+                    cells: {
+                        0: {text: "fn#list"},
+                    }
+                },
                 len: 100
             },
             cols: {len: 26},
-            "validations": [],
-            "autofilter": {}
+            validations: [],
+            autofilter: {}
         }]) // load data
         s.change(data => {
             // console.log(data);
