@@ -1,5 +1,6 @@
 import TelegramBot from "node-telegram-bot-api";
-import {formatDateTime, getRandomRange} from "../time";
+import {formatDateTime} from "../time";
+import {getRandomRange} from "../utils";
 
 interface PublishedMessages {
     channelID: string,

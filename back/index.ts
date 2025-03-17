@@ -63,7 +63,8 @@ const sheetData = {
             align: "center",
             border: {bottom: ["thin", "#000"], top: ["thin", "#000"], left: ["thin", "#000"], right: ["thin", "#000"]},
             valign: "middle"
-        }, {align: "center", valign: "middle"}],
+        }, {align: "center", valign: "middle"}
+    ],
     merges: ["A1:C1", "A2:B2", "B3:C3", "A3:A5", "B4:C5"],
     rows: {
         0: {cells: {0: {merge: [0, 2], style: 4, text: "1"}, 1: {style: 5}, 2: {style: 5}}},

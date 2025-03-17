@@ -46,7 +46,7 @@ routerGeneral.get('/remove-file', async (req, res) => {
 routerGeneral.get('/exist-endpoint', async (req, res) => {
     try {
         const {url} = req.query;
-        const response = await axios.head(url);
+        const response = await axios.head(url as string);
         if (response.status === 200) res.status(200).send('Ok')
     } catch (error) {
         res.status(error.status || 500).send({error: error?.message || error},);
