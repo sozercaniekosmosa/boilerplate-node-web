@@ -1,129 +1,98 @@
-import Excel from "exceljs";
 import axios from "axios";
+import {exportToExcel} from "./export";
+import {fillDataToSheet} from "./dataHandling";
 
-// console.log(process.cwd())
-
-export function getListMerges(ws) {
-    const listMerges = {};
-
-    // @ts-ignore
-    const merges = Object.entries(ws._merges).map(([addr, {top, bottom, left, right}]) => ({
-        addr, top, bottom, left, right
-    }));
-
-    for (let i = 0; i < merges.length; i++) {
-        const {addr, top, bottom, left, right} = merges[i];
-        const cell = ws.getCell(addr);
-        const key = `${top}.${left}`;
-        listMerges[key] = {addr, x: left, y: top, h: bottom - top, w: right - left, left, right}
-        cell.value = (cell.value ?? '') + '|' + key;
-
-        ws.unMergeCells(addr);
-
-        for (let rowY = top; rowY <= bottom; rowY++) {
-            for (let colX = left; colX <= right; colX++) {
-                const c = ws.getCell(rowY, colX);
-                if (c.value === null) c.value = '*'
-            }
+// @ts-ignore
+const sheetData: TSheetData = {
+    name: "sheet2",
+    freeze: "A1",
+    styles: [{align: "center"}, {
+        border: {
+            bottom: ["thin", "#000"],
+            top: ["thin", "#000"],
+            left: ["thin", "#000"],
+            right: ["thin", "#000"]
         }
-    }
-    return listMerges;
+    }, {
+        align: "center",
+        border: {
+            bottom: ["thin", "#000"],
+            top: ["thin", "#000"],
+            left: ["thin", "#000"],
+            right: ["thin", "#000"]
+        }
+    }, {
+        border: {
+            bottom: ["thin", "#000"],
+            top: ["thin", "#000"],
+            left: ["thin", "#000"],
+            right: ["thin", "#000"]
+        }, font: {bold: true}
+    }],
+    merges: [],
+    rows: {
+        0: {
+            cells: {
+                0: {text: "1"},
+                1: {text: "2"},
+                2: {text: "3"},
+                3: {text: "4"},
+                4: {text: "5"},
+                5: {text: "6"},
+                6: {text: "7"},
+                7: {text: "8"},
+                8: {text: "9"},
+                9: {text: "10"},
+                10: {text: "11"},
+                11: {text: "12"},
+                12: {text: "13"},
+                13: {text: "14"},
+                14: {text: "15"},
+                15: {text: "16"},
+            }
+        },
+        1: {
+            cells: {
+                0: {text: "fn#list"},
+                1: {text: ""},
+                2: {text: ""},
+                3: {text: ""},
+                4: {text: ""},
+                5: {text: ""},
+                6: {text: ""},
+                7: {text: ""},
+                8: {text: ""},
+                9: {text: ""},
+                10: {text: ""},
+                11: {text: ""},
+                12: {text: ""},
+                13: {text: ""},
+                14: {text: ""},
+                15: {text: ""},
+                16: {text: ""},
+                17: {text: ""},
+            }
+        },
+        len: 100
+    },
+    cols: {len: 26},
+    validations: [],
+    autofilter: {}
 }
 
-function mergeApply(ws, listMerges) {
-    for (let rowY = 1; rowY <= ws.lastRow.number; rowY++) {
-        for (let colX = 1; colX <= ws.lastColumn.number; colX++) {
-            const cell = ws.getCell(rowY, colX);
-            const [val, key] = (cell.value + '')?.split('|')
-            if (key && !cell.isMerged) {
-                cell.value = val ?? '';
-                const {h, w} = listMerges[key];
-                let dim = [rowY, colX, rowY + h, colX + w];
-                ws.mergeCells(...dim);
-            }
-        }
-    }
-}
+export const reports = async (path, pathTemplate?) => {
 
-function fillValue(ws, data, offRowY, offColX) {
+    const fn = await import('./fn');
 
-    // функция получения мастер-ячеек (непрерывных) для заполнения
-    const getCellMaster = (rowY, offColX) => {
-        let arrCell = [];
-        for (let colX = offColX; colX <= ws.lastColumn.number; colX++) {
-            const cell = ws.getCell(rowY, colX)
-            if (cell.value !== '*') arrCell.push(cell); //если * - значит ячейка часть объедиенния и заполнять её ненадо
-        }
-        return arrCell;
-    }
-
-    if (!Array.isArray(data)) {
-        const arrCellMaster = getCellMaster(offRowY, offColX);
-        const cell = arrCellMaster[0];
-        const value = data;
-        const [val, key] = (cell.value + '')?.split('|')
-        cell.value = key ? value + '|' + key : value;
-    } else {
-
-        // готовим место под данные
-        ws.duplicateRow(offRowY, data.length - 1, true)
-
-        // проходим по данным [ [..., ...], [..., ...], [..., ...], ... ] 2x - мерный массив
-        for (let i = 0; i < data.length; i++) {
-            let rowY = i + offRowY;
-            const arrLine = data[i];
-            const arrCellMaster = getCellMaster(rowY, offColX);
-            if (arrLine.length > arrCellMaster.length) throw 'Разная ширина данных и таблицы'
-            for (let j = 0; j < arrLine.length; j++) {
-                const cell = arrCellMaster[j];
-                const value = arrLine[j];
-                const [_, key] = (cell.value + '')?.split('|')
-                cell.value = key ? value + '|' + key : value;
-            }
-        }
-    }
-}
-
-async function createReport(ws, clb) {
-
-    const listMerges = getListMerges(ws);
-
-    // обходим все ячейки поиск имен функций
-    for (let rowY = 1; rowY <= ws.lastRow.number; rowY++) {
-        for (let colX = 1; colX <= ws.lastColumn.number; colX++) {
-            const cell = ws.getCell(rowY, colX);
-            if (typeof cell.value === 'string' &&
-                (cell.value?.startsWith('srv#') || cell.value?.startsWith('fn#'))
-            ) {
-                const [val, _] = cell.value.split('|');
-                const data = await clb(val)
-                fillValue(ws, data, rowY, colX);
-            }
-        }
-    }
-
-    mergeApply(ws, listMerges);
-}
-
-export const createExcelReport = async (pathTemplate, pathOut) => {
-
-    const fn = await import('./fn')
-    const workbook = new Excel.Workbook();
-    await workbook.xlsx.readFile(pathTemplate);
-
-    let ws = workbook.getWorksheet(1);
-
-    await createReport(ws, async (cmdName) => {
-        if (!/^[a-zA-Z][a-zA-Z0-9]+#[a-zA-Z0-9_]+$/.test(cmdName)) throw 'команда не существует'
-
-        const [cmd, name] = cmdName.split('#');
+    const sd = await fillDataToSheet(sheetData, async (cmd: string, name: string) => {
+        let arrDataReceived: any[] | undefined;
         if (cmd === 'srv') {
-            const {data} = await axios.get(`http://localhost:${3001}/${name}`)
-            return data;
+            const {data} = await axios.get(`http://localhost:${3001}/${name}`);
+            arrDataReceived = data;
         } else if (cmd === 'fn') {
-            return await fn[name]();
+            arrDataReceived = await fn[name]();
         }
-    });
-
-    await workbook.xlsx.writeFile(pathOut);
+        return arrDataReceived;
+    })
+    await exportToExcel(sd, path);
 }
