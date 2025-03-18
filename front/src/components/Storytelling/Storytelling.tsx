@@ -103,7 +103,19 @@ const Control = ({book, setBook, param}) => {
                     setBook({...book})
                 }}/>
                 <Button style={stButton} className={"btn-secondary bi-plus-circle" + clButton} onClick={() => {
-                    list.arrChild.push({arrChild: [], data: {opt: SCENE, scene: null, sceneEntryText: '', sceneExitText: ''}, hide: false});
+                    list.arrChild.push({
+                        arrChild: [], data: {
+                            opt: SCENE, scene: null, sceneDesc: {
+                                pointOfView: '',
+                                location: '',
+                                detailsEnv: '',
+                                time: '',
+                                mood: '',
+                                sensores: '',
+                                symbols: '',
+                            }
+                        }, hide: false
+                    });
                     setBook({...book})
                 }}/>
                 <ButtonEx style={stButton} className="btn-danger btn-sm bi-x-lg flex-grow-0" description="Удалить" onConfirm={() => {

@@ -8,6 +8,14 @@ const Scene = ({book, setBook, param}) => {
     const {parent, list, index, child} = param;
     const opt = list.data.opt;
 
+    const DESC_PLACE = `
+    — Географическое расположение (город, природа, помещение).
+    — Конкретные детали (комната, улица, природный объект).
+    — Детали окружения (интерьер, пейзаж, архитектура).
+    — Социальная обстановка (богатый квартал, трущобы, замок).
+    — Климатические условия (погода, время года, освещение).
+    `
+
     return <>
         <div className="d-flex flex-row gap-1 mb-1">
             <Button style={stButton} className={`btn-secondary bi-${list.hide ? 'plus-' : ''}square` + clButton} onClick={() => {
@@ -36,11 +44,12 @@ const Scene = ({book, setBook, param}) => {
                 setBook({...book})
             }}/>
         </div>
-        <AutoResizeTextarea className="flex-stretch no-resize border rounded mb-1 p-2" value={list.data.sceneEntryText || ''}
-                            onChange={({target}) => (list.data.sceneEntryText = target.value, setBook({...book}))}/>
+
+        <AutoResizeTextarea className={'flex-stretch no-resize border rounded mb-1 p-2 ' + (list.data.sceneDesc.pointOfView.length ? '' : 'border-danger')}
+                            value={list.data.sceneDesc.pointOfView || ''}
+                            onChange={({target}) => (list.data.sceneDesc.pointOfView = target.value, setBook({...book}))} placeholder={DESC_PLACE}
+                            description="Место действия" style={{fontSize: '1em'}}/>
         {!list.hide && <div className="flex-column border rounded p-1 mb-1">{child}</div>}
-        <AutoResizeTextarea className="flex-stretch no-resize border rounded mb-1 p-2" value={list.data.sceneExitText || ''}
-                            onChange={({target}) => (list.data.sceneExitText = target.value, setBook({...book}))}/>
     </>
 };
 
