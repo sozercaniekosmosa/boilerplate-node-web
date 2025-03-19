@@ -1,5 +1,5 @@
 // @ts-ignore
-import Excel from "exceljs";
+import Excel, {Worksheet} from "exceljs";
 
 interface XSpreadsheetSheet {
     name: string;
@@ -32,7 +32,7 @@ async function convertExcelToXSpreadsheet(path: string): Promise<XSpreadsheetShe
 
     const sheets: XSpreadsheetSheet[] = [];
 
-    workbook.eachSheet((worksheet, sheetId) => {
+    workbook.eachSheet((worksheet: Worksheet, sheetId) => {
         const stylesMap = new Map<string, number>();
         const styles: any[] = [];
         const merges: string[] = [];
@@ -40,9 +40,11 @@ async function convertExcelToXSpreadsheet(path: string): Promise<XSpreadsheetShe
         let maxCol = 0;
 
         // Обработка объединенных ячеек
+        // @ts-ignore
         Object.entries(worksheet._merges).forEach(mergedRange => {
             // const {start, end} = mergedRange;
             // const mergeString = `${getCellAddress(start.row, start.col)}:${getCellAddress(end.row, end.col)}`;
+            // @ts-ignore
             merges.push(mergedRange[1].range);
         });
 
@@ -55,8 +57,18 @@ async function convertExcelToXSpreadsheet(path: string): Promise<XSpreadsheetShe
                 const colIndex = colNumber - 1;
                 maxCol = Math.max(maxCol, colIndex);
 
+                // Проверка на объединение
+                let merge: [number, number] | undefined;
+                // @ts-ignore
+                const _merges = worksheet._merges[cell.address]
+                if(!_merges && cell.isMerged) return;
+                if (_merges) {
+                    const {top, bottom, left, right} = _merges
+                    merge = [bottom - top, right - left];
+                }
+
                 // Получение текста ячейки
-                const text = cell.text;
+                const text = cell.value;
 
                 // Определение стиля
                 const cellStyle = getCellStyle(cell);
@@ -66,18 +78,6 @@ async function convertExcelToXSpreadsheet(path: string): Promise<XSpreadsheetShe
                     styles.push(cellStyle);
                 }
                 const styleIndex = stylesMap.get(styleKey)!;
-
-                // Проверка на объединение
-                let merge: [number, number] | undefined;
-                const isMerged = worksheet.isMerged(cell);
-                if (isMerged) {
-                    const mergedRange = worksheet.mergedCells.find(m => m.startRow === cell.row && m.startColumn === cell.column);
-                    if (mergedRange && mergedRange.startRow === cell.row && mergedRange.startColumn === cell.column) {
-                        const colsMerged = mergedRange.endColumn - mergedRange.startColumn;
-                        const rowsMerged = mergedRange.endRow - mergedRange.startRow;
-                        merge = [colsMerged, rowsMerged];
-                    }
-                }
 
                 cells[colIndex] = {
                     text,
@@ -124,28 +124,38 @@ async function convertExcelToXSpreadsheet(path: string): Promise<XSpreadsheetShe
 
 function getCellStyle(cell: Excel.Cell): any {
     const style: any = {};
-
     // Выравнивание
     if (cell.alignment?.horizontal) {
         style.align = cell.alignment.horizontal;
+    }
+    if (cell.alignment?.vertical) {
+        style.valign = cell.alignment.vertical;
+    }
+    if (cell.alignment?.wrapText) {
+        style.textwrap = cell.alignment?.wrapText;
     }
 
     // Границы
     const borderTypes = ['top', 'left', 'bottom', 'right'] as const;
     const borders: any = {};
     let hasBorders = false;
-    borderTypes.forEach(type => {
-        const border = cell.border[type];
-        if (border?.style && border.color) {
-            borders[type] = [border.style, border.color.argb];
-            hasBorders = true;
-        }
-    });
+    if (cell.border) {
+        borderTypes.forEach(type => {
+            if (cell.border[type]) {
+                const {style: borderStyle, color} = cell.border[type];
+                if (borderStyle) {
+                    borders[type] = [borderStyle, `#${color?.argb?.slice(2) || '000'}`];
+                    hasBorders = true;
+                }
+            }
+        });
+    }
     if (hasBorders) style.border = borders;
 
     // Шрифт
     if (cell.font) {
         const font: any = {};
+        if (cell.font.name) font.name = cell.font.name;
         if (cell.font.bold) font.bold = true;
         if (cell.font.italic) font.italic = true;
         if (cell.font.size) font.size = cell.font.size;

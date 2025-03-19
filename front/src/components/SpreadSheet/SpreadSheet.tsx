@@ -1,6 +1,7 @@
 import Spreadsheet from "x-data-spreadsheet"
 import {useEffect, useRef} from "react";
 import ruRU from "./ru-RU.ts"
+import sheetData from "./sheetData.ts";
 
 
 // [{
@@ -86,7 +87,7 @@ const SpreadSheet = () => {
                 len: 26,
                 width: 100,
                 indexWidth: 60,
-                minWidth: 60,
+                minWidth: 10,
             },
             style: {
                 bgcolor: '#ffffff',
@@ -104,44 +105,7 @@ const SpreadSheet = () => {
                 },
             },
         })
-        s.loadData([{
-            name: "sheet2",
-            freeze: "A1",
-            styles: [
-                {align: "center"},
-                {
-                    border: {
-                        bottom: ["thin", "#000"],
-                        top: ["thin", "#000"],
-                        left: ["thin", "#000"],
-                        right: ["thin", "#000"]
-                    }
-                }, {
-                    align: "center",
-                    border: {
-                        bottom: ["thin", "#000"],
-                        top: ["thin", "#000"],
-                        left: ["thin", "#000"],
-                        right: ["thin", "#000"]
-                    }
-                }, {
-                    border: {
-                        bottom: ["thin", "#000"],
-                        top: ["thin", "#000"],
-                        left: ["thin", "#000"],
-                        right: ["thin", "#000"]
-                    }, font: {bold: true}
-                }],
-            merges: ["A2:B2"],
-            rows: {
-                0: {cells: {0: {text: "1", style: 1}, 1: {text: "2", style: 3}}},
-                1: {cells: {0: {merge: [0, 1], text: "3", style: 2}, 1: {style: 0}}},
-                len: 100
-            },
-            cols: {len: 26},
-            "validations": [],
-            "autofilter": {}
-        }]) // load data
+        s.loadData(sheetData) // load data
         s.change(data => {
             // console.log(data);
         })

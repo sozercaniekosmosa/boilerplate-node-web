@@ -6,7 +6,9 @@ import {createWebServer} from "./lib/services/webServer/WebServer.js";
 import routerGeneral from "./lib/services/webServer/api-v1/general";
 import {reports} from "./lib/reports/reports";
 import convertExcelToXSpreadsheet from "./lib/reports/import";
-// import fn from "./lib/reports/fn";
+import {convertExcelToXData} from "./lib/reports/import2";
+// import {CalcDensity} from "../assemblyScript/build/debug";
+import sheetData from "../front/src/components/SpreadSheet/sheetData";
 
 // console.log(pg)
 
@@ -32,7 +34,7 @@ const {app} = createWebServer(3000, global.webDir, ({type, ws, arrActiveConnecti
 
 app.use('/api/v1', routerGeneral);
 
-console.log('OK')
+// console.log('OK')
 
 // const q1 = "Реши уравнение 2x-8=15";
 // console.log(chalk.yellow("User: ") + q1);
@@ -41,9 +43,13 @@ console.log('OK')
 //     process.stdout.write(chunk as string);
 // })
 
-// await reports('../tmp/tst.xlsx')
+await reports(sheetData, '../tmp/tst.xlsx')
 
-await convertExcelToXSpreadsheet('../tmp/SMCO.xlsx')
+// const sheet = await convertExcelToXSpreadsheet('../tmp/SMCO.xlsx')
+// console.log(JSON.stringify(sheet))
+
+// const sheets = await convertExcelToXData('../tmp/exp.xlsx');
+// console.log(sheets);
 
 // import pg from "pg";
 // const Client = pg.Client;
@@ -73,4 +79,4 @@ console.log('ok')
 //double measuredD - измеренная плотность
 //byte productType - тип продукта (0 - нефть, 1 - нефтепродукты)
 //export function CalcDensity(t: f64, p: f64, measuredT: f64, measuredP: f64, measuredD: f64, productType: u8): f64 {
-// console.log(CalcDensity(16.32, 1.28, 27.3, 2.45, 836.15, 0)); // Outputs: 11
+// console.log(CalcDensity(16.32, 1.28, 27.3, 2.45, 836.15, 0)); // Outputs: 843.3433420320645

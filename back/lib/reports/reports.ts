@@ -80,7 +80,7 @@ const sheetData: TSheetData = {
     autofilter: {}
 }
 
-export const reports = async (path, pathTemplate?) => {
+export const reports = async (sheetData, path, pathTemplate?) => {
 
     const fn = await import('./fn');
 

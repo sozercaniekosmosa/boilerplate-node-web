@@ -5,7 +5,10 @@ function transformDataToRow(arrData: any[], templateRow: TCells, colIndex: numbe
         let it = structuredClone(templateRow)
         const lenCol = arrData[i].length
         for (let j = 0; j < lenCol; j++) {
-            it[j + colIndex].text = arrData[i][j];
+            if (it[j + colIndex]?.text)
+                it[j + colIndex].text = arrData[i][j];
+            else
+                it[j + colIndex] = {text: arrData[i][j]};
         }
         arrRes.push(it);
     }
