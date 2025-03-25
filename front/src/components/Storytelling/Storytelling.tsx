@@ -1,10 +1,12 @@
-import {Button, ButtonGroup} from "react-bootstrap";
+import {Button, ButtonGroup, Tab, Tabs} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import ButtonEx from "../ButtonEx/ButtonEx.tsx";
 import NestedList from "./components/NestedList.tsx";
 import Select from "../Select/Select.tsx";
 import Scene from "./components/Scene.tsx";
+import TextBlock from "./components/TextBlock.tsx";
+import GenScene from "./components/GenScene.tsx";
 
 export const stButton = {width: '1.8em', height: '1.8em'}
 export const clButton = ' btn btn-sm flex-grow-0 d-flex justify-content-center align-items-center'
@@ -23,11 +25,11 @@ const ACTION = 'Действие';
 export const PARTS = {EMPTY, ROOT, INTRO, MID, END, CHAPTER, SCENE, CHARACTER, OBJECT, ACTION,};
 const arrControl = [EMPTY, CHARACTER, OBJECT, ACTION];
 
-let book = {
-    world: {},
-    palace: {},
-    character: {},
-    object: {},
+let BOOK = {
+    worlds: {},
+    scenes: {},
+    characters: {},
+    objects: {},
     content: {
         arrChild: [
             {
@@ -106,13 +108,7 @@ const Control = ({book, setBook, param}) => {
                     list.arrChild.push({
                         arrChild: [], data: {
                             opt: SCENE, scene: null, sceneDesc: {
-                                pointOfView: '',
-                                location: '',
-                                detailsEnv: '',
-                                time: '',
-                                mood: '',
-                                sensores: '',
-                                symbols: '',
+                                pointOfView: '', location: '', detailsEnv: '', time: '', mood: '', sensores: '', symbols: '',
                             }
                         }, hide: false
                     });
@@ -158,15 +154,23 @@ const Control = ({book, setBook, param}) => {
 
 const Storytelling: React.FC<any> = () => {
 
+    const [book, setBook] = useState(BOOK);
     const [content, setContent] = useState(book.content);
     // @ts-ignore
     window.content = content;
-    return <NestedList list={content} onInsert={param => {
-        const {parent, list, index, child} = param;
-        return <div className="d-flex flex-column m-1">
-            <Control book={content} setBook={setContent} param={param}/>
-        </div>
-    }}/>
+    return <Tabs defaultActiveKey="plan" className="mb-1">
+        <Tab eventKey="plan" title="План" style={{flex: 1}} className="h-100">
+            <NestedList list={content} onInsert={param => {
+                const {parent, list, index, child} = param;
+                return <div className="d-flex flex-column m-1">
+                    <Control book={content} setBook={setContent} param={param}/>
+                </div>
+            }}/>
+        </Tab>
+        <Tab eventKey="gen-scene" title="Сцена" style={{flex: 1}} className="h-100">
+            <GenScene book={book} setBook={setBook}/>
+        </Tab>
+    </Tabs>
 };
 
 export default Storytelling;

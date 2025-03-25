@@ -1,4 +1,4 @@
-import Excel from "exceljs";
+import Excel, {Worksheet} from "exceljs";
 
 const hexToArgb = (hex: string): string => {
     const cleanedHex = (hex?.replace('#', '') || '000000').replace(
@@ -60,38 +60,61 @@ const convertStyle = (style: TCellStyle): TExcelStyle => {
     return excelStyle;
 };
 
-export const exportToExcel = async (sheetData: TSheetData, pathOut: string) => {
-    const workbook = new Excel.Workbook();
-    const worksheet = workbook.addWorksheet('Sheet 1');
-    const arrMerge = [];
-
-    let arrRow = Object.entries(sheetData.rows || {});
-    for (let rowY = 0; rowY < arrRow.length; rowY++) {
-        const [rowIndex, row]: [string, TRow] = arrRow[rowY];
-        const rowNumber = parseInt(rowIndex) + 1;
-
-        let arrCol = Object.entries(row.cells || {});
-        for (let colX = 0; colX < arrCol.length; colX++) {
-            const [colIndex, cellData]: [string, TCellData] = arrCol[colX];
-            const cell = worksheet.getCell(rowNumber, parseInt(colIndex) + 1);
-            cell.value = cellData.text;
-
-            if (cellData.style !== undefined) {
-                const style = convertStyle(sheetData.styles[cellData.style]);
-                Object.assign(cell, {style});
-            }
-
-            if (cellData?.merge) {
-                let sr = rowNumber;
-                let sc = parseInt(colIndex) + 1;
-                let er = sr + cellData.merge[0];
-                let ec = sc + cellData.merge[1];
-                arrMerge.push([sr, sc, er, ec])
-            }
+/**
+ * задать ширину всем колонкам
+ * @param worksheet
+ * @param cols
+ */
+function fillWidthCols(worksheet: Worksheet, cols) {
+    const arrCol = Object.entries(cols)
+    for (let i = 0; i < arrCol.length; i++) {//задать ширину всем колонкам
+        const [colX, col] = arrCol[i];
+        if (col?.width) {
+            worksheet.getColumn(+colX).width = +col.width;
         }
     }
+}
 
-    arrMerge.forEach(([sr, sc, er, ec]) => worksheet.mergeCells(sr, sc, er, ec))
+export const exportToExcel = async (sheetData: TArraySheet, pathOut: string) => {
+    const workbook = new Excel.Workbook();
+
+    for (let i = 0; i < sheetData.length; i++) {
+        const {name, cols, rows, styles} = sheetData[i];
+        const worksheet = workbook.addWorksheet(name);
+
+        fillWidthCols(worksheet, cols);
+
+        const arrMerge = [];
+        let arrRow = Object.entries(rows || {});
+        for (let rowY = 0; rowY < arrRow.length; rowY++) {
+            const [rowIndex, row]: [string, TRow] = arrRow[rowY];
+            const rowNumber = parseInt(rowIndex) + 1;
+
+            if (row?.height) {
+                worksheet.getRow(rowNumber).height = row.height;
+            }
+
+            let arrCol = Object.entries(row.cells || {});
+            for (let colX = 0; colX < arrCol.length; colX++) {
+                const [colIndex, cellData]: [string, TCellData] = arrCol[colX];
+                const cell = worksheet.getCell(rowNumber, parseInt(colIndex) + 1);
+                cell.value = cellData.text;
+                if (cellData.style !== undefined) {
+                    const style = convertStyle(styles[cellData.style]);
+                    Object.assign(cell, {style});
+                }
+
+                if (cellData?.merge) {
+                    let sr = rowNumber;
+                    let sc = parseInt(colIndex) + 1;
+                    let er = sr + cellData.merge[0];
+                    let ec = sc + cellData.merge[1];
+                    arrMerge.push([sr, sc, er, ec])
+                }
+            }
+        }
+        arrMerge.forEach(([sr, sc, er, ec]) => worksheet.mergeCells(sr, sc, er, ec))
+    }
 
     await workbook.xlsx.writeFile(pathOut);
 };

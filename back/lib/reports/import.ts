@@ -15,12 +15,14 @@ interface XSpreadsheetSheet {
                     merge?: [number, number];
                 };
             };
+            height?: number;
         };
         len: number;
     };
     cols: { len: number };
     validations: any[];
     autofilter: {};
+    properties: {};
 }
 
 async function convertExcelToXSpreadsheet(path: string): Promise<XSpreadsheetSheet[]> {
@@ -39,11 +41,10 @@ async function convertExcelToXSpreadsheet(path: string): Promise<XSpreadsheetShe
         const rows: XSpreadsheetSheet['rows'] = {len: 0};
         let maxCol = 0;
 
+
         // Обработка объединенных ячеек
         // @ts-ignore
         Object.entries(worksheet._merges).forEach(mergedRange => {
-            // const {start, end} = mergedRange;
-            // const mergeString = `${getCellAddress(start.row, start.col)}:${getCellAddress(end.row, end.col)}`;
             // @ts-ignore
             merges.push(mergedRange[1].range);
         });
@@ -61,7 +62,7 @@ async function convertExcelToXSpreadsheet(path: string): Promise<XSpreadsheetShe
                 let merge: [number, number] | undefined;
                 // @ts-ignore
                 const _merges = worksheet._merges[cell.address]
-                if(!_merges && cell.isMerged) return;
+                if (!_merges && cell.isMerged) return;
                 if (_merges) {
                     const {top, bottom, left, right} = _merges
                     merge = [bottom - top, right - left];
@@ -87,6 +88,8 @@ async function convertExcelToXSpreadsheet(path: string): Promise<XSpreadsheetShe
             });
 
             rows[rowIndex] = {cells};
+            if (row?.height) rows[rowIndex].height = row.height;
+
             rows.len = Math.max(rows.len, rowIndex + 1);
         });
 
@@ -100,7 +103,16 @@ async function convertExcelToXSpreadsheet(path: string): Promise<XSpreadsheetShe
         }
 
         // Сбор информации о столбцах
-        const colsLen = maxCol + 1;
+        let cols = {
+            len: maxCol + 1 || 26 // Значение по умолчанию
+        };
+
+        const columnCount = worksheet.columnCount;
+        for (let colX = 1; colX <= columnCount; colX++) {
+            const column = worksheet.getColumn(colX);
+            cols[colX] = {width: column.width};
+        }
+
 
         sheets.push({
             name: worksheet.name,
@@ -111,11 +123,10 @@ async function convertExcelToXSpreadsheet(path: string): Promise<XSpreadsheetShe
                 ...rows,
                 len: rows.len || 100 // Значение по умолчанию
             },
-            cols: {
-                len: colsLen || 26 // Значение по умолчанию
-            },
+            cols,
             validations: [],
-            autofilter: {}
+            autofilter: {},
+            properties: worksheet.properties
         });
     });
 

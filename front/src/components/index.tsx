@@ -119,7 +119,7 @@ function Index() {
                                 break;
                         }
 
-                        console.log(name, data)
+                        // console.log(name, data)
                     }} className="border"/>
                 </Tab>
                 <Tab eventKey="code" title="code" style={{flex: 1, height: "inherit"}} className="">

@@ -67,19 +67,26 @@ interface TCells {
 
 interface TRow {
     cells: TCells;
+    height?: number;
 }
 
 interface TRows {
-    [key: number]: TRow;
+    [key: number]: TRow | {};
 
     len: number;
+}
+
+interface TColsParam {
+    height?: number;
 }
 
 interface TCols {
+    [key: number]: TColsParam;
+
     len: number;
 }
 
-interface TSheetData {
+interface TSheet {
     styles: Record<number, TCellStyle>;
     name: string;
     freeze: string;
@@ -89,3 +96,5 @@ interface TSheetData {
     validations: any[];
     autofilter: {};
 }
+
+type TArraySheet = [TSheet];

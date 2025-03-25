@@ -6,7 +6,7 @@ import {createWebServer} from "./lib/services/webServer/WebServer.js";
 import routerGeneral from "./lib/services/webServer/api-v1/general";
 import {reports} from "./lib/reports/reports";
 import convertExcelToXSpreadsheet from "./lib/reports/import";
-import {convertExcelToXData} from "./lib/reports/import2";
+// import {convertExcelToXData} from "./lib/reports/import2";
 // import {CalcDensity} from "../assemblyScript/build/debug";
 import sheetData from "../front/src/components/SpreadSheet/sheetData";
 
@@ -43,33 +43,16 @@ app.use('/api/v1', routerGeneral);
 //     process.stdout.write(chunk as string);
 // })
 
-await reports(sheetData, '../tmp/tst.xlsx')
 
 // const sheet = await convertExcelToXSpreadsheet('../tmp/SMCO.xlsx')
 // console.log(JSON.stringify(sheet))
 
+// @ts-ignore
+await reports(sheetData, '../tmp/tst.xlsx')
+
 // const sheets = await convertExcelToXData('../tmp/exp.xlsx');
 // console.log(sheets);
 
-// import pg from "pg";
-// const Client = pg.Client;
-// const client = new Client({
-//     host: '192.168.10.149', // Адрес сервера базы данных
-//     user: 'scadabd', // Имя пользователя
-//     password: 'Asutp05k.,jqAsutp05k.,jqA', // Пароль
-//     database: 'SIKN_XOLM', // Название базы данных
-//     port: 5432, // Порт (по умолчанию для PostgreSQL)
-// });
-//
-// await client.connect()
-//
-// const queryResult = await client.query(
-//     // `SELECT "reportDate", sumvol, summas, dens, densbik, temp, tempbik, press, pressbik FROM public."SIKNreports"`
-//     `SELECT "recordNumber", "recordDate", "reportDate", "reportType", volline1, masline1, volline2, masline2, volline3, masline3, sumvol, summas, dens, densbik, volday, masday, temp, tempbik, press, pressbik, ratebik, maswithoutwater, watervol, massnetto, "reportNumber" FROM public."SIKNreports"`
-// );
-// console.log(queryResult.rows);
-
-console.log('ok')
 
 //ПЕРЕСЧЕТ ПЛОТНОСТИ НЕФТИ И НЕФТЕПРОДУКТОВ ИЗ ОДНИХ ПАРАМЕТРОВ СРЕДЫ В ДРУГИЕ ПО Р 50.2.076-2010
 //double t - температура, к которой нужно пересчитать плотность

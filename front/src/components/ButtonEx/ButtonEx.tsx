@@ -15,6 +15,7 @@ function ButtonEx({
                       onConfirm = null,
                       title = null,
                       description = 'Добавьте текст...',
+                      text = ''
                   }) {
     const [_state, set_state] = useState(0)
     const [showAndDataEvent, setShowAndDataEvent] = useState<boolean | null | object>(false);
@@ -45,6 +46,7 @@ function ButtonEx({
                   style={{width: '1.7em', height: '1.7em', zIndex: '9999', position: 'absolute', color: 'black'}}
                   hidden={_state != 1}/>
             {hidden ? '' : children}
+            {hidden ? '' : text}
         </Button>
     }
         {onConfirm ?

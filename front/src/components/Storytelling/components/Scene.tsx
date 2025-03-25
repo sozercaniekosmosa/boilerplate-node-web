@@ -2,7 +2,7 @@ import React from "react";
 import {Button} from "react-bootstrap";
 import ButtonEx from "../../ButtonEx/ButtonEx.tsx";
 import {clButton, PARTS, stButton} from "../Storytelling.tsx";
-import AutoResizeTextarea from "./AutoResizeTextarea.tsx";
+import TextBlock from "./TextBlock.tsx";
 
 const Scene = ({book, setBook, param}) => {
     const {parent, list, index, child} = param;
@@ -45,10 +45,10 @@ const Scene = ({book, setBook, param}) => {
             }}/>
         </div>
 
-        <AutoResizeTextarea className={'flex-stretch no-resize border rounded mb-1 p-2 ' + (list.data.sceneDesc.pointOfView.length ? '' : 'border-danger')}
-                            value={list.data.sceneDesc.pointOfView || ''}
-                            onChange={({target}) => (list.data.sceneDesc.pointOfView = target.value, setBook({...book}))} placeholder={DESC_PLACE}
-                            description="Место действия" style={{fontSize: '1em'}}/>
+        <TextBlock className={'flex-stretch no-resize border rounded mb-1 p-2 ' + (list.data.sceneDesc.pointOfView.length ? '' : 'border-danger')}
+                   value={list.data.sceneDesc.pointOfView || ''}
+                   onChange={({target}) => (list.data.sceneDesc.pointOfView = target.value, setBook({...book}))} placeholder={DESC_PLACE}
+                   description="Место действия" style={{fontSize: '1em'}}/>
         {!list.hide && <div className="flex-column border rounded p-1 mb-1">{child}</div>}
     </>
 };
