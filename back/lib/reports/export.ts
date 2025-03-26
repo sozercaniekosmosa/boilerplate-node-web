@@ -69,7 +69,9 @@ function fillWidthCols(worksheet: Worksheet, cols) {
     const arrCol = Object.entries(cols)
     for (let i = 0; i < arrCol.length; i++) {//задать ширину всем колонкам
         const [colX, col] = arrCol[i];
+        // @ts-ignore
         if (col?.width) {
+            // @ts-ignore
             worksheet.getColumn(+colX).width = +col.width;
         }
     }

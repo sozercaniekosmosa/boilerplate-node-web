@@ -12,6 +12,7 @@ import sheetData from "../front/src/components/SpreadSheet/sheetData";
 
 // console.log(pg)
 
+// @ts-ignore
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 

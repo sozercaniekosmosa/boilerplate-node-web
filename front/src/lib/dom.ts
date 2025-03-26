@@ -23,7 +23,7 @@ export const createTable = (cols: number, rows: number, clb: (obj: {}) => void, 
     return table;
 }
 
-const getHtmlStr = (html: string) => {
+export const getHtmlStr = (html: string) => {
     const template = document.createElement('template'), content = template.content;
     template.innerHTML = html.trim(); // Never return a text node of whitespace as the result;
     return content.childNodes.length ? content.childNodes : [content.firstChild];

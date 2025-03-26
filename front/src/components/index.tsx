@@ -14,6 +14,8 @@ import {createGlobalStyle} from "styled-components";
 import SpreadSheet from "./SpreadSheet/SpreadSheet.tsx";
 import NestedList from "./Storytelling/Storytelling.tsx";
 import Storytelling from "./Storytelling/Storytelling.tsx";
+import sheetData from "./SpreadSheet/sheetData.ts";
+import Report from "./Report/Report.tsx";
 
 // import NestedList from "./Storytelling/Storytelling.tsx";
 
@@ -77,10 +79,14 @@ function Index() {
         <div className="d-flex flex-column h-100">
             <GlobalStyle/>
             {progress >= 0 && <ProgressBar progress={progress}/>}
-            <Tabs defaultActiveKey="excel" className="mb-1">
+            <Tabs defaultActiveKey="report" className="mb-1">
+
+                <Tab eventKey="report" title="report" style={{flex: 1}} className="h-100">
+                    <Report data={sheetData}/>
+                </Tab>
 
                 <Tab eventKey="excel" title="excel" style={{flex: 1}} className="h-100">
-                    <SpreadSheet/>
+                    <SpreadSheet data={sheetData}/>
                 </Tab>
 
                 <Tab eventKey="story" title="story" style={{flex: 1}} className="h-100">

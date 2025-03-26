@@ -14,7 +14,22 @@ function fillWidthToColumns(arrData) {
     })
 }
 
-const SpreadSheet = ({data}) => {
+function openFileDialog(acceptTypes) {
+    const inputElement = document.createElement('input');
+    inputElement.type = 'file';
+    inputElement.accept = acceptTypes; // Указываем допустимые типы файлов
+    inputElement.style.display = 'none';
+    document.body.appendChild(inputElement);
+    inputElement.click();
+    inputElement.onchange = (e) => {
+        // @ts-ignore
+        const files = e.target.files;
+        console.log(files); // Обрабатываем выбранные файлы
+        document.body.removeChild(inputElement);
+    };
+}
+
+const Report = ({data}) => {
     const refNodeSheet = useRef()
 
     const [doc, setDoc] = useState(data)
@@ -74,6 +89,36 @@ const SpreadSheet = ({data}) => {
             console.log(s.cellStyle(ri, ci))
         });
 
+
+        setTimeout(() => {
+
+            //language=html
+            const btnOpen = getHtmlStr(`
+                <div class="x-spreadsheet-toolbar-btn" data-tooltip="Загрузить шаблон">
+                    <div class="bi-folder2-open"></div>
+                </div>
+            `);
+            const btnSave = getHtmlStr(`
+                <div class="x-spreadsheet-toolbar-btn" data-tooltip="Загрузить шаблон">
+                    <div class="bi-floppy2-fill"></div>
+                </div>
+            `);
+
+            btnOpen[0].addEventListener('click', (e) => {
+                openFileDialog('xlsx')
+                console.log(e)
+            });
+            btnSave[0].addEventListener('click', (e) => {
+                console.log(e)
+            });
+
+            // @ts-ignore
+            refNodeSheet.current.querySelector('.x-spreadsheet-toolbar-btns').prepend(btnSave[0]);
+            // @ts-ignore
+            refNodeSheet.current.querySelector('.x-spreadsheet-toolbar-btns').prepend(btnOpen[0]);
+
+        }, 100)
+
         // cell(ri, ci, sheetIndex = 0)
         // s.cell(ri, ci);
         // cellStyle(ri, ci, sheetIndex = 0)
@@ -99,4 +144,4 @@ const SpreadSheet = ({data}) => {
     return <div ref={refNodeSheet}/>;
 }
 
-export default SpreadSheet;
+export default Report;

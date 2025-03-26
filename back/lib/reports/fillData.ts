@@ -2,20 +2,26 @@
  * Заполнить ячейки данными (по шаблону строки)
  * @param arrData
  * @param templateRow
- * @param colIndex
+ * @param colXOff
  */
-function fillDataToRowsByTemplate(arrData: any[], templateRow: TRow, colIndex: number): TRow[] {
+function fillDataToRowsByTemplate(arrData: any[], templateRow: TRow, colXOff: number): TRow[] {
+    // console.log(arrData)
     const arrRes = [];
     const len = arrData.length;
     for (let i = 0; i < len; i++) {
         let row = structuredClone(templateRow)
         let it = row.cells;
         const lenCol = arrData[i].length
-        for (let j = 0; j < lenCol; j++) {
-            if (it[j + colIndex]?.text) //если есть текст заполняем как текст
-                it[j + colIndex].text = arrData[i][j];
+        for (let j = 0, colX = 0; j < lenCol; j++, colX++) {
+            let off = colX + colXOff;
+            if (it[off]?.text) //если есть текст заполняем как текст
+                it[off].text = arrData[i][j];
             else
-                it[j + colIndex] = {text: arrData[i][j]};
+                it[off] = {text: arrData[i][j]};
+
+            if (it[off]?.merge) { //если есть merge-пропускаем не функциональные
+                colX += it[off].merge[1];
+            }
         }
         arrRes.push(row);
     }
