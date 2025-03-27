@@ -15,7 +15,7 @@ import SpreadSheet from "./SpreadSheet/SpreadSheet.tsx";
 import NestedList from "./Storytelling/Storytelling.tsx";
 import Storytelling from "./Storytelling/Storytelling.tsx";
 import sheetData from "./SpreadSheet/sheetData.ts";
-import Report from "./Report/Report.tsx";
+import Reports from "./Reports/Reports.tsx";
 
 // import NestedList from "./Storytelling/Storytelling.tsx";
 
@@ -82,7 +82,7 @@ function Index() {
             <Tabs defaultActiveKey="report" className="mb-1">
 
                 <Tab eventKey="report" title="report" style={{flex: 1}} className="h-100">
-                    <Report data={sheetData}/>
+                    <Reports data={sheetData}/>
                 </Tab>
 
                 <Tab eventKey="excel" title="excel" style={{flex: 1}} className="h-100">

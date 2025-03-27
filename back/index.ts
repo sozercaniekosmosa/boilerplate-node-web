@@ -27,7 +27,7 @@ const port = +process.env.PORT || +PORT;
 global.root = __dirname;
 global.port = port
 global.webDir = path.join(__dirname, WEB_DIR);
-global.db = new noSQL('..\\db\\db.json');
+global.db = new noSQL('..\\data\\db.json');
 
 const {app} = createWebServer(3000, global.webDir, ({type, ws, arrActiveConnection, mess, host}) => {
     // console.log('ws:', type, ws, arrActiveConnection, mess, host)
@@ -45,8 +45,8 @@ app.use('/api/v1', routerGeneral);
 // })
 
 
-// const sheet = await convertExcelToXSpreadsheet('../tmp/SMCO.xlsx')
-// console.log(JSON.stringify(sheet))
+const sheet = await convertExcelToXSpreadsheet({path: '../tmp/SMCO.xlsx'})
+console.log(JSON.stringify(sheet))
 
 // @ts-ignore
 await reports(sheetData, '../tmp/tst.xlsx')

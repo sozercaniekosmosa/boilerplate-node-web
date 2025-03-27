@@ -1,8 +1,8 @@
 import Spreadsheet from "x-data-spreadsheet"
-import {createElement, useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import ruRU from "./ru-RU.ts"
-import sheetData from "./sheetData.ts";
 import {getHtmlStr} from "../../lib/dom.ts";
+import convertExcelToXSpreadsheet from "./import.ts";
 
 
 function fillWidthToColumns(arrData) {
@@ -14,22 +14,44 @@ function fillWidthToColumns(arrData) {
     })
 }
 
-function openFileDialog(acceptTypes) {
-    const inputElement = document.createElement('input');
-    inputElement.type = 'file';
-    inputElement.accept = acceptTypes; // Указываем допустимые типы файлов
-    inputElement.style.display = 'none';
-    document.body.appendChild(inputElement);
-    inputElement.click();
-    inputElement.onchange = (e) => {
-        // @ts-ignore
-        const files = e.target.files;
-        console.log(files); // Обрабатываем выбранные файлы
-        document.body.removeChild(inputElement);
-    };
-}
+/**
+ * Открывает диалоговое окно для выбора файла.
+ * @param {string} acceptTypes - строка с типами через [,] определяющих допустимые типы файлов (например, '.pdf').
+ * @returns {Promise<File>} - Промис, который разрешается выбранным файлом.
+ */
+const openFileDialog = async (acceptTypes: string): Promise<ArrayBuffer> => new Promise((resolve, reject) => {
+    // Создаем элемент <input type="file">
+    const input = document.createElement('input');
+    input.type = 'file';
 
-const Report = ({data}) => {
+    // Устанавливаем допустимые типы файлов
+    input.accept = acceptTypes; // Указываем допустимые типы файлов
+
+    // Обработчик выбора файла
+    input.onchange = () => {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const arrayBuffer = event.target.result;
+                resolve(arrayBuffer as ArrayBuffer); // Разрешаем промис выбранным файлом
+            };
+            reader.readAsArrayBuffer(file);
+        } else {
+            reject(new Error('Файл не выбран'));
+        }
+    };
+
+    // Обработчик ошибок
+    input.onerror = () => {
+        reject(new Error('Произошла ошибка при выборе файла'));
+    };
+
+    // Открываем диалоговое окно
+    input.click();
+});
+
+const Reports = ({data}) => {
     const refNodeSheet = useRef()
 
     const [doc, setDoc] = useState(data)
@@ -104,9 +126,11 @@ const Report = ({data}) => {
                 </div>
             `);
 
-            btnOpen[0].addEventListener('click', (e) => {
-                openFileDialog('xlsx')
-                console.log(e)
+            btnOpen[0].addEventListener('click', async (e) => {
+                const arrayBuffer = await openFileDialog('xlsx');
+                const sheet = await convertExcelToXSpreadsheet({arrayBuffer});
+                s.loadData(fillWidthToColumns(sheet));
+
             });
             btnSave[0].addEventListener('click', (e) => {
                 console.log(e)
@@ -144,4 +168,4 @@ const Report = ({data}) => {
     return <div ref={refNodeSheet}/>;
 }
 
-export default Report;
+export default Reports;
