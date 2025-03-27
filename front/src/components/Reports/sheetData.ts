@@ -10,7 +10,12 @@ export default [
                 "align": "center",
                 "valign": "middle",
                 "textwrap": true,
-                "border": {"top": ["thin", "#000"], "left": ["thin", "#000"], "bottom": ["thin", "#000"], "right": ["thin", "#000"]},
+                "border": {
+                    "top": ["thin", "#000"],
+                    "left": ["thin", "#000"],
+                    "bottom": ["thin", "#000"],
+                    "right": ["thin", "#000"]
+                },
                 "font": {"name": "Calibri", "size": 11}
             }, {
                 "align": "center",
@@ -27,7 +32,12 @@ export default [
             }, {
                 "align": "center",
                 "valign": "middle",
-                "border": {"top": ["thin", "#000"], "left": ["thin", "#000"], "bottom": ["thin", "#000"], "right": ["thin", "#000"]},
+                "border": {
+                    "top": ["thin", "#000"],
+                    "left": ["thin", "#000"],
+                    "bottom": ["thin", "#000"],
+                    "right": ["thin", "#000"]
+                },
                 "font": {"name": "Calibri", "size": 11}
             }, {
                 "align": "center",
@@ -49,14 +59,26 @@ export default [
             "0": {"cells": {"0": {"text": "ДНС-1 с УПСВ Холмогорского м/р", "style": 0, "merge": [0, 17]}}},
             "1": {"cells": {"0": {"text": "АО \"Газпромнефть-Ноябрьскнефтегаз\"", "style": 1, "merge": [0, 17]}}},
             "2": {"cells": {"0": {"text": "ЖУРНАЛ", "style": 1, "merge": [0, 17]}}},
-            "3": {"cells": {"0": {"text": "регистрации показаний средств измерений СИКН", "style": 1, "merge": [0, 17]}}},
+            "3": {
+                "cells": {
+                    "0": {
+                        "text": "регистрации показаний средств измерений СИКН",
+                        "style": 1,
+                        "merge": [0, 17]
+                    }
+                }
+            },
             "4": {"cells": {"7": {"text": "за", "style": 2}}},
             "5": {
                 "cells": {
                     "0": {"text": "№ п/п", "style": 3, "merge": [2, 0]},
                     "1": {"text": "Дата", "style": 3, "merge": [2, 0]},
                     "2": {"text": "Время, ч., мин.", "style": 3, "merge": [0, 1]},
-                    "4": {"text": "Результаты измерений объема и массы нефти (показания СОИ или вторичных ПР)", "style": 4, "merge": [0, 4]},
+                    "4": {
+                        "text": "Результаты измерений объема и массы нефти (показания СОИ или вторичных ПР)",
+                        "style": 4,
+                        "merge": [0, 4]
+                    },
                     "9": {"text": "Количество нефти", "style": 3, "merge": [0, 1]},
                     "11": {"text": "Средняя температура нефти за интервал, °С", "style": 3, "merge": [1, 1]},
                     "13": {"text": "Среднее давление нефти за интервал, Мпа", "style": 5, "merge": [1, 2]},
@@ -185,11 +207,12 @@ export default [
             "len": 20
         },
         "cols": {
-            "1": {"width": 5.7109375},
+            "0": {"width": 5.7109375},
+            "1": {"width": 11},
             "2": {"width": 11},
             "3": {"width": 11},
-            "4": {"width": 11},
-            "5": {"width": 2.28515625},
+            "4": {"width": 2.28515625},
+            "5": {"width": 11},
             "6": {"width": 11},
             "7": {"width": 11},
             "8": {"width": 11},
@@ -197,12 +220,11 @@ export default [
             "10": {"width": 11},
             "11": {"width": 11},
             "12": {"width": 11},
-            "13": {"width": 11},
-            "14": {"width": 3.140625},
+            "13": {"width": 3.140625},
+            "14": {"width": 11},
             "15": {"width": 11},
             "16": {"width": 11},
             "17": {"width": 11},
-            "18": {"width": 11},
             "len": 18
         },
         "validations": [],
@@ -212,7 +234,12 @@ export default [
         "name": "Лист2",
         "freeze": "A1",
         "styles": [{
-            "border": {"top": ["thin", "#000"], "left": ["thin", "#000"], "bottom": ["thin", "#000"], "right": ["thin", "#000"]},
+            "border": {
+                "top": ["thin", "#000"],
+                "left": ["thin", "#000"],
+                "bottom": ["thin", "#000"],
+                "right": ["thin", "#000"]
+            },
             "font": {"name": "Calibri", "size": 11}
         }],
         "merges": [],

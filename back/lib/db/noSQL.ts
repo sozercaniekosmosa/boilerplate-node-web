@@ -7,7 +7,31 @@ import root from 'app-root-path'
 const pathRoot = root.path;
 const pathResolveRoot = (path) => path.startsWith('.') ? resolve(pathRoot, ...path.split(/\\|\//)) : path;
 
-export class noSQL {
+interface TNoSQL {
+    getByID: (id) => any;
+
+    add(id, data): any;
+
+    free(): void;
+
+    del(id): any;
+
+    /**
+     * Update a news item by ID
+     * @param props may be object of [object] !!!must have id-prop
+     */
+    update(props): void;
+
+    getAll(clbFilter): any[] | object;
+}
+
+interface TUpdate {
+    id: string;
+
+    [key: string]: any;
+}
+
+export class noSQL implements TNoSQL {
 
     #__id = 0;
     #base64Language = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -65,14 +89,14 @@ export class noSQL {
 
     /**
      * Update a news item by ID
-     * @param props may be object of [object] !!!must have id-prop
+     * @param _props may be object of [object] !!!must have id-prop
      */
-    update(props) {
+    update(props: TUpdate) {
+        let _props: any = props;
+        if (!Array.isArray(_props)) _props = [_props];
 
-        if (!Array.isArray(props)) props = [props];
-
-        for (let i = 0; i < props.length; i++) {
-            const uf = props[i];
+        for (let i = 0; i < _props.length; i++) {
+            const uf = _props[i];
             const data = this.db[uf.id] ?? {};
             if (!data) throw new Error(`News with ID ${uf.id} not found.`);
 

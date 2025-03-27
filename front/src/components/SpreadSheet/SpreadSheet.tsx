@@ -1,8 +1,8 @@
 import Spreadsheet from "x-data-spreadsheet"
-import {createElement, useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import ruRU from "./ru-RU.ts"
-import sheetData from "./sheetData.ts";
 import {getHtmlStr} from "../../lib/dom.ts";
+import convertExcelToXSpreadsheet from "./import.ts";
 
 
 function fillWidthToColumns(arrData) {
@@ -14,15 +14,51 @@ function fillWidthToColumns(arrData) {
     })
 }
 
-const SpreadSheet = ({data}) => {
+/**
+ * Открывает диалоговое окно для выбора файла.
+ * @param {string} acceptTypes - строка с типами через [,] определяющих допустимые типы файлов (например, '.pdf').
+ * @returns {Promise<File>} - Промис, который разрешается выбранным файлом.
+ */
+const openFileDialog = async (acceptTypes: string): Promise<ArrayBuffer> => new Promise((resolve, reject) => {
+    // Создаем элемент <input type="file">
+    const input = document.createElement('input');
+    input.type = 'file';
+
+    // Устанавливаем допустимые типы файлов
+    input.accept = acceptTypes; // Указываем допустимые типы файлов
+
+    // Обработчик выбора файла
+    input.onchange = () => {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const arrayBuffer = event.target.result;
+                resolve(arrayBuffer as ArrayBuffer); // Разрешаем промис выбранным файлом
+            };
+            reader.readAsArrayBuffer(file);
+        } else {
+            reject(new Error('Файл не выбран'));
+        }
+    };
+
+    // Обработчик ошибок
+    input.onerror = () => {
+        reject(new Error('Произошла ошибка при выборе файла'));
+    };
+
+    // Открываем диалоговое окно
+    input.click();
+});
+
+const SpreadSheet = ({data, setData}) => {
     const refNodeSheet = useRef()
 
-    const [doc, setDoc] = useState(data)
+    const [spreadsheet, setSpreadsheet] = useState<Spreadsheet>()
 
     useEffect(() => {
-        Spreadsheet.locale('ru-RU', ruRU);
 
-        setDoc(fillWidthToColumns(doc));
+        Spreadsheet.locale('ru-RU', ruRU);
 
         const s = new Spreadsheet(refNodeSheet.current, {
             mode: 'edit', // edit | read
@@ -60,9 +96,12 @@ const SpreadSheet = ({data}) => {
                 },
             },
         })
+
+        setSpreadsheet(s); // необходимо привязать компонент к React-состоянию что бы иметь к нему доступ позже
+        const doc = fillWidthToColumns(data);
         s.loadData(doc) // load data
         s.change(data => {
-            // console.log(data);
+            console.log(data);
         })
         s.on('cell-selected', (cell, ri, ci) => {
         });
@@ -73,6 +112,36 @@ const SpreadSheet = ({data}) => {
             // @ts-ignore
             console.log(s.cellStyle(ri, ci))
         });
+
+
+        setTimeout(() => {
+            //language=html
+            const btnOpen = getHtmlStr(`
+                <div class="x-spreadsheet-toolbar-btn" data-tooltip="Загрузить шаблон">
+                    <div class="bi-folder2-open"></div>
+                </div>
+            `);
+            const btnSave = getHtmlStr(`
+                <div class="x-spreadsheet-toolbar-btn" data-tooltip="Загрузить шаблон">
+                    <div class="bi-floppy2-fill"></div>
+                </div>
+            `);
+
+            btnOpen[0].addEventListener('click', async (e) => {
+                const arrayBuffer = await openFileDialog('xlsx');
+                const sheet = await convertExcelToXSpreadsheet({arrayBuffer});
+                setData(sheet);
+            });
+            btnSave[0].addEventListener('click', (e) => {
+                console.log(e)
+            });
+
+            // @ts-ignore
+            refNodeSheet.current.querySelector('.x-spreadsheet-toolbar-btns').prepend(btnSave[0]);
+            // @ts-ignore
+            refNodeSheet.current.querySelector('.x-spreadsheet-toolbar-btns').prepend(btnOpen[0]);
+
+        }, 100)
 
         // cell(ri, ci, sheetIndex = 0)
         // s.cell(ri, ci);
@@ -95,6 +164,12 @@ const SpreadSheet = ({data}) => {
             // XLSX.writeFile(xtos(s.getData()), "SheetJS.xlsx");
         };
     }, []);
+
+    useEffect(() => {
+        if (!spreadsheet) return;
+        const doc = fillWidthToColumns(data);
+        spreadsheet.loadData(doc) // load data
+    }, [data]);
 
     return <div ref={refNodeSheet}/>;
 }

@@ -29,7 +29,7 @@ export const list = async () => {
             // `SELECT "reportDate", sumvol, summas, dens, densbik, temp, tempbik, press, pressbik FROM public."SIKNreports"`
             `SELECT "recordNumber", "recordDate", "reportDate", "reportType", volline1, masline1, volline2, masline2, volline3, masline3, sumvol, summas, dens, densbik, volday, masday, temp, tempbik, press, pressbik, ratebik, maswithoutwater, watervol, massnetto, "reportNumber" FROM public."SIKNreports"`
         );
-        console.log(queryResult.rows);
+        // console.log(queryResult.rows);
         const arr = queryResult.rows;
         await client.end();
 

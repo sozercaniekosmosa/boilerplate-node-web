@@ -3,16 +3,8 @@ import {useEffect, useRef, useState} from "react";
 import ruRU from "./ru-RU.ts"
 import {getHtmlStr} from "../../lib/dom.ts";
 import convertExcelToXSpreadsheet from "./import.ts";
+import {getHashCyrb53Arr} from "../../lib/utils.ts";
 
-
-function fillWidthToColumns(arrData) {
-    // @ts-ignore
-    return arrData.map(data => { //приведение ширины столбцов
-        // @ts-ignore
-        data.cols = Object.fromEntries(Object.entries(data.cols).map(([key, val]) => key != 'len' ? [key - 1, {width: val.width * 7}] : [key, val]))
-        return data;
-    })
-}
 
 /**
  * Открывает диалоговое окно для выбора файла.
@@ -51,15 +43,49 @@ const openFileDialog = async (acceptTypes: string): Promise<ArrayBuffer> => new 
     input.click();
 });
 
-const Reports = ({data}) => {
+let ver = 0;
+let properties = [];
+
+function addProperties(sheet: Record<string, any>) {
+    return sheet.map((it, i) => {
+        it.properties = properties[i];
+        if (i == 0) {
+            ver = Date.now();
+            it.properties.ver = ver
+        }
+        return it;
+    })
+}
+
+function fillWidthToColumns(arrData, kWidth = 7) {
+    // @ts-ignore
+    if (arrData[0].properties?.ver) return arrData;
+    const res = arrData.map((data, i) => { //приведение ширины столбцов
+        // @ts-ignore
+        data.cols = Object.fromEntries(Object.entries(data.cols).map(([key, val]) => key != 'len' ? [key - 1, {width: val.width * kWidth}] : [key, val]))
+        return data;
+    })
+    res[0].properties.ver = Date.now();
+    return res;
+}
+
+const Reports = ({data, setData}) => {
+
+    const [spreadsheet, setSpreadsheet] = useState<Spreadsheet>()
     const refNodeSheet = useRef()
 
-    const [doc, setDoc] = useState(data)
+    useEffect(() => {
+        if (!spreadsheet) return;
+        const doc = fillWidthToColumns(data, 7);
+        properties = doc.map(it => it.properties);
+        if (doc?.[0] && doc[0]?.properties && doc[0].properties?.ver && doc[0].properties.ver == ver) return;
+        spreadsheet.loadData(doc) // load data
+        ver = doc[0].properties.ver;
+    }, [data]);
 
     useEffect(() => {
-        Spreadsheet.locale('ru-RU', ruRU);
 
-        setDoc(fillWidthToColumns(doc));
+        Spreadsheet.locale('ru-RU', ruRU);
 
         const s = new Spreadsheet(refNodeSheet.current, {
             mode: 'edit', // edit | read
@@ -97,23 +123,25 @@ const Reports = ({data}) => {
                 },
             },
         })
-        s.loadData(doc) // load data
+
+        setSpreadsheet(s); // необходимо привязать компонент к React-состоянию что бы иметь к нему доступ позже
+        // s.loadData(data) // load data
         s.change(data => {
-            // console.log(data);
+            console.log(data);
         })
         s.on('cell-selected', (cell, ri, ci) => {
+            console.log(cell)
         });
         s.on('cells-selected', (cell, {sri, sci, eri, eci}) => {
+            console.log(cell)
         });
         s.on('cell-edited', (text, ri, ci) => {
-
             // @ts-ignore
             console.log(s.cellStyle(ri, ci))
         });
 
 
         setTimeout(() => {
-
             //language=html
             const btnOpen = getHtmlStr(`
                 <div class="x-spreadsheet-toolbar-btn" data-tooltip="Загрузить шаблон">
@@ -128,12 +156,14 @@ const Reports = ({data}) => {
 
             btnOpen[0].addEventListener('click', async (e) => {
                 const arrayBuffer = await openFileDialog('xlsx');
-                const sheet = await convertExcelToXSpreadsheet({arrayBuffer});
-                s.loadData(fillWidthToColumns(sheet));
-
+                let sheet = await convertExcelToXSpreadsheet({arrayBuffer});
+                sheet = fillWidthToColumns(sheet, 7);
+                setData(sheet);
             });
             btnSave[0].addEventListener('click', (e) => {
-                console.log(e)
+                let sheet = s.getData();
+                sheet = addProperties(sheet);
+                setData(sheet);
             });
 
             // @ts-ignore

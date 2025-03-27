@@ -16,15 +16,38 @@ import NestedList from "./Storytelling/Storytelling.tsx";
 import Storytelling from "./Storytelling/Storytelling.tsx";
 import sheetData from "./SpreadSheet/sheetData.ts";
 import Reports from "./Reports/Reports.tsx";
+import axios from "axios";
+
+const GlobalStyle = createGlobalStyle`
+    .tab-content {
+        height: 100%;
+    }
+`
 
 // import NestedList from "./Storytelling/Storytelling.tsx";
+let hostAPI = 'http://localhost:5173/api/v1/';
 
 function Index() {
     const [progress, setProgress] = useState(0)
     const [arrData, setArrData] = useState(['Элемент — 1', 'Элемент — 2', 'Элемент — 3'])
     const [newNode, setNewNode] = useState(null)
+    const [doc, setDoc] = useState()
 
     useEffect(() => {
+        if (!doc) return;
+        console.log(doc)
+        axios.post(hostAPI + 'store', {doc})
+    }, [doc])
+
+
+    useEffect(() => {
+
+        axios.get(hostAPI + 'doc').then(data => {
+            // debugger
+            // @ts-ignore
+            setDoc(data.data.doc)
+        })
+
         const socketHandler = ({type, data}) => {
             if (type === 'progress') setProgress(data)
         };
@@ -46,15 +69,9 @@ function Index() {
     let code = `
         function changeLang({target}) {
             lang = target.value;
-            setUpdate(Date.now())
+            // setUpdate(Date.now())
             onChange(name, {code, lang, theme})
         }`;
-
-    const GlobalStyle = createGlobalStyle`
-        .tab-content {
-            height: 100%;
-        }
-    `
 
 
     async function readExcel(e) {
@@ -82,11 +99,11 @@ function Index() {
             <Tabs defaultActiveKey="report" className="mb-1">
 
                 <Tab eventKey="report" title="report" style={{flex: 1}} className="h-100">
-                    <Reports data={sheetData}/>
+                    <Reports data={doc} setData={setDoc}/>
                 </Tab>
 
                 <Tab eventKey="excel" title="excel" style={{flex: 1}} className="h-100">
-                    <SpreadSheet data={sheetData}/>
+                    {/*<SpreadSheet data={doc} setData={setDoc}/>*/}
                 </Tab>
 
                 <Tab eventKey="story" title="story" style={{flex: 1}} className="h-100">

@@ -2,8 +2,38 @@ import express from "express";
 import path from "path";
 import bodyParser from "body-parser";
 import {WEBSocket} from "./WebSocket";
+import * as core from "express-serve-static-core";
 
-export function createWebServer(port, webDir?, clbWebSocket?): { app: any, ws: any } | null {
+interface TCallbackWSConnection {
+    type: string,
+    ws: WEBSocket,
+    arrActiveConnection: any[]
+}
+
+interface TCallbackWSMessage {
+    type: string,
+    ws: WEBSocket,
+    arrActiveConnection: any[],
+    mess?: any,
+    host?: string
+}
+
+interface TCallbackWSClose {
+    type: string,
+    ws: WEBSocket,
+    arrActiveConnection: any[],
+}
+
+export type TCallbackWS = TCallbackWSConnection | TCallbackWSMessage | TCallbackWSClose;
+
+interface TWebServerParam {
+    port: number,
+    webDir?: string,
+    clbRouter?: (app: core.Express) => void,
+    clbWebSocket?: (clb: TCallbackWS) => void
+}
+
+export function createWebServer({port, webDir, clbRouter, clbWebSocket}: TWebServerParam): any {
     const app = express();
 
     webDir && app.use(express.static(webDir)); // путь к web-страницам
@@ -13,6 +43,8 @@ export function createWebServer(port, webDir?, clbWebSocket?): { app: any, ws: a
     app.use(bodyParser.raw());
     app.use(bodyParser.text({limit: '50mb'}));
 // app.use(express.raw({ type: 'application/octet-stream' }));
+
+    clbRouter && clbRouter(app)
 
     console.log(port)
     const webServ = app.listen(port, () => {
@@ -43,7 +75,7 @@ export function createWebServer(port, webDir?, clbWebSocket?): { app: any, ws: a
     global["WARN"] = (mess) => ws.send({type: 'popup-message-warn', data: mess});
     global["OK"] = (mess) => ws.send({type: 'popup-message-ok', data: mess});
 
-    return {app, ws}
+    return ws
 }
 
 //пример использования
