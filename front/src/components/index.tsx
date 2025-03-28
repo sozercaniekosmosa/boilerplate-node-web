@@ -4,7 +4,6 @@ import ProgressBar from './ProgressBar/ProgressBar';
 import {ERR, LOG, OK, PopupMessage, WARN} from "./PopupMessage/PopupMessage.tsx";
 import {eventBus} from "../lib/events.ts";
 import DropFile from "./DropFile/DropFile.tsx";
-import SimpleTable from "./SimpleTable/SimpleTable.tsx";
 import {Button, Tab, Tabs} from "react-bootstrap";
 import ButtonEx from "./ButtonEx/ButtonEx.tsx";
 import DraggableList from "./DraggableList/DraggableList.tsx";
@@ -17,6 +16,7 @@ import Storytelling from "./Storytelling/Storytelling.tsx";
 import sheetData from "./SpreadSheet/sheetData.ts";
 import Reports from "./Reports/Reports.tsx";
 import axios from "axios";
+import SimpleTable from "./Sheets/SimpleTable/SimpleTable.tsx";
 
 const GlobalStyle = createGlobalStyle`
     .tab-content {
