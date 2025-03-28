@@ -3,6 +3,7 @@ import express from "express";
 import axios from "axios";
 import {isAllowHostPort} from "../../webUtils";
 import {removeFile, saveTextToFile} from "../../../filesystem";
+import glob from "../../../../../front/src/glob";
 
 const routerGeneral = express.Router();
 
@@ -39,7 +40,8 @@ routerGeneral.get('/remove-file', async (req, res) => {
     } catch (error) {
         res.status(error.status || 500).send({error: error?.message || error},);
     } finally {
-        global?.messageSocket && global.messageSocket.send({type: 'update-news'})
+        // @ts-ignore
+        glob?.messageSocket && glob.messageSocket.send({type: 'update-news'})
     }
 })
 

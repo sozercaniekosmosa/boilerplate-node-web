@@ -38,3 +38,16 @@ body {
   //border-radius: 20px;
   border: transparent;
 }
+
+@keyframes spin {
+  from {
+    transform: rotateZ(0deg);
+  }
+  to {
+    transform: rotateZ(360deg);
+  }
+}
+
+.rotY {
+  animation: spin 1s infinite linear;
+}

@@ -10,13 +10,10 @@ import DraggableList from "./DraggableList/DraggableList.tsx";
 import CodeEditor from "./CodeEditor/CodeEditor.tsx";
 import {Editor, TEventEditor} from "./Editor/Editor.tsx";
 import {createGlobalStyle} from "styled-components";
-import SpreadSheet from "./SpreadSheet/SpreadSheet.tsx";
-import NestedList from "./Storytelling/Storytelling.tsx";
 import Storytelling from "./Storytelling/Storytelling.tsx";
-import sheetData from "./SpreadSheet/sheetData.ts";
-import Reports from "./Reports/Reports.tsx";
-import axios from "axios";
 import SimpleTable from "./Sheets/SimpleTable/SimpleTable.tsx";
+import Reports from "./Reports/Reports.tsx";
+
 
 const GlobalStyle = createGlobalStyle`
     .tab-content {
@@ -24,29 +21,13 @@ const GlobalStyle = createGlobalStyle`
     }
 `
 
-// import NestedList from "./Storytelling/Storytelling.tsx";
-let hostAPI = 'http://localhost:5173/api/v1/';
-
 function Index() {
     const [progress, setProgress] = useState(0)
     const [arrData, setArrData] = useState(['Элемент — 1', 'Элемент — 2', 'Элемент — 3'])
     const [newNode, setNewNode] = useState(null)
-    const [doc, setDoc] = useState()
-
-    useEffect(() => {
-        if (!doc) return;
-        console.log(doc)
-        axios.post(hostAPI + 'store', {doc})
-    }, [doc])
 
 
     useEffect(() => {
-
-        axios.get(hostAPI + 'doc').then(data => {
-            // debugger
-            // @ts-ignore
-            setDoc(data.data.doc)
-        })
 
         const socketHandler = ({type, data}) => {
             if (type === 'progress') setProgress(data)
@@ -96,10 +77,10 @@ function Index() {
         <div className="d-flex flex-column h-100">
             <GlobalStyle/>
             {progress >= 0 && <ProgressBar progress={progress}/>}
-            <Tabs defaultActiveKey="report" className="mb-1">
+            <Tabs defaultActiveKey="report" className="mb-1" id="main">
 
                 <Tab eventKey="report" title="report" style={{flex: 1}} className="h-100">
-                    <Reports data={doc} setData={setDoc}/>
+                    <Reports/>
                 </Tab>
 
                 <Tab eventKey="excel" title="excel" style={{flex: 1}} className="h-100">

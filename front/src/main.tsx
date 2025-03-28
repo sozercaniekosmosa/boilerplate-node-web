@@ -2,16 +2,16 @@ import {createRoot} from 'react-dom/client'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './style.css'
 import Index from './components/index.tsx'
-import global from "./global.ts";
+import glob from "./glob.ts";
 import React from "react";
 import {ERR, OK} from "./components/PopupMessage/PopupMessage.tsx";
 import {webSocket} from "./lib/services.ts";
 import {eventBus} from "./lib/events.ts";
 
-global.host = 'http://localhost:5173/'
-global.hostAPI = 'http://localhost:5173/api/v1/'
-global.wsHost = 'localhost'
-global.wsPort = '3000'
+glob.host = 'http://localhost:5173/'
+glob.hostAPI = 'http://localhost:5173/api/v1/'
+glob.wsHost = 'localhost'
+glob.wsPort = '3000'
 
 let nodeRoot = document.getElementById('root');
 createRoot(nodeRoot!).render(
@@ -21,11 +21,11 @@ createRoot(nodeRoot!).render(
 )
 
 nodeRoot.addEventListener('dblclick', () => {
-    global.selectedText = undefined;
+    glob.selectedText = undefined;
 })
 nodeRoot.addEventListener('mouseup', () => {
     const text = window.getSelection().toString()
-    global.selectedText = text.length ? text.trim() : null;
+    glob.selectedText = text.length ? text.trim() : null;
     // console.log(text)
 })
 
@@ -33,7 +33,7 @@ nodeRoot.addEventListener('mouseup', () => {
 async function createMessageSocket() {
     try {
         webSocket({
-            host: global.wsHost, port: global.wsPort, timeReconnect: 1500,
+            host: glob.wsHost, port: glob.wsPort, timeReconnect: 1500,
             clbOpen: () => {
                 eventBus.dispatchEvent('connect-to-srv');
                 OK('Связь с сервером восстановлена')

@@ -8,9 +8,10 @@ import {reports} from "./lib/reports/reports";
 import convertExcelToXSpreadsheet from "./lib/reports/import";
 // import {convertExcelToXData} from "./lib/reports/import2";
 // import {CalcDensity} from "../assemblyScript/build/debug";
-import sheetData from "../front/src/components/SpreadSheet/sheetData";
+import sheetData from "../front/src/components/Sheets/SpreadSheet/sheetData";
 import routerReport from "./lib/services/webServer/api-v1/routerReport";
 import {Express} from "express";
+import glob from "../front/src/glob";
 
 // console.log(pg)
 
@@ -26,13 +27,13 @@ const {
 
 const port = +process.env.PORT || +PORT;
 
-global.root = __dirname;
-global.port = port
-global.webDir = path.join(__dirname, WEB_DIR);
-global.db = new noSQL('..\\data\\db.json');
+glob.root = __dirname;
+glob.port = port
+glob.webDir = path.join(__dirname, WEB_DIR);
+glob.db = new noSQL('..\\data\\db.json');
 
 const {ws} = createWebServer({
-    port: 3000, webDir: global.webDir,
+    port: 3000, webDir: glob.webDir,
     clbRouter: (app: Express) => {
         app.use('/api/v1', routerGeneral);
         app.use('/api/v1', routerReport);

@@ -1,4 +1,5 @@
 import {removeFragmentsFromUrl} from "../utils.js";
+import glob from "../../../front/src/glob";
 
 export class Parser {
     _listCompare = new Set();
@@ -103,7 +104,8 @@ export class Parser {
             console.error(e);
         } finally {
             this.counter = -1;
-            if (global.messageSocket) (global.messageSocket).send({type: 'progress', data: -1})
+            // @ts-ignore
+            if (glob.messageSocket) (glob.messageSocket).send({type: 'progress', data: -1})
         }
     }
 
@@ -148,7 +150,8 @@ export class Parser {
             console.log(e, url);
         } finally {
             this.counter++;
-            if (global.messageSocket) (global.messageSocket).send({
+            // @ts-ignore
+            if (glob.messageSocket) (glob.messageSocket).send({
                 type: 'progress', data: this.counter / this.max * 100
             })
         }
