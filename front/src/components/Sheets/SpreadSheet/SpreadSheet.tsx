@@ -1,11 +1,11 @@
 import Spreadsheet from "x-data-spreadsheet"
 import {useEffect, useRef, useState} from "react";
 import ruRU from "./ru-RU.ts"
-import {getHtmlStr} from "../../lib/dom.ts";
+import {getHtmlStr} from "../../../lib/dom.ts";
 import convertExcelToXSpreadsheet from "./import.ts";
 
 
-function fillWidthToColumns(arrData) {
+function widthToColumns(arrData) {
     // @ts-ignore
     return arrData.map(data => { //приведение ширины столбцов
         // @ts-ignore
@@ -98,7 +98,7 @@ const SpreadSheet = ({data, setData}) => {
         })
 
         setSpreadsheet(s); // необходимо привязать компонент к React-состоянию что бы иметь к нему доступ позже
-        const doc = fillWidthToColumns(data);
+        const doc = widthToColumns(data);
         s.loadData(doc) // load data
         s.change(data => {
             console.log(data);
@@ -167,7 +167,7 @@ const SpreadSheet = ({data, setData}) => {
 
     useEffect(() => {
         if (!spreadsheet) return;
-        const doc = fillWidthToColumns(data);
+        const doc = widthToColumns(data);
         spreadsheet.loadData(doc) // load data
     }, [data]);
 

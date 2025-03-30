@@ -9,9 +9,9 @@ import convertExcelToXSpreadsheet from "./lib/reports/import";
 // import {convertExcelToXData} from "./lib/reports/import2";
 // import {CalcDensity} from "../assemblyScript/build/debug";
 import sheetData from "../front/src/components/Sheets/SpreadSheet/sheetData";
-import routerReport from "./lib/services/webServer/api-v1/routerReport";
 import {Express} from "express";
 import glob from "../front/src/glob";
+import routerReport from "./lib/reports/routerReport";
 
 // console.log(pg)
 
@@ -58,7 +58,7 @@ const {ws} = createWebServer({
 // console.log(JSON.stringify(sheet))
 
 // @ts-ignore
-await reports(sheetData, '../tmp/tst.xlsx')
+// await reports(sheetData, '../tmp/tst.xlsx')
 
 // const sheets = await convertExcelToXData('../tmp/exp.xlsx');
 // console.log(sheets);

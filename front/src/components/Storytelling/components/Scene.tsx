@@ -48,7 +48,7 @@ const Scene = ({book, setBook, param}) => {
         <TextBlock className={'flex-stretch no-resize border rounded mb-1 p-2 ' + (list.data.sceneDesc.pointOfView.length ? '' : 'border-danger')}
                    value={list.data.sceneDesc.pointOfView || ''}
                    onChange={({target}) => (list.data.sceneDesc.pointOfView = target.value, setBook({...book}))} placeholder={DESC_PLACE}
-                   description="Место действия" style={{fontSize: '1em'}}/>
+                   hint="Место действия" style={{fontSize: '1em'}}/>
         {!list.hide && <div className="flex-column border rounded p-1 mb-1">{child}</div>}
     </>
 };

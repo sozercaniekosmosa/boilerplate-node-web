@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 
 import AceEditor from "react-ace";
 
@@ -24,9 +24,13 @@ import "ace-builds/src-noconflict/snippets/python";
 import styled from "styled-components";
 import Select from "../Select/Select.tsx";
 import ButtonEx from "../ButtonEx/ButtonEx.tsx";
+import {debounce, throttle} from "../../lib/utils.ts";
+
+import AcornWorker from './acorn.worker?worker';
 
 const arrTheme = ['monokai', 'github', 'tomorrow', 'kuroir', 'twilight', 'xcode', 'textmate', 'solarized_dark', 'solarized_light', 'terminal'];
 
+const TIME_THROTTLE_MS = 2500;
 let lang = 'javascript';
 
 const Editor = styled.div.attrs({className: 'd-flex flex-column flex-nowrap m-1'})`
@@ -40,17 +44,29 @@ const Editor = styled.div.attrs({className: 'd-flex flex-column flex-nowrap m-1'
 `
 const Control = styled.div.attrs({className: 'd-flex /*align-self-end*/ gap-1 mb-1'})``
 
+const validateCode = throttle(clb => clb(), TIME_THROTTLE_MS)
 
 function ScriptReports({code, setCode, width = '100%', height = '100%'}) {
     const [theme, setTheme] = useState('textmate')
+    const [annotations, setAnnotations] = useState([]);
+    const workerRef = useRef<Worker | null>(null);
 
     useEffect(() => {
-    }, [])
+        workerRef.current = new AcornWorker();
+        workerRef.current.onmessage = (event) => setAnnotations(event.data.annotations);//answer from worker
 
+        return () => workerRef.current?.terminate(); //destroy worker
+    }, []);
 
-    function changeCode(newValue: string) {
+    const changeCode = (newValue: string) => {
         setCode(newValue);
-    }
+        // @ts-ignore
+        validateCode(() => {
+            workerRef.current?.postMessage({code: newValue});
+            console.log('store code')
+        });
+    };
+
 
     function changeTheme(value: string) {
         setTheme(value);
@@ -59,9 +75,7 @@ function ScriptReports({code, setCode, width = '100%', height = '100%'}) {
     return <Editor>
         <Control>
             <ButtonEx className="btn btn-secondary bi-floppy"></ButtonEx>
-            <ButtonEx className="btn btn-secondary bi-list-check"></ButtonEx>
             <Select arrList={arrTheme} onChange={changeTheme} value={theme} className="w-auto"/>
-            <ButtonEx className="btn btn-secondary bi-eye"></ButtonEx>
         </Control>
         <AceEditor
             className="ace-editor"
@@ -69,6 +83,7 @@ function ScriptReports({code, setCode, width = '100%', height = '100%'}) {
             height={height}
             mode={lang}
             theme={theme}
+            annotations={annotations}
             onChange={changeCode}
             name="ace-editor"
             editorProps={{$blockScrolling: true}}

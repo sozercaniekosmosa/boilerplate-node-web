@@ -96,7 +96,8 @@ const PopupMessage = () => {
     }, [arrMess]);
 
     // @ts-ignore
-    return <div style={{pointerEvents: "none", position: 'absolute', top: 0, right: 0, height: '100vh', /*width: '20vw'*/}} ref={refPopup}>
+    return <div style={{pointerEvents: "none", position: 'absolute', top: 0, right: 0, height: '100vh', /*width: '20vw'*/ zIndex: 9999}}
+                ref={refPopup}>
         {arrMess.map(([type, data, mess, back, color], idi) => {
             return <div className="me-1 mt-1 p-1 border rounded fade-in" style={{backgroundColor: back, color}}
                         key={idi}>{truncateString(mess, 100)}</div>;

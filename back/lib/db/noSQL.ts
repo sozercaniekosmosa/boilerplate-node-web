@@ -26,8 +26,6 @@ interface TNoSQL {
 }
 
 interface TUpdate {
-    id: string;
-
     [key: string]: any;
 }
 
@@ -65,7 +63,7 @@ export class noSQL implements TNoSQL {
     // Add an item
     add(id, data) {
         if (this.db[id]) return
-        data.id = id;
+        // data.id = id;
         this.db[id] = data;
         this.debouncedDumpDatabase();
         return data;
@@ -88,22 +86,16 @@ export class noSQL implements TNoSQL {
     getByID = (id) => this.db[id];
 
     /**
-     * Update a news item by ID
-     * @param _props may be object of [object] !!!must have id-prop
+     * Update
+     * @param props : [id:string]:value
      */
     update(props: TUpdate) {
-        let _props: any = props;
-        if (!Array.isArray(_props)) _props = [_props];
-
-        for (let i = 0; i < _props.length; i++) {
-            const uf = _props[i];
-            const data = this.db[uf.id] ?? {};
-            if (!data) throw new Error(`News with ID ${uf.id} not found.`);
-
-            this.db[uf.id] = {...data, ...uf};
+        const arrProp = Object.entries(props)
+        for (let i = 0; i < arrProp.length; i++) {
+            const [id, val] = arrProp[i];
+            this.db[id] = val;
             this.debouncedDumpDatabase();
         }
-
     }
 
     // Get filter items

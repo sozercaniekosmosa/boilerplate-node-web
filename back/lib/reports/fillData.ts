@@ -6,18 +6,26 @@
  */
 function fillDataToRowsByTemplate(arrData: any[], templateRow: TRow, colXOff: number): TRow[] {
     // console.log(arrData)
+
+    let arr: any[];
+    if (Array.isArray(arrData)) {
+        arr = Array.isArray(arrData[0]) ? arrData : [arrData];
+    } else {
+        arr = [[arrData]];
+    }
+
     const arrRes = [];
-    const len = arrData.length;
+    const len = arr.length;
     for (let i = 0; i < len; i++) {
         let row = structuredClone(templateRow)
         let it = row.cells;
-        const lenCol = arrData[i].length
+        const lenCol = arr[i].length
         for (let j = 0, colX = 0; j < lenCol; j++, colX++) {
             let off = colX + colXOff;
             if (it[off]?.text) //если есть текст заполняем как текст
-                it[off].text = arrData[i][j];
+                it[off].text = arr[i][j];
             else
-                it[off] = {text: arrData[i][j]};
+                it[off] = {text: arr[i][j]};
 
             if (it[off]?.merge) { //если есть merge-пропускаем не функциональные
                 colX += it[off].merge[1];

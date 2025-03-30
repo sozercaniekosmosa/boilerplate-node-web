@@ -137,3 +137,22 @@ export const removeFragmentsFromUrl = (url) => {
     // Возвращаем очищенный URL
     return urlObj.toString();
 };
+
+/**
+ * Получение из текста js массив имен функций и параметров
+ * @param code - текст на js
+ * @return [[fn_name, param], [fn_name, param], ... ]
+ */
+export const getCodeParam = (code) => {
+    const functionRegex = /function\s+(\w+)\s*\(([^)]*)\)|const\s+(\w+)\s*=\s*\(([^)]*)\)\s*=>/g;
+    let match, resArr = [];
+
+    while ((match = functionRegex.exec(code)) !== null) {
+        const functionName = match[1] || match[3];
+        const params = match[2] || match[4];
+        resArr.push([functionName, params])
+        console.log(`Функция: ${functionName}, Параметры: ${params}`);
+    }
+
+    return resArr;
+}

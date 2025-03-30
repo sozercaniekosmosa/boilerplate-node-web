@@ -61,7 +61,7 @@ export const meval = function (js, scope) {
  * @param ms
  * @returns {(function(): void)|*}
  */
-export const debounce = (func: any, ms: number) => {
+export const debounce = (func, ms) => {
     let timeout;
     return function () {
         clearTimeout(timeout);
@@ -75,35 +75,70 @@ export const debounce = (func: any, ms: number) => {
  * @param ms
  * @returns {(function(...[*]): void)|*}
  */
-export const throttle = (clb, ms) => {
+type ThrottledFunction<T extends (...args: any[]) => any> = (...args: Parameters<T>) => ReturnType<T>;
 
-    let isThrottled = false,
-        savedArgs,
-        savedThis;
+export function throttle<T extends (...args: any[]) => any>(
+    func: T,
+    timeMs: number
+): ThrottledFunction<T> {
+    let lastFunc: ReturnType<typeof setTimeout>;
+    let lastRan: number;
+    let lastArgs: Parameters<T>;
+    let lastThis: any;
 
-    function wrapper(...arg) {
-
-        if (isThrottled) { // (2)
-            savedArgs = arguments;
-            savedThis = this;
-            return;
+    // @ts-ignore
+    return function (this: any, ...args: Parameters<T>): ReturnType<T> {
+        if (!lastRan) {
+            func.apply(this, args);
+            lastRan = Date.now();
+        } else {
+            clearTimeout(lastFunc);
+            lastArgs = args;
+            lastThis = this;
+            lastFunc = setTimeout(() => {
+                if ((Date.now() - lastRan) >= timeMs) {
+                    func.apply(lastThis, lastArgs);
+                    lastRan = Date.now();
+                }
+            }, timeMs - (Date.now() - lastRan));
         }
-
-        clb.apply(this, arguments); // (1)
-
-        isThrottled = true;
-
-        setTimeout(function () {
-            isThrottled = false; // (3)
-            if (savedArgs) {
-                wrapper.apply(savedThis, savedArgs);
-                savedArgs = savedThis = null;
-            }
-        }, ms);
-    }
-
-    return wrapper;
+    } as ThrottledFunction<T>;
 }
+
+// Пример использования
+const logMessage = (message: string) => {
+    console.log(message);
+};
+
+// export const throttle = (clb, ms) => {
+//
+//     let isThrottled = false,
+//         savedArgs,
+//         savedThis;
+//
+//     function wrapper(...arg) {
+//
+//         if (isThrottled) { // (2)
+//             savedArgs = arguments;
+//             savedThis = this;
+//             return;
+//         }
+//
+//         clb.apply(this, arguments); // (1)
+//
+//         isThrottled = true;
+//
+//         setTimeout(function () {
+//             isThrottled = false; // (3)
+//             if (savedArgs) {
+//                 wrapper.apply(savedThis, savedArgs);
+//                 savedArgs = savedThis = null;
+//             }
+//         }, ms);
+//     }
+//
+//     return wrapper;
+// }
 
 export const asyncDelay = ms => new Promise(res => setTimeout(res, ms));
 

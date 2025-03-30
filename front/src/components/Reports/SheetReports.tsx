@@ -3,7 +3,7 @@ import {useEffect, useRef, useState} from "react";
 import ruRU from "./ru-RU.ts"
 import {getHtmlStr} from "../../lib/dom.ts";
 import convertExcelToXSpreadsheet from "./import.ts";
-import {getHashCyrb53Arr, throttle} from "../../lib/utils.ts";
+import {debounce, getHashCyrb53Arr, throttle} from "../../lib/utils.ts";
 
 
 /**
@@ -43,30 +43,30 @@ const openFileDialog = async (acceptTypes: string): Promise<ArrayBuffer> => new 
     input.click();
 });
 
-let ver = 0;
+let didInit = false;
 let properties = [];
 
 function addProperties(sheet: Record<string, any>) {
     return sheet.map((it, i) => {
         it.properties = properties[i];
-        if (i == 0) {
-            ver = Date.now();
-            it.properties.ver = ver
-        }
         return it;
     })
 }
 
-function fillWidthToColumns(arrData, kWidth = 7) {
-    // @ts-ignore
-    if (arrData[0].properties?.ver) return arrData;
-    const res = arrData.map((data, i) => { //приведение ширины столбцов
+function fillWidthToColumnsExt(arrData) {
+    return structuredClone(arrData).map((data, i) => { //приведение ширины столбцов
         // @ts-ignore
-        data.cols = Object.fromEntries(Object.entries(data.cols).map(([key, val]) => key != 'len' ? [key - 1, {width: val.width * kWidth}] : [key, val]))
+        data.cols = Object.fromEntries(Object.entries(data.cols).map(([key, val]) => key != 'len' ? [key - 1, {width: val.width * 7}] : [key, val]))
         return data;
     })
-    res[0].properties.ver = Date.now();
-    return res;
+}
+
+function fillWidthToColumnsContract(arrSheet) {
+    return structuredClone(arrSheet).map(data => { //приведение ширины столбцов
+        // @ts-ignore
+        data.cols = Object.fromEntries(Object.entries(data.cols).map(([key, val]) => key != 'len' ? [+key + 1, {width: val.width * 1 / 7}] : [key, val]))
+        return data;
+    })
 }
 
 const SheetReports = ({data, setData, height = 40}) => {
@@ -74,24 +74,6 @@ const SheetReports = ({data, setData, height = 40}) => {
     const [spreadsheet, setSpreadsheet] = useState<Spreadsheet>()
     const refNodeSheet = useRef()
     const refSave = useRef()
-
-    useEffect(() => {
-        if (!spreadsheet) return;
-        const doc = fillWidthToColumns(data, 7);
-        properties = doc.map(it => it.properties);
-        if (doc?.[0] && doc[0]?.properties && doc[0].properties?.ver && doc[0].properties.ver == ver) return;
-        spreadsheet.loadData(doc) // load data
-        ver = doc[0].properties.ver;
-    }, [data]);
-
-    const save = throttle((s: Spreadsheet) => {
-        let sheet = s.getData();
-        sheet = addProperties(sheet);
-        setData(sheet);
-        console.log('store')
-        // @ts-ignore
-        refSave.current.classList.remove('rotY')
-    }, 1000);
 
     useEffect(() => {
 
@@ -136,28 +118,12 @@ const SheetReports = ({data, setData, height = 40}) => {
 
         setSpreadsheet(s); // необходимо привязать компонент к React-состоянию что бы иметь к нему доступ позже
         // s.loadData(data) // load data
-        s.change(data => {
-            // @ts-ignore
-            refSave.current.classList.add('rotY')
-            save(s);
-        })
-        s.on('cell-selected', (cell, ri, ci) => {
-            // console.log(cell)
-        });
-        s.on('cells-selected', (cell, {sri, sci, eri, eci}) => {
-            // console.log(cell)
-        });
-        s.on('cell-edited', (text, ri, ci) => {
-            // @ts-ignore
-            // console.log(s.cellStyle(ri, ci))
-        });
-
 
         setTimeout(() => {
             //language=html
             const btnOpen = getHtmlStr(`
                 <div class="x-spreadsheet-toolbar-btn" title="Загрузить шаблон">
-                    <div class="bi-folder2-open" style="font-size: 1.2em; color: #4d4d4d"/>
+                    <div class="bi-folder2-open" style="font-size: 1.3em; color: #4d4d4d"/>
                 </div>
             `);
             const btnSave = getHtmlStr(`
@@ -172,43 +138,59 @@ const SheetReports = ({data, setData, height = 40}) => {
             btnOpen[0].addEventListener('click', async (e) => {
                 const arrayBuffer = await openFileDialog('xlsx');
                 let sheet = await convertExcelToXSpreadsheet({arrayBuffer});
-                sheet = fillWidthToColumns(sheet, 7);
+                // addProperties(sheet)
                 setData(sheet);
             });
-            btnSave[0].addEventListener('click', () => {
-                // @ts-ignore
-                refSave.current.classList.add('rotY')
-                save(s);
-            });
+            btnSave[0].addEventListener('click', () => save(s));
 
             // @ts-ignore
-            refNodeSheet.current.querySelector('.x-spreadsheet-toolbar-btns').prepend(btnSave[0]);
-            // @ts-ignore
-            refNodeSheet.current.querySelector('.x-spreadsheet-toolbar-btns').prepend(btnOpen[0]);
+            let nodeToolBtn = refNodeSheet.current.querySelector('.x-spreadsheet-toolbar-btns');
+            nodeToolBtn.prepend(btnOpen[0], btnSave[0]);
 
         }, 100)
-
-        // cell(ri, ci, sheetIndex = 0)
-        // s.cell(ri, ci);
-        // cellStyle(ri, ci, sheetIndex = 0)
-        // s.cellStyle(ri, ci);
-
-        // s.cellText(5, 5, 'xxxx').cellText(6, 5, 'yyy')
-        // @ts-ignore
-        // s.reRender();
-
 
         // @ts-ignore
         s.validate()
 
         // @ts-ignore
         window.spreadsheet = s;
-        // @ts-ignore
-        window.save = () => {
-            // @ts-ignore
-            // XLSX.writeFile(xtos(s.getData()), "SheetJS.xlsx");
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
         };
     }, []);
+
+    useEffect(() => {
+        if (!spreadsheet || !Boolean(data)) return;
+        const doc = fillWidthToColumnsExt(data);
+        properties = doc.map(it => it.properties);
+
+        if (!didInit) spreadsheet.loadData(doc) // load data
+        didInit = true;
+    }, [data]);
+
+    const save = (s: Spreadsheet) => {
+        // @ts-ignore
+        refSave.current.classList.add('rotY')
+        let doc = s.getData();
+        let _doc = fillWidthToColumnsContract(doc);
+        _doc = addProperties(_doc);
+        setData(_doc);
+        console.log('store doc')
+        // @ts-ignore
+        setTimeout(() => refSave.current.classList.remove('rotY'), 1000);
+
+        return s;
+    };
+
+    const handleKeyDown = (e) => {
+        const {ctrlKey, key}: KeyboardEvent = e;
+        if (ctrlKey && key === 's') {
+            e.preventDefault();
+            setSpreadsheet(now => save(now));
+        }
+    };
 
     return <div ref={refNodeSheet}/>;
 }
