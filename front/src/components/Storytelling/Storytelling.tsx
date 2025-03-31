@@ -123,7 +123,6 @@ const Control = ({book, setBook, param}) => {
             {!list.hide && <div className="flex-column border rounded p-1">{child}</div>}
         </>
     } else if (opt == SCENE) {
-        // list.data.
         return <Scene book={book} setBook={setBook} param={param}/>
     } else if (opt == CHARACTER) {
         return <div className="d-flex flex-row gap-1 mb-1">
@@ -157,13 +156,15 @@ const Storytelling: React.FC<any> = () => {
     const [book, setBook] = useState(BOOK);
     const [content, setContent] = useState(book.content);
     // @ts-ignore
+    window.book = book;
+    // @ts-ignore
     window.content = content;
     return <Tabs defaultActiveKey="plan" className="mb-1">
         <Tab eventKey="plan" title="План" style={{flex: 1}} className="h-100">
             <NestedList list={content} onInsert={param => {
                 const {parent, list, index, child} = param;
                 return <div className="d-flex flex-column m-1">
-                    <Control book={content} setBook={setContent} param={param}/>
+                    <Control book={book} setBook={setBook} param={param}/>
                 </div>
             }}/>
         </Tab>

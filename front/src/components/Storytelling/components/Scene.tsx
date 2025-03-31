@@ -3,8 +3,10 @@ import {Button} from "react-bootstrap";
 import ButtonEx from "../../ButtonEx/ButtonEx.tsx";
 import {clButton, PARTS, stButton} from "../Storytelling.tsx";
 import TextBlock from "./TextBlock.tsx";
+import Select from "../../Select/Select.tsx";
 
 const Scene = ({book, setBook, param}) => {
+    const {worlds, scenes, characters, objects} = book;
     const {parent, list, index, child} = param;
     const opt = list.data.opt;
 
@@ -43,12 +45,16 @@ const Scene = ({book, setBook, param}) => {
                 list.hide = !list.hide;
                 setBook({...book})
             }}/>
+            <Select arrList={Object.keys(scenes)} value={opt} onChange={(key) => (list.data.scene = key, setBook({...book}))}
+                    style={{height: '1.7em', fontSize: '1.2em', lineHeight: 1.1}} className="ps-2 pe-5 py-0 w-auto"/>
         </div>
-
-        <TextBlock className={'flex-stretch no-resize border rounded mb-1 p-2 ' + (list.data.sceneDesc.pointOfView.length ? '' : 'border-danger')}
-                   value={list.data.sceneDesc.pointOfView || ''}
-                   onChange={({target}) => (list.data.sceneDesc.pointOfView = target.value, setBook({...book}))} placeholder={DESC_PLACE}
-                   hint="Место действия" style={{fontSize: '1em'}}/>
+        <div>
+            {list.data?.scene && Object.entries(scenes[list.data.scene]).map((scene, idi) => {
+                const [sceneParam, text] = scene;
+                // @ts-ignore
+                return <div key={idi}>{text.text}</div>
+            })}
+        </div>
         {!list.hide && <div className="flex-column border rounded p-1 mb-1">{child}</div>}
     </>
 };
