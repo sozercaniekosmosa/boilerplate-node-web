@@ -41,13 +41,13 @@ export const createExcelFile = async () => {
 // const sheet = workbook.addWorksheet('My Sheet');
 // create a sheet with red tab colour
     workbook.addWorksheet('My Sheet', {
-        properties: {tabColor: {argb: 'ff00ff00'}}, //optional param
+        properties: {tabColor: {argb: 'ff00ff00'}}, //optional paramVal
         views: [
-            {showGridLines: false},//optional param
-            {state: 'frozen', xSplit: 1, ySplit: 1}//optional param
+            {showGridLines: false},//optional paramVal
+            {state: 'frozen', xSplit: 1, ySplit: 1}//optional paramVal
         ],
-        headerFooter: {firstHeader: "Hello Exceljs", firstFooter: "Hello World"},//optional param
-        pageSetup: {paperSize: 9, orientation: 'landscape'}//optional param
+        headerFooter: {firstHeader: "Hello Exceljs", firstFooter: "Hello World"},//optional paramVal
+        pageSetup: {paperSize: 9, orientation: 'landscape'}//optional paramVal
     });
 
 

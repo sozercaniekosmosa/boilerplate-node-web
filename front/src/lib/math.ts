@@ -5,11 +5,11 @@ export const range = (a1, b1, a2, b2, val) => lerp(a2, b2, invlerp(a1, b1, val))
 
 /**
  * Вызывает callback на каждй новой точке (Алгоритм Брезенхема)
- * @param x1
- * @param y1
- * @param x2
- * @param y2
- * @param callback(x,y)
+ * @paramVal x1
+ * @paramVal y1
+ * @paramVal x2
+ * @paramVal y2
+ * @paramVal callback(x,y)
  * @returns {*}
  */
 export function getLinePoints(x1, y1, x2, y2, callback) {

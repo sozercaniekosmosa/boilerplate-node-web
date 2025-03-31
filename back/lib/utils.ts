@@ -78,11 +78,11 @@ export function translit(str) {
 }
 
 /**
- * Wrapper для функции (clb), которая будет вызвана не раньше чем через ms мс. после
+ * Wrapper для функции (clbGetData), которая будет вызвана не раньше чем через ms мс. после
  * последнего вызова если в момент тишины с момента последнего вызова будет произведен
  * еще вызов то реальный вызов будет не раньше чем через ms мс. после него
- * @param clb
- * @param ms
+ * @paramVal clbGetData
+ * @paramVal ms
  * @returns {(function(): void)|*}
  */
 export const debounce = (func, ms) => {
@@ -94,9 +94,9 @@ export const debounce = (func, ms) => {
 };
 
 /**
- * Wrapper для функции (clb), которую нельзя вызвать чаще чем tm
- * @param clb
- * @param ms
+ * Wrapper для функции (clbGetData), которую нельзя вызвать чаще чем tm
+ * @paramVal clbGetData
+ * @paramVal ms
  * @returns {(function(...[*]): void)|*}
  */
 export const throttle = (clb, ms) => {
@@ -140,19 +140,35 @@ export const removeFragmentsFromUrl = (url) => {
 
 /**
  * Получение из текста js массив имен функций и параметров
- * @param code - текст на js
- * @return [[fn_name, param], [fn_name, param], ... ]
+ * @paramVal code - текст на js
+ * @return [[fn_name, paramVal], [fn_name, paramVal], ... ]
  */
-export const getCodeParam = (code) => {
+export const getCodeParam = (code: string) => {
     const functionRegex = /function\s+(\w+)\s*\(([^)]*)\)|const\s+(\w+)\s*=\s*\(([^)]*)\)\s*=>/g;
-    let match, resArr = [];
+    let match: any[], resArr = [];
 
     while ((match = functionRegex.exec(code)) !== null) {
         const functionName = match[1] || match[3];
         const params = match[2] || match[4];
         resArr.push([functionName, params])
-        console.log(`Функция: ${functionName}, Параметры: ${params}`);
+        // console.log(`Функция: ${functionName}, Параметры: ${params}`);
     }
 
     return resArr;
 }
+
+/**
+ * Санитайзинг строки от sql-инъекций
+ * @paramVal rawInput
+ */
+export const sanitizeNoSQLInjection = (rawInput) => rawInput
+    // 1. Экранируем кавычки и удаляем опасные символы
+    .replace(/(['"\\;`])|(\/\*[\s\S]*?\*\/)|(--[^\r\n]*)/g, (match, p1, p2, p3) => {
+        if (p1) return `\\${p1}`;
+        return '';
+    })
+    // 2. Удаляем SQL-ключевые слова (регистронезависимо)
+    .replace(/\b(DROP|DELETE|UNION|SELECT|INSERT|UPDATE|TRUNCATE)\b/gi, '')
+    // 3. Нормализуем пробелы (опционально)
+    .replace(/\s+/g, ' ')
+    .trim();

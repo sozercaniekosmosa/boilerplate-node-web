@@ -8,7 +8,7 @@ import {debounce, getHashCyrb53Arr, throttle} from "../../lib/utils.ts";
 
 /**
  * Открывает диалоговое окно для выбора файла.
- * @param {string} acceptTypes - строка с типами через [,] определяющих допустимые типы файлов (например, '.pdf').
+ * @paramVal {string} acceptTypes - строка с типами через [,] определяющих допустимые типы файлов (например, '.pdf').
  * @returns {Promise<File>} - Промис, который разрешается выбранным файлом.
  */
 const openFileDialog = async (acceptTypes: string): Promise<ArrayBuffer> => new Promise((resolve, reject) => {

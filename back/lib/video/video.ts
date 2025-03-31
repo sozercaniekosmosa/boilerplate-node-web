@@ -504,13 +504,13 @@ export const createAllVideo = async ({arrPathVideo, pathBackground, pathIntro, p
 //     w: 1920,
 //     h: 1080,
 //     fps: 25,
-//     clb: (type, data) => {
+//     clbGetData: (type, data) => {
 //         console.log(type, data)
 //     }
 // })
 
 // await concatAudio({
-//     arrPath: [dir + '\\speech1.mp3', dir + '\\speech2.mp3'], pathOut: dir + '\\out.mp3', clb: (type, mess) => console.log(type, mess)
+//     arrPath: [dir + '\\speech1.mp3', dir + '\\speech2.mp3'], pathOut: dir + '\\out.mp3', clbGetData: (type, mess) => console.log(type, mess)
 // })
 
 // await buildVideo({
@@ -520,24 +520,24 @@ export const createAllVideo = async ({arrPathVideo, pathBackground, pathIntro, p
 //     secPerFrame: 3,
 //     fps: 1,
 //     scale: 1.5,
-//     clb: (type, prc) => type === 'progress' && console.log(prc)
+//     clbGetData: (type, prc) => type === 'progress' && console.log(prc)
 // })
 
 // await addTextToVideo({
 //     path: dir + '\\out.mp4',
 //     pathOut: dir + '\\out1.mp4',
-//     arrText: [{text: 'источник\\\: dsngkjn fkjg k', pos: {x: '10', y: 'H-th-10'}, param: {size: 30, color: 'white'}}],
-//     clb: (type, mess) => console.log(mess)
+//     arrText: [{text: 'источник\\\: dsngkjn fkjg k', pos: {x: '10', y: 'H-th-10'}, paramVal: {size: 30, color: 'white'}}],
+//     clbGetData: (type, mess) => console.log(mess)
 // })
 
-// await mergeVideoAudio({pathv: dir + '\\out.mp4', patha: dir + '\\speech2.mp3', clb: (type, mess) => console.log(mess)})
-// await addImageToVideo({path: dir + '\\out.mp4', pathImg: dir + '\\logo.png', y: '10', w: 100, h: 70, clb: (type, mess) => console.log(mess)})
-// await mergeVideoAudio({pathv: dir + '\\out.mp4', patha: dir + '\\speech1.mp3', clb: (type, mess) => console.log(mess)})
+// await mergeVideoAudio({pathv: dir + '\\out.mp4', patha: dir + '\\speech2.mp3', clbGetData: (type, mess) => console.log(mess)})
+// await addImageToVideo({path: dir + '\\out.mp4', pathImg: dir + '\\logo.png', y: '10', w: 100, h: 70, clbGetData: (type, mess) => console.log(mess)})
+// await mergeVideoAudio({pathv: dir + '\\out.mp4', patha: dir + '\\speech1.mp3', clbGetData: (type, mess) => console.log(mess)})
 
 // await concatMediaFiles({
 //     arrPath: [dir + '\\1out.mp4', dir + '\\2out.mp4'],
 //     pathOut: dir + '\\123.mp4',
-//     clb: (type, mess) => console.log(mess)
+//     clbGetData: (type, mess) => console.log(mess)
 // })
 
 // await videoConcat({
@@ -546,5 +546,5 @@ export const createAllVideo = async ({arrPathVideo, pathBackground, pathIntro, p
 //     // arrPath: [dir + '\\input0.png', dir + '\\input1.png'],
 //     maxDuration: 56,
 //     tmTrans: 0,
-//     clb: (type, prc) => console.log(prc)
+//     clbGetData: (type, prc) => console.log(prc)
 // })

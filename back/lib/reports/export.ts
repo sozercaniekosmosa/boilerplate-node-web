@@ -62,8 +62,8 @@ const convertStyle = (style: TCellStyle): TExcelStyle => {
 
 /**
  * задать ширину всем колонкам
- * @param worksheet
- * @param cols
+ * @paramVal worksheet
+ * @paramVal cols
  */
 function fillWidthCols(worksheet: Worksheet, cols) {
     const arrCol = Object.entries(cols)

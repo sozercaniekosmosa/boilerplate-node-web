@@ -3,41 +3,20 @@ import {exportToExcel} from "./export";
 import fillData from "./fillData";
 import vm from "node:vm";
 
-const exec = (strCode: string) => {
-
-// Функции, которые будут доступны программе А
-    const externalFunctions = {
-        externalFunction: () => {
-            return 'external';
-        }
-    };
-
-    const context = vm.createContext({...externalFunctions});// Создаем изолированный контекст
-
-// Выполняем код программы А в изолированном контексте
-    vm.runInContext(strCode, context);
-
-    /*// Теперь функции программы А доступны в контексте
-        console.log(context.foo()); // Вывод: foo
-        console.log(context.bar()); // Вывод: external and bar
-        console.log(context.baz()); // Вывод: foo and baz
-
-    // Вызов функций программы А из внешнего кода
-        function callFunctionFromA(funcName, ...args) {
-            if (typeof context[funcName] === 'function') {
-                return context[funcName](...args);
-            } else {
-                throw new Error(`Function ${funcName} is not defined in context A`);
-            }
-        }*/
-
-    return context;
+interface TReportsParam {
+    sheetData: TArraySheet;
+    clbGetData: (fnName: string) => any;
+    paramVal?: any;
+    path: string;
 }
 
-export const reports = async (sheetData: TArraySheet, strCode: string, path, pathTemplate?) => {
-
-    // const fn = await import('./fn');
-    const fn = exec(strCode);
+/**
+ * Формирование отчета
+ * @param sheetData - объект массив таблиц для отчета
+ * @param clbGetData(fnName) - выпольнить функцию (fnName) и получить значения для отчета
+ * @param path - путь выходного файла
+ */
+export const reports = async ({sheetData, clbGetData, path}: TReportsParam) => {
 
     const sd = await fillData(sheetData, async (cmd: string, name: string) => {
         let arr: any[] | undefined;
@@ -45,7 +24,7 @@ export const reports = async (sheetData: TArraySheet, strCode: string, path, pat
             const {data} = await axios.get(`http://localhost:${3001}/${name}`);
             arr = data;
         } else if (cmd === 'fn') {
-            arr = await fn[name]();
+            arr = await clbGetData(name);
         }
         return arr;
     })

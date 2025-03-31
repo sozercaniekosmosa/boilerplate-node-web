@@ -96,7 +96,7 @@ export function createWebServer({port, webDir, clbRouter, clbWebSocket}: TWebSer
 //добавлем end-points:
 // router.get('/some-route1', async (req, res) => { // добавлем end-points GET "some-route1"
 //     try {
-//         const {id, value, data} = req.query;  //getting GET params
+//         const {id, value, data} = req.param;  //getting GET params
 //         // insert your code here ...
 //         res.send(folderPath);
 //     } catch (error) {

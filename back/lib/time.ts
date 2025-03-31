@@ -1,19 +1,10 @@
-export const formatDateTime = (date = new Date(), dateTimeFormat = 'dd.mm.yyyy hh:MM:ss') => {
+export const formatDateTime = (date = new Date(), dateTimeFormat = 'dd.MM.yyyy hh:mm:ss') => {
 
     const arrMonth = [
-        'январь',
-        'февраль',
-        'март',
-        'апрель',
-        'май',
-        'июнь',
-        'июль',
-        'август',
-        'сентябрь',
-        'октябрь',
-        'ноябрь',
-        'декабрь',
+        'январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
+        'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь',
     ];
+
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяцы начинаются с 0
     const year = date.getFullYear();
@@ -24,10 +15,17 @@ export const formatDateTime = (date = new Date(), dateTimeFormat = 'dd.mm.yyyy h
     const seconds = String(date.getSeconds()).padStart(2, '0');
 
     const formatMap = {
-        'dd': day, 'mm': month, 'month': arrMonth[date.getMonth()], 'yyyy': year, 'yy': syear, 'hh': hours, 'MM': minutes, 'ss': seconds
+        'dd': day,
+        'MM': month,
+        'month': arrMonth[date.getMonth()],
+        'yyyy': year,
+        'yy': syear,
+        'hh': hours,
+        'mm': minutes,
+        'ss': seconds
     };
 
-    return dateTimeFormat.replace(/dd|mm|yyyy|yy|hh|MM|ss/g, match => formatMap[match]);
+    return dateTimeFormat.replace(/dd|MM|yyyy|yy|hh|mm|ss/g, match => formatMap[match]);
 }
 
 export const addYear = (y) => new Date(new Date().setFullYear(new Date().getFullYear() + y));

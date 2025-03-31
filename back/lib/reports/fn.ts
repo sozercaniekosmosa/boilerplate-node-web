@@ -6,9 +6,8 @@ import {dirname} from "path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
 const env = config({override: true, path: __dirname + '\\.env'});
-const {USER, HOST, DATABASE, PASSWORD, PORT,} = env.parsed
+const {USER, HOST, DATABASE, PASSWORD, DB_PORT} = env.parsed
 
 
 let arrData = [];
@@ -21,7 +20,7 @@ export const list = async () => {
     arrData = [];
     try {
         const {Client} = pg;
-        const client = new Client({user: USER, host: HOST, database: DATABASE, password: PASSWORD, port: +PORT,});
+        const client = new Client({user: USER, host: HOST, database: DATABASE, password: PASSWORD, port: +DB_PORT,});
 
         await client.connect();
 
@@ -37,10 +36,10 @@ export const list = async () => {
         // @ts-ignore
         for (let i = 0; i < arr.length; i++) {
             const {reportDate, sumvol, summas, dens, densbik, temp, tempbik, press, pressbik} = arr[i];
-            const date = formatDateTime(new Date(reportDate), 'dd.mm.yyyy')
-            const time = formatDateTime(_hours, 'hh:MM');
+            const date = formatDateTime(new Date(reportDate), 'dd.MM.yyyy')
+            const time = formatDateTime(_hours, 'hh:mm');
             _hours = addHour(2, _hours);
-            const timeTo = formatDateTime(_hours, 'hh:MM');
+            const timeTo = formatDateTime(_hours, 'hh:mm');
             const line = [
                 index,
                 date, time, timeTo,

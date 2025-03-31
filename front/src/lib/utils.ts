@@ -54,11 +54,11 @@ export const meval = function (js, scope) {
 }
 
 /**
- * Wrapper для функции (clb), которая будет вызвана не раньше чем через ms мс. после
+ * Wrapper для функции (clbGetData), которая будет вызвана не раньше чем через ms мс. после
  * последнего вызова если в момент тишины с момента последнего вызова будет произведен
  * еще вызов то реальный вызов будет не раньше чем через ms мс. после него
- * @param func
- * @param ms
+ * @paramVal func
+ * @paramVal ms
  * @returns {(function(): void)|*}
  */
 export const debounce = (func, ms) => {
@@ -70,9 +70,9 @@ export const debounce = (func, ms) => {
 };
 
 /**
- * Wrapper для функции (clb), которую нельзя вызвать чаще чем tm
- * @param clb
- * @param ms
+ * Wrapper для функции (clbGetData), которую нельзя вызвать чаще чем tm
+ * @paramVal clbGetData
+ * @paramVal ms
  * @returns {(function(...[*]): void)|*}
  */
 type ThrottledFunction<T extends (...args: any[]) => any> = (...args: Parameters<T>) => ReturnType<T>;
@@ -110,7 +110,7 @@ const logMessage = (message: string) => {
     console.log(message);
 };
 
-// export const throttle = (clb, ms) => {
+// export const throttle = (clbGetData, ms) => {
 //
 //     let isThrottled = false,
 //         savedArgs,
@@ -124,7 +124,7 @@ const logMessage = (message: string) => {
 //             return;
 //         }
 //
-//         clb.apply(this, arguments); // (1)
+//         clbGetData.apply(this, arguments); // (1)
 //
 //         isThrottled = true;
 //
@@ -149,7 +149,7 @@ export const asyncDelay = ms => new Promise(res => setTimeout(res, ms));
  * // call
  * console.log('result: ', await add.callAsWorker(null, 1, 2, 3));
  *
- * @param args of function
+ * @paramVal args of function
  * @returns {Promise<unknown>}
  */
 // @ts-ignore

@@ -2,6 +2,7 @@ import fs, {promises as fsPromises} from 'fs'
 import PATH from "path";
 import * as console from "node:console";
 import * as util from "node:util";
+import {constants} from 'fs';
 
 export const readFileAsync = async (path, options?) => {
     try {
@@ -145,10 +146,12 @@ export async function checkFileExists(filePath) {
 
 export async function createAndCheckDir(filePath) {
     // Получаем директорию из пути
-    const dir = PATH.dirname(filePath);
+    // const dir = PATH.dirname(filePath);
 
     // Проверяем, существует ли директория, если нет - создаем
-    await fsPromises.mkdir(dir, {recursive: true});
+    await fsPromises.mkdir(filePath, {recursive: true});
+
+
 }
 
 export async function saveTextToFile(filePath, text) {

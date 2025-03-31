@@ -1,9 +1,9 @@
 /**
  * rotate SVG element
- * @param svgNode that being rotating
- * @param centerX
- * @param centerY
- * @param angle
+ * @paramVal svgNode that being rotating
+ * @paramVal centerX
+ * @paramVal centerY
+ * @paramVal angle
  */
 export function rotateSVG(svgNode, centerX, centerY, angle) {
     var rotationTransform = svgNode.createSVGTransform();

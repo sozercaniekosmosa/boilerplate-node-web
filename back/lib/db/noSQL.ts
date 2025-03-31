@@ -18,7 +18,7 @@ interface TNoSQL {
 
     /**
      * Update a news item by ID
-     * @param props may be object of [object] !!!must have id-prop
+     * @paramVal props may be object of [object] !!!must have id-prop
      */
     update(props): void;
 
@@ -87,7 +87,7 @@ export class noSQL implements TNoSQL {
 
     /**
      * Update
-     * @param props : [id:string]:value
+     * @paramVal props : [id:string]:value
      */
     update(props: TUpdate) {
         const arrProp = Object.entries(props)

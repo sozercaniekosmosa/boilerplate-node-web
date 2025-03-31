@@ -251,7 +251,7 @@ export class Svg {
 
     /**
      * Получить позицию и размеры node
-     * @param node
+     * @paramVal node
      */
     private getBox(node: Element) {
         const {x, y, width, height} = node.getBoundingClientRect();
@@ -260,7 +260,7 @@ export class Svg {
 
     /**
      * Получить центр node
-     * @param nodeSrcConn
+     * @paramVal nodeSrcConn
      * @private
      */
     public getCentrePos(nodeSrcConn: Element) {
@@ -276,7 +276,7 @@ export class Svg {
 
     /**
      * Для пересчета p:Point позиции с учетом zoom
-     * @param p
+     * @paramVal p
      */
     public getPosZoom(p: Point) {
         const vp = new Point(this.viewBox!.x, this!.viewBox!.y);
@@ -311,10 +311,10 @@ export class Svg {
 
     /**
      * Поворот SVG элемента
-     * @param svgNode
-     * @param centerX
-     * @param centerY
-     * @param angle
+     * @paramVal svgNode
+     * @paramVal centerX
+     * @paramVal centerY
+     * @paramVal angle
      */
     public rotateSVG(svgNode, centerX, centerY, angle) {
         const rotationTransform = svgNode.createSVGTransform();

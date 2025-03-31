@@ -1,8 +1,8 @@
 /**
  * Заполнить ячейки данными (по шаблону строки)
- * @param arrData
- * @param templateRow
- * @param colXOff
+ * @paramVal arrData
+ * @paramVal templateRow
+ * @paramVal colXOff
  */
 function fillDataToRowsByTemplate(arrData: any[], templateRow: TRow, colXOff: number): TRow[] {
     // console.log(arrData)
@@ -39,7 +39,7 @@ function fillDataToRowsByTemplate(arrData: any[], templateRow: TRow, colXOff: nu
 
 /**
  * Получить команду и имя индекс колонки
- * @param row
+ * @paramVal row
  * @return [command, name, colIndex]
  */
 function getCommand(row: TRow): [string, string, number | null] {
@@ -59,7 +59,7 @@ function getCommand(row: TRow): [string, string, number | null] {
 
 /**
  * обнаруживает пропуски в нумерации строк объекта sheetData.rows и заполняет их пустыми объектами, сохраняя последовательность индексов
- * @param arrSheet
+ * @paramVal arrSheet
  */
 function fillRowGaps(arrSheet: TArraySheet) {
     for (const item of arrSheet) {
@@ -74,8 +74,8 @@ function fillRowGaps(arrSheet: TArraySheet) {
 
 /**
  * Залить данные в документ
- * @param arrSheet
- * @param callbackData
+ * @paramVal arrSheet
+ * @paramVal callbackData
  */
 const fillData = async (arrSheet: TArraySheet, callbackData: (cmd: string, name: string) => Promise<any[]>) => {
 
