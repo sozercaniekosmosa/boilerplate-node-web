@@ -26,30 +26,35 @@ export const PARTS = {EMPTY, ROOT, INTRO, MID, END, CHAPTER, SCENE, CHARACTER, O
 const arrControl = [EMPTY, CHARACTER, OBJECT, ACTION];
 
 let BOOK = {
-    worlds: {},
-    scenes: {},
-    characters: {},
-    objects: {},
-    content: {
-        arrChild: [
-            {
-                arrChild: [],
-                data: {opt: INTRO},
-                hide: false
-            },
-            {
-                arrChild: [],
-                data: {opt: MID},
-                hide: false
-            },
-            {
-                arrChild: [],
-                data: {opt: END},
-                hide: false
-            },
-        ],
-        data: {opt: ROOT},
-        hide: true
+    "worlds": {},
+    "scenes": {
+        "Сцена: 01.04.2025 19:32:18": {
+            "pointOfView": {"text": ""},
+            "location": {"text": "1"},
+            "detailsEnv": {"text": ""},
+            "time": {"text": ""},
+            "mood": {"text": ""},
+            "sensors": {"text": ""},
+            "symbols": {"text": ""}
+        },
+        "Сцена: 01.04.2025 19:32:29": {
+            "pointOfView": {"text": ""},
+            "location": {"text": "й"},
+            "detailsEnv": {"text": ""},
+            "time": {"text": ""},
+            "mood": {"text": ""},
+            "sensors": {"text": ""},
+            "symbols": {"text": ""}
+        }
+    },
+    "characters": {},
+    "objects": {},
+    "content": {
+        "arrChild": [{"arrChild": [], "data": {"opt": "Вступление"}, "hide": false}, {
+            "arrChild": [],
+            "data": {"opt": "Основная часть"},
+            "hide": false
+        }, {"arrChild": [], "data": {"opt": "Заключение"}, "hide": false}], "data": {"opt": "Содержание"}, "hide": true
     }
 };
 

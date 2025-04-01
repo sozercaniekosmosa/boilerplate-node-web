@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import ButtonEx from "../../ButtonEx/ButtonEx.tsx";
 import TextBlock from "./TextBlock.tsx";
 import Select from "../../Select/Select.tsx";
@@ -66,6 +66,10 @@ const GenScene = ({book, setBook}) => {
     const {worlds, scenes, characters, objects} = book;
     const [sceneName, setSceneName] = useState(null)
     const scene = scenes[sceneName];
+
+    useEffect(() => {
+        if(!sceneName) setSceneName(Object.keys(scenes)[0]);
+    }, []);
 
     return <>
         <div className="d-flex flex-row gap-1 mb-1">

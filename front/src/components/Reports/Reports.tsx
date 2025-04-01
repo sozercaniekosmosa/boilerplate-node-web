@@ -37,13 +37,13 @@ function Reports() {
     }, [code])
 
     return <Tabs defaultActiveKey="template" className="mb-1" id="reports">
-        <Tab eventKey="template" title="Шаблоны" style={{flex: 1}} className="h-100">
+        <Tab eventKey="template" title="Конструктор" style={{flex: 1}} className="h-100">
             <SheetReports doc={doc} setDoc={setDoc} height={80}/>
         </Tab>
         <Tab eventKey="script" title="Скрипт" style={{flex: 1, height: "inherit"}} className="">
             <ScriptReports code={code} setCode={setCode} height="calc(100% - 110px)"/>
         </Tab>
-        <Tab eventKey="test" title="Проверка" style={{flex: 1, height: "inherit"}} className="">
+        <Tab eventKey="test" title="Тестирование" style={{flex: 1, height: "inherit"}} className="">
             <TestReports  doc={doc} setDoc={setDoc}  code={code} setCode={setCode}/>
         </Tab>
     </Tabs>
