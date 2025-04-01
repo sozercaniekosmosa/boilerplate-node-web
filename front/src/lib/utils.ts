@@ -191,3 +191,22 @@ const getObjectByPath = (obj, pathArr) => {
     }
     return {obj, key: pathArr[pathArr.length - 1]};
 }
+
+/**
+ * Получение из текста js массив имен функций и параметров
+ * @paramVal code - текст на js
+ * @return [[fn_name, paramVal], [fn_name, paramVal], ... ]
+ */
+export const getCodeParam = (code: string) => {
+    const functionRegex = /function\s+(\w+)\s*\(([^)]*)\)|const\s+(\w+)\s*=\s*\(([^)]*)\)\s*=>/g;
+    let match: any[], resArr = [];
+
+    while ((match = functionRegex.exec(code)) !== null) {
+        const functionName = match[1] || match[3];
+        const params = match[2] || match[4];
+        resArr.push([functionName, params])
+        // console.log(`Функция: ${functionName}, Параметры: ${params}`);
+    }
+
+    return resArr;
+}

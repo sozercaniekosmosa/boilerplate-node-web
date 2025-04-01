@@ -77,7 +77,7 @@ function Index() {
         <div className="d-flex flex-column h-100">
             <GlobalStyle/>
             {progress >= 0 && <ProgressBar progress={progress}/>}
-            <Tabs defaultActiveKey="story" className="mb-1" id="main">
+            <Tabs defaultActiveKey="report" className="mb-1" id="main">
 
                 <Tab eventKey="report" title="report" style={{flex: 1}} className="h-100">
                     <Reports/>

@@ -69,7 +69,7 @@ function fillWidthToColumnsContract(arrSheet) {
     })
 }
 
-const SheetReports = ({data, setData, height = 40}) => {
+const SheetReports = ({doc, setDoc, height = 40}) => {
 
     const [spreadsheet, setSpreadsheet] = useState<Spreadsheet>()
     const refNodeSheet = useRef()
@@ -117,7 +117,7 @@ const SheetReports = ({data, setData, height = 40}) => {
         })
 
         setSpreadsheet(s); // необходимо привязать компонент к React-состоянию что бы иметь к нему доступ позже
-        // s.loadData(data) // load data
+        // s.loadData(doc) // load doc
 
         setTimeout(() => {
             //language=html
@@ -139,7 +139,7 @@ const SheetReports = ({data, setData, height = 40}) => {
                 const arrayBuffer = await openFileDialog('xlsx');
                 let sheet = await convertExcelToXSpreadsheet({arrayBuffer});
                 // addProperties(sheet)
-                setData(sheet);
+                setDoc(sheet);
             });
             btnSave[0].addEventListener('click', () => save(s));
 
@@ -162,21 +162,21 @@ const SheetReports = ({data, setData, height = 40}) => {
     }, []);
 
     useEffect(() => {
-        if (!spreadsheet || !Boolean(data)) return;
-        const doc = fillWidthToColumnsExt(data);
-        properties = doc.map(it => it.properties);
+        if (!spreadsheet || !Boolean(doc)) return;
+        const _doc = fillWidthToColumnsExt(doc);
+        properties = _doc.map(it => it.properties);
 
-        if (!didInit) spreadsheet.loadData(doc) // load data
+        if (!didInit) spreadsheet.loadData(_doc) // load doc
         didInit = true;
-    }, [data]);
+    }, [doc]);
 
     const save = (s: Spreadsheet) => {
         // @ts-ignore
         refSave.current.classList.add('rotY')
-        let doc = s.getData();
-        let _doc = fillWidthToColumnsContract(doc);
-        _doc = addProperties(_doc);
-        setData(_doc);
+        let _doc = s.getData();
+        let __doc = fillWidthToColumnsContract(_doc);
+        __doc = addProperties(__doc);
+        setDoc(__doc);
         console.log('store doc')
         // @ts-ignore
         setTimeout(() => refSave.current.classList.remove('rotY'), 1000);

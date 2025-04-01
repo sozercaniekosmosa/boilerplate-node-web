@@ -5,11 +5,6 @@ import {fileURLToPath} from "url";
 import {dirname} from "path";
 import {config} from "dotenv";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const env = config({override: true, path: __dirname + '\\.env'});
-const {USER, HOST, DATABASE, PASSWORD, DB_PORT} = env.parsed
-
 interface TExecVMJS {
     strCode: string;
     param: any;//{ [key: string]: [string] };
@@ -20,7 +15,7 @@ export const execVMJS = ({strCode, param, listExternalFunctions}: TExecVMJS) => 
 
     let listParVal = prepareParam(param, strCode);
 
-    const context = vm.createContext({...listExternalFunctions, SQL});// Создаем изолированный контекст
+    const context = vm.createContext({...listExternalFunctions});// Создаем изолированный контекст
 
     vm.runInContext(strCode, context); // Выполняем код в изолированном контексте
 
@@ -32,10 +27,7 @@ export const execVMJS = ({strCode, param, listExternalFunctions}: TExecVMJS) => 
         }
     }
 
-    return (name: string) => {
-        return callFunction(name, listParVal[name])
-        // return callFunction(name)
-    };
+    return (name: string) => callFunction(name, listParVal[name]);
 }
 
 function prepareParam<ReqQuery>(query: ReqQuery, strCode) {
@@ -51,21 +43,4 @@ function prepareParam<ReqQuery>(query: ReqQuery, strCode) {
         listParVal[nameFn] = arrParam.map(namePar => listPar[namePar]);
     }
     return listParVal;
-}
-
-async function SQL(query: string) {
-    const {Client} = pg;
-    const client = new Client({user: USER, host: HOST, database: DATABASE, password: PASSWORD, port: +DB_PORT,});
-
-    await client.connect();
-
-    // `SELECT "reportDate", sumvol, summas, dens, densbik, temp, tempbik, press, pressbik FROM public."SIKNreports"`
-    // `SELECT "recordNumber", "recordDate", "reportDate", "reportType", volline1, masline1, volline2, masline2, volline3, masline3, sumvol, summas, dens, densbik, volday, masday, temp, tempbik, press, pressbik, ratebik, maswithoutwater, watervol, massnetto, "reportNumber" FROM public."SIKNreports"`
-    const queryResult = await client.query(query);
-
-    // console.log(queryResult.rows);
-    const arr = queryResult.rows;
-    await client.end();
-
-    return arr;
 }

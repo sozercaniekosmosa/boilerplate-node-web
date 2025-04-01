@@ -6,11 +6,10 @@ import {config} from "dotenv";
 import {createAndCheckDir} from "../filesystem";
 import {fileURLToPath} from "url";
 import {dirname} from "path";
-import {formatDateTime} from "../time";
-import {getCodeParam, sanitizeNoSQLInjection} from "../utils";
-import vm from "node:vm";
+import {addHour, formatDateTime, setDate} from "../time";
 import {Query} from "express-serve-static-core";
 import {execVMJS} from "./scriptsHandler";
+import {SQL} from "./scriptExternalFunctions";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -81,12 +80,18 @@ routerReport.get('/report-excel/:name', async (req, res) => {
         const db = glob.db as noSQL;
         const arrSheet = structuredClone(db.getByID('doc'));
         const strCode = db.getByID('code');
-        const sheet = [arrSheet.find(it => it.name == name)] as TArraySheet; //ищем шаблон
+        const sheet = [arrSheet.find(it => it.name.toLocaleLowerCase() == name)] as TArraySheet; //ищем шаблон
         !sheet[0] && global.ERR("Отчет с таким именем не найден");
 
         await createAndCheckDir(REPORT_DIR);
 
-        const exec = execVMJS({strCode, param: query, listExternalFunctions: {fn: () => 'ololo'}});
+        const exec = execVMJS({
+            strCode, param: query, listExternalFunctions: {
+                //@ts-ignore
+                OK, WARN, ERR, addHour,
+                SQL, setDate, formatDateTime,
+            }
+        });
 
         await reports({sheetData: sheet, clbGetData: exec, path});
 

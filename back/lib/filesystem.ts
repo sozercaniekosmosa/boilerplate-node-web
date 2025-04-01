@@ -150,8 +150,6 @@ export async function createAndCheckDir(filePath) {
 
     // Проверяем, существует ли директория, если нет - создаем
     await fsPromises.mkdir(filePath, {recursive: true});
-
-
 }
 
 export async function saveTextToFile(filePath, text) {

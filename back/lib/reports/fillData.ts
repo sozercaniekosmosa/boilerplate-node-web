@@ -1,4 +1,10 @@
 /**
+ * Если строка [undefined, null, NaN] тогда возвращаем пустую строку ""
+ * @param value
+ */
+const sanitizeValue = (value: any) => value === undefined || value === null || Number.isNaN(value) ? "" : value;
+
+/**
  * Заполнить ячейки данными (по шаблону строки)
  * @paramVal arrData
  * @paramVal templateRow
@@ -23,7 +29,7 @@ function fillDataToRowsByTemplate(arrData: any[], templateRow: TRow, colXOff: nu
         for (let j = 0, colX = 0; j < lenCol; j++, colX++) {
             let off = colX + colXOff;
             if (it[off]?.text) //если есть текст заполняем как текст
-                it[off].text = arr[i][j];
+                it[off].text = sanitizeValue(arr[i][j]);
             else
                 it[off] = {text: arr[i][j]};
 
