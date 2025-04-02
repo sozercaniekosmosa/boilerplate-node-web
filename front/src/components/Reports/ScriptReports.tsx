@@ -27,11 +27,13 @@ import ButtonEx from "../ButtonEx/ButtonEx.tsx";
 import {debounce, throttle} from "../../lib/utils.ts";
 
 import AcornWorker from './acorn.worker?worker';
+import beautify from 'js-beautify';
 
 const arrTheme = ['monokai', 'github', 'tomorrow', 'kuroir', 'twilight', 'xcode', 'textmate', 'solarized_dark', 'solarized_light', 'terminal'];
 
-const TIME_THROTTLE_MS = 2500;
 let lang = 'javascript';
+const TIME_THROTTLE_MS = 2500;
+const validateCode = throttle(clb => clb(), TIME_THROTTLE_MS)
 
 const Editor = styled.div.attrs({className: 'd-flex flex-column flex-nowrap m-1'})`
     height: inherit;
@@ -42,9 +44,39 @@ const Editor = styled.div.attrs({className: 'd-flex flex-column flex-nowrap m-1'
         resize: vertical;
     }
 `
-const Control = styled.div.attrs({className: 'd-flex /*align-self-end*/ gap-1 mb-1'})``
+const Control = styled.div.attrs({className: 'd-flex gap-1 mb-1 zoom-out-container'})``
 
-const validateCode = throttle(clb => clb(), TIME_THROTTLE_MS)
+const optionsBeautyScript = {
+    "indent_size": "4",
+    "indent_char": " ",
+    "max_preserve_newlines": "5",
+    "preserve_newlines": true,
+    "keep_array_indentation": false,
+    "break_chained_methods": false,
+    "indent_scripts": "normal",
+    "brace_style": "collapse",
+    "space_before_conditional": true,
+    "unescape_strings": false,
+    "jslint_happy": false,
+    "end_with_newline": false,
+    "wrap_line_length": "0",
+    "indent_inner_html": false,
+    "comma_first": false,
+    "e4x": false,
+    "indent_empty_lines": false
+}
+
+
+const BtnEx = styled(ButtonEx).attrs<{ $variant?: string; }>(props => ({
+    className: `${props?.$variant} btn-sm flex-grow-0`
+}))`width: 1.8em;
+    height: 1.8em;`
+
+const SelectTheme = styled(Select).attrs({className: 'ps-2 pe-5 py-0 w-auto'})`
+    height: 1.7em;
+    font-size: 1.2em;
+    line-height: 1.1;
+`
 
 function ScriptReports({code, setCode, width = '100%', height = '100%'}) {
     const [theme, setTheme] = useState('textmate')
@@ -74,13 +106,16 @@ function ScriptReports({code, setCode, width = '100%', height = '100%'}) {
 
     return <Editor>
         <Control>
-            <ButtonEx className="btn btn-secondary bi-floppy"></ButtonEx>
-            <Select arrList={arrTheme} onChange={changeTheme} value={theme} className="w-auto"/>
+            <BtnEx className="btn btn-secondary bi-card-text" onClick={() => {
+                setCode(beautify.js(code, optionsBeautyScript));
+            }}/>
+            <SelectTheme arrList={arrTheme} onChange={changeTheme} value={theme} className="w-auto"/>
         </Control>
         <AceEditor
             className="ace-editor"
             width={width}
             height={height}
+            showPrintMargin={false}
             mode={lang}
             theme={theme}
             annotations={annotations}

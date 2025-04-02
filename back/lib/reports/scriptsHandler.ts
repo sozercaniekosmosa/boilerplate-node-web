@@ -1,9 +1,5 @@
 import {getCodeParam, sanitizeNoSQLInjection} from "../utils";
 import vm from "node:vm";
-import pg from "pg";
-import {fileURLToPath} from "url";
-import {dirname} from "path";
-import {config} from "dotenv";
 
 interface TExecVMJS {
     strCode: string;

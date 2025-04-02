@@ -2,13 +2,24 @@ import pg from "pg";
 import {fileURLToPath} from "url";
 import {dirname} from "path";
 import {config} from "dotenv";
+import glob from "../../../front/src/glob";
+import {noSQL} from "../db/noSQL";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const env = config({override: true, path: __dirname + '\\.env'});
 const {USER, HOST, DATABASE, PASSWORD, DB_PORT} = env.parsed
 
+let useInnerData = null;
+export const setInnerData = (data: any) => useInnerData = data;
+
 export async function SQL(query: string) {
+
+    if (useInnerData) {
+        let res = null;
+        [res, useInnerData] = [useInnerData, res];
+        return res;
+    }
 
     try {
         const {Client} = pg;
@@ -21,9 +32,6 @@ export async function SQL(query: string) {
         });
 
         await client.connect();
-
-        // `SELECT "reportDate", sumvol, summas, dens, densbik, temp, tempbik, press, pressbik FROM public."SIKNreports"`
-        // `SELECT "recordNumber", "recordDate", "reportDate", "reportType", volline1, masline1, volline2, masline2, volline3, masline3, sumvol, summas, dens, densbik, volday, masday, temp, tempbik, press, pressbik, ratebik, maswithoutwater, watervol, massnetto, "reportNumber" FROM public."SIKNreports"`
         const queryResult = await client.query(query);
 
         // console.log(queryResult.rows);
@@ -33,6 +41,8 @@ export async function SQL(query: string) {
         return arr;
     } catch (error) {
         global.ERR("Failed to connect to DB");
-        return [[1,2,3]];
+        const db = glob.db as noSQL;
+        let data = db.getByID('data');
+        return data ? data : [[1, 2, 3]];
     }
 }

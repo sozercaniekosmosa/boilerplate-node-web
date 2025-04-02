@@ -8,9 +8,9 @@ import {ERR, OK} from "./components/PopupMessage/PopupMessage.tsx";
 import {webSocket} from "./lib/services.ts";
 import {eventBus} from "./lib/events.ts";
 
-glob.host = 'http://localhost:5173/'
-glob.hostAPI = 'http://localhost:5173/api/v1/'
-glob.wsHost = 'localhost'
+glob.host = 'http://192.168.10.108:5173/'
+glob.hostAPI = 'http://192.168.10.108:5173/api/v1/'
+glob.wsHost = '192.168.10.108'
 glob.wsPort = '3000'
 
 let nodeRoot = document.getElementById('root');

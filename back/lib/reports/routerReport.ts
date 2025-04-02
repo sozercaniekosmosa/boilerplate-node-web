@@ -9,7 +9,7 @@ import {dirname} from "path";
 import {addHour, formatDateTime, setDate} from "../time";
 import {Query} from "express-serve-static-core";
 import {execVMJS} from "./scriptsHandler";
-import {SQL} from "./scriptExternalFunctions";
+import {SQL, setInnerData} from "./scriptExternalFunctions";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -85,6 +85,8 @@ routerReport.get('/report-excel/:name', async (req, res) => {
 
         await createAndCheckDir(REPORT_DIR);
 
+        if (query?.innerData) setInnerData(db.getByID('data'));
+
         const exec = execVMJS({
             strCode, param: query, listExternalFunctions: {
                 //@ts-ignore
@@ -99,6 +101,31 @@ routerReport.get('/report-excel/:name', async (req, res) => {
         res.send('ok');
     } catch (error) {
         global.ERR(error.message);
+        console.log(error)
+        res.status(error.status || 500).send({error: error?.message || error},);
+    }
+});
+
+routerReport.post('/data', async (req, res) => {
+    try {
+        const {body: {data}} = req;
+        const db = glob.db as noSQL;
+        db.update({data: data})
+        console.log(data)
+
+        res.send('ok');
+    } catch (error) {
+        console.log(error)
+        res.status(error.status || 500).send({error: error?.message || error},);
+    }
+});
+
+routerReport.get('/data', async (req, res) => {
+    try {
+        const db = glob.db as noSQL;
+        let data = db.getByID('data');
+        res.send(data);
+    } catch (error) {
         console.log(error)
         res.status(error.status || 500).send({error: error?.message || error},);
     }

@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 import Select from "../Select/Select.tsx";
 import {getCodeParam} from "../../lib/utils.ts";
 import styled from "styled-components";
+import {Button} from "react-bootstrap";
 
 const listTypeReports = {'Excel': 'report-excel', 'Pdf': 'report-pdf',};
 
@@ -57,13 +58,15 @@ function buildGetUrl(baseUrl, directory, params) {
     return url.toString();
 }
 
-const TestOptions = styled.div.attrs({className: "d-flex flex-row gap-1 mx-1 my-2"})``;
-const TestParams = styled.div.attrs({className: "position-relative border rounded mx-1 mt-3 px-2 pt-3 pb-1 mb-2"})``;
+const TestOptions = styled.div.attrs({className: "d-flex flex-row gap-1 mx-2 my-2"})``;
+const TestParams = styled.div.attrs({className: "position-relative border rounded mx-2 mt-3 px-2 pt-3 pb-1 mb-2"})`
+    background-color: #fafafa;
+`;
 const DescParam = styled.div.attrs({className: "position-absolute z-1 px-2 rounded-4 border bg-white no-select"})`
     font-size: 1em;
     line-height: 0.7;
     padding: 3px 0 4px 0;
-    top: -0.8em;
+    top: -0.7em;
     left: 1em;
     position: absolute;
     display: flex;
@@ -76,41 +79,67 @@ const FileName = styled.input.attrs({
     placeholder: "Введите имя файла отчета"
 })``;
 
-function TestReports({doc, setDoc, code, setCode}) {
-    const [url, setUrl] = useState(glob.hostAPI + 'report-excel/' + 'сутки' + '?date=02.03.25&num=4&fileName=отчет')
-    const [listReports, setListReports] = useState([])
-    const [type, setType] = useState('')
-    const [nameTemplate, setNameTemplate] = useState('')
-    const [nameFile, setNameFile] = useState('')
-    const [paramReport, setParamReport] = useState({})
-    const [arrFltFn, setArrFltFn] = useState([])
+function getFltFn(doc, nameTemplate: string) {
+    if (!nameTemplate) return;
+    const _arrFltFn = [];
+    const sheet = doc.find(it => it.name.toLocaleLowerCase() == nameTemplate); //ищем шаблон
+
+    let arrRow = Object.values(sheet.rows).length;
+    for (let i = 0; i < arrRow; i++) {
+        const row = Object.values(sheet.rows)[i];
+        const [cmd, name, colIndex] = getCommand(row);
+        name && _arrFltFn.push(name);
+    }
+    console.log(_arrFltFn)
+    return _arrFltFn;
+}
+
+let arrFltFn = [];
+
+const URLReport = styled.div`
+
+    * {
+        height: 1.8em;
+        font-size: 1.1em;
+        line-height: 0;
+    }
+`
+
+const BtnEx = styled(ButtonEx).attrs<{ $variant?: string; }>(props => ({
+    className: `${props?.$variant} btn-sm flex-grow-0`
+}))`width: 1.8em;
+    height: 1.8em;`
+
+const SelectSmf = styled(Select).attrs({
+    className: 'ps-2 pe-5 py-0 w-auto'
+})`
+    height: 1.7em;
+    font-size: 1.2em;
+    line-height: 1.1;
+`
+
+function TestReports({doc, code, data, setData}) {
+    const [url, setUrl] = useState('');
+    const [type, setType] = useState('');
+    const [listReports, setListReports] = useState([]);
+    const [nameTemplate, setNameTemplate] = useState('');
+    const [nameFile, setNameFile] = useState('');
+    const [paramReport, setParamReport] = useState({});
 
     useEffect(() => {
         if (!doc) return;
+        setType(listTypeReports.Excel);
         const arrSheetName = doc.map(it => it.name.toLocaleLowerCase());
         setListReports(arrSheetName);
-        setNameTemplate(arrSheetName[0])
+        setNameTemplate(arrSheetName[0]);
     }, [doc]);
 
     useEffect(() => {
-        if (!nameTemplate) return;
-        const _arrFltFn = [];
-        const sheet = doc.find(it => it.name.toLocaleLowerCase() == nameTemplate); //ищем шаблон
-
-        let arrRow = Object.values(sheet.rows).length;
-        for (let i = 0; i < arrRow; i++) {
-            const row = Object.values(sheet.rows)[i];
-            const [cmd, name, colIndex] = getCommand(row);
-            name && _arrFltFn.push(name);
-        }
-        setArrFltFn(_arrFltFn);
-        console.log(_arrFltFn)
-    }, [nameTemplate]);
-
-    useEffect(() => {
         if (!code) return;
+        if (!nameTemplate) return;
         let arrParam = [];
         const arrFn = getCodeParam(code);
+        arrFltFn = getFltFn(doc, nameTemplate);
         for (let i = 0; i < arrFn.length; i++) {
             const [nameFn, param] = arrFn[i];
             if (arrFltFn.includes(nameFn))
@@ -121,7 +150,7 @@ function TestReports({doc, setDoc, code, setCode}) {
         arrParam.forEach(it => _paramReport[it] = '');
         setParamReport(() => _paramReport);
         // console.log(paramReport);
-    }, [code]);
+    }, [code, nameTemplate]);
 
     useEffect(() => {
         const buildUrl = buildGetUrl(glob.hostAPI, [type, nameTemplate], {...paramReport, ...(nameFile ? {fileName: nameFile} : undefined)});
@@ -129,6 +158,16 @@ function TestReports({doc, setDoc, code, setCode}) {
     }, [listReports, type, nameTemplate, nameFile, paramReport]);
 
     return <>
+        <URLReport className="input-group mt-2 ms-2 mb-2">
+            <span className="input-group-text">URL</span>
+            <input type="text" className="form-control" placeholder="Введите url запроса" value={url}
+                   onChange={(e) => setUrl(e.target.value)}/>
+            <ButtonEx className="btn btn-secondary bi-copy"
+                      onAction={async () => await navigator.clipboard.writeText(url)}></ButtonEx>
+            <ButtonEx className="btn btn-secondary"
+                      onAction={() => axios.get(buildGetUrl(url, [], 'innerData=1'))}>Тест</ButtonEx>
+            <ButtonEx className="btn btn-secondary me-3" onAction={() => axios.get(url)}>Отчет</ButtonEx>
+        </URLReport>
         <TestOptions>
             <TypeReport arrList={listTypeReports} onChange={(val) => setType(val)} value={type}/>
             <Template arrList={listReports} onChange={(val: string) => setNameTemplate(val)} value={nameTemplate}/>
@@ -144,17 +183,15 @@ function TestReports({doc, setDoc, code, setCode}) {
                                onChange={(e) => {
                                    paramReport[key] = e.target.value;
                                    setParamReport({...paramReport});
-                               }}/>
+                               }} placeholder="Введите значение"/>
                     </div>
                 })}
             </div>
         </TestParams>
-        <div className="input-group mb-3">
-            <span className="input-group-text">URL</span>
-            <input type="text" className="form-control" placeholder="Введите url запроса" value={url}
-                   onChange={(e) => setUrl(e.target.value)}/>
-            <ButtonEx className="btn btn-secondary bi-copy" onAction={async () => await navigator.clipboard.writeText(url)}></ButtonEx>
-            <ButtonEx className="btn btn-secondary" onAction={() => axios.get(url)}>Отчет</ButtonEx>
+        <div className="mx-2 mt-3 mb-1 position-relative">
+            <DescParam>Данные</DescParam>
+            <textarea className="border rounded p-2 w-100" rows={10} value={data}
+                      onChange={({target}) => setData(target.value)}/>
         </div>
     </>
 }
