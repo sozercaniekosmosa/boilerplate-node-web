@@ -1,5 +1,5 @@
 export function webSocket({
-                              host,
+                              hostName,
                               port,
                               protocol = 'json',
                               clbOpen = null,
@@ -21,7 +21,7 @@ export function webSocket({
     }
 
     function _webSocket(param) {
-        const ws = new WebSocket(`ws://${host}:${port}`, protocol) as WebSocket;
+        const ws = new WebSocket(`ws://${hostName}:${port}`, protocol) as WebSocket;
 
 
         ws.onopen = () => {

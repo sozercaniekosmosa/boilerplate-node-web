@@ -5,7 +5,6 @@ import {useEffect, useState} from "react";
 import Select from "../Select/Select.tsx";
 import {getCodeParam} from "../../lib/utils.ts";
 import styled from "styled-components";
-import {Button} from "react-bootstrap";
 
 const listTypeReports = {'Excel': 'report-excel', 'Pdf': 'report-pdf',};
 
@@ -55,12 +54,12 @@ function buildGetUrl(baseUrl, directory, params) {
         }
     }
 
-    return url.toString();
+    return decodeURIComponent(url.toString());
 }
 
 const TestOptions = styled.div.attrs({className: "d-flex flex-row gap-1 mx-2 my-2"})``;
 const TestParams = styled.div.attrs({className: "position-relative border rounded mx-2 mt-3 px-2 pt-3 pb-1 mb-2"})`
-    background-color: #fafafa;
+    background-color: #fcfcfc;
 `;
 const DescParam = styled.div.attrs({className: "position-absolute z-1 px-2 rounded-4 border bg-white no-select"})`
     font-size: 1em;
@@ -99,23 +98,10 @@ let arrFltFn = [];
 const URLReport = styled.div`
 
     * {
-        height: 1.8em;
+        height: 2em;
         font-size: 1.1em;
         line-height: 0;
     }
-`
-
-const BtnEx = styled(ButtonEx).attrs<{ $variant?: string; }>(props => ({
-    className: `${props?.$variant} btn-sm flex-grow-0`
-}))`width: 1.8em;
-    height: 1.8em;`
-
-const SelectSmf = styled(Select).attrs({
-    className: 'ps-2 pe-5 py-0 w-auto'
-})`
-    height: 1.7em;
-    font-size: 1.2em;
-    line-height: 1.1;
 `
 
 function TestReports({doc, code, data, setData}) {
@@ -165,7 +151,14 @@ function TestReports({doc, code, data, setData}) {
             <ButtonEx className="btn btn-secondary bi-copy"
                       onAction={async () => await navigator.clipboard.writeText(url)}></ButtonEx>
             <ButtonEx className="btn btn-secondary"
-                      onAction={() => axios.get(buildGetUrl(url, [], 'innerData=1'))}>Тест</ButtonEx>
+                      onAction={async () => {
+                          try {
+                              await axios.get(buildGetUrl(url, [], 'innerData=1'));
+                              return 0;
+                          } catch (e) {
+                              return 2;
+                          }
+                      }}>Тест</ButtonEx>
             <ButtonEx className="btn btn-secondary me-3" onAction={() => axios.get(url)}>Отчет</ButtonEx>
         </URLReport>
         <TestOptions>
@@ -189,7 +182,7 @@ function TestReports({doc, code, data, setData}) {
             </div>
         </TestParams>
         <div className="mx-2 mt-3 mb-1 position-relative">
-            <DescParam>Данные</DescParam>
+            <DescParam>Данные для SQL</DescParam>
             <textarea className="border rounded p-2 w-100" rows={10} value={data}
                       onChange={({target}) => setData(target.value)}/>
         </div>

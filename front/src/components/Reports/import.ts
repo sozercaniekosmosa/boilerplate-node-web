@@ -175,13 +175,17 @@ function getCellStyle(cell: Excel.Cell): any {
         if (cell.font.bold) font.bold = true;
         if (cell.font.italic) font.italic = true;
         if (cell.font.size) font.size = cell.font.size;
-        if (cell.font.color?.argb) font.color = cell.font.color.argb;
+        if (cell.font.color?.argb) {
+            font.color = cell.font.color.argb;
+            style.color = '#' + cell.font.color.argb.slice(2);
+        }
         if (Object.keys(font).length) style.font = font;
     }
 
     // Заливка
     if (cell.fill?.type === 'pattern' && cell.fill.fgColor?.argb) {
         style.fill = {bgColor: cell.fill.fgColor.argb};
+        style.bgcolor = '#' + cell.fill.fgColor.argb.slice(2);
     }
 
     return style;

@@ -1,9 +1,8 @@
 import Spreadsheet from "x-data-spreadsheet"
 import React, {useEffect, useRef, useState} from "react";
 import ruRU from "./ru-RU.ts"
-import {getHtmlStr} from "../../lib/dom.ts";
+import {textToHtmlNodes} from "../../lib/dom.ts";
 import convertExcelToXSpreadsheet from "./import.ts";
-import {debounce, getHashCyrb53Arr, throttle} from "../../lib/utils.ts";
 import Dialog from "../Dialog/Dialog.tsx";
 
 
@@ -46,6 +45,7 @@ const openFileDialog = async (acceptTypes: string): Promise<ArrayBuffer> => new 
 
 
 const classAnim = 'zoom-out'
+const classHead = 'header-set'
 let didInit = false;
 let properties = [];
 let clbConfirm;
@@ -81,7 +81,7 @@ function fillWidthToColumnsContract(arrSheet) {
     })
 }
 
-function createSpreadSheet(refNodeSheet: React.MutableRefObject<undefined>, height: number) {
+function createSpreadSheet(refNodeSheet: React.MutableRefObject<HTMLElement | null>, height: number) {
     return new Spreadsheet(refNodeSheet.current, {
         mode: 'edit', // edit | read
         showToolbar: true,
@@ -120,72 +120,36 @@ function createSpreadSheet(refNodeSheet: React.MutableRefObject<undefined>, heig
     });
 }
 
+function getNameSheet(s: Spreadsheet) {
+    // @ts-ignore
+    const name = s.sheet.data.name;
+    // @ts-ignore
+    return s.datas.findIndex(it => it.name == name); //ищем шаблон
+}
+
 const SheetReports = ({doc, setDoc, height = 40}) => {
 
     const [spreadsheet, setSpreadsheet] = useState<Spreadsheet>()
-    const refNodeSheet = useRef()
-    const refSave = useRef()
+    const refNodeSheet = useRef<HTMLElement | null | any>()
+    const refSave = useRef<HTMLElement | null>()
+    const refHeader = useRef<HTMLElement | null>()
     const [showConfirm, setShowConfirm] = useState(false)
 
     useEffect(() => {
 
         Spreadsheet.locale('ru-RU', ruRU);
 
+        // @ts-ignore
+        if (refNodeSheet.current.innerHTML != '') return;
+
         const s = createSpreadSheet(refNodeSheet, height)
         setSpreadsheet(s); // необходимо привязать компонент к React-состоянию что бы иметь к нему доступ позже
         // s.loadData(doc) // load doc
+        infLoop.call(this, s);
 
-        setTimeout(() => {
-            //language=html
-            const btnNew = getHtmlStr(`
-                <div class="x-spreadsheet-toolbar-btn" title="Новый документ">
-                    <div class="bi-file-earmark" style="font-size: 1.3em; color: #4d4d4d"/>
-                </div>
-            `);
-            const btnOpen = getHtmlStr(`
-                <div class="x-spreadsheet-toolbar-btn" title="Загрузить шаблон">
-                    <div class="bi-folder2-open" style="font-size: 1.3em; color: #4d4d4d"/>
-                </div>
-            `);
-            const btnSave = getHtmlStr(`
-                <div class="x-spreadsheet-toolbar-btn zoom-out-container" title="Сохранить шаблон">
-                    <div class="bi-floppy2-fill" style="font-size: 1.2em; color: #4d4d4d"/>
-                </div>
-            `);
-
-            // @ts-ignore
-            refSave.current = btnSave[0].children[0];
-
-            btnNew[0].addEventListener('click', async (e) => {
-                clbConfirm = () =>
-                    s.loadData([{
-                        "name": "Шаблон1",
-                        "freeze": "A1",
-                        "styles": [],
-                        "merges": [],
-                        "rows": {"len": 100},
-                        "cols": {"len": 26},
-                        "validations": [],
-                        "autofilter": {}
-                    }])
-                setShowConfirm(true);
-
-            });
-
-            btnOpen[0].addEventListener('click', async (e) => {
-                const arrayBuffer = await openFileDialog('xlsx');
-                let sheet = await convertExcelToXSpreadsheet({arrayBuffer});
-                const _sheet = fillWidthToColumns(sheet)
-                setDoc(_sheet);
-                didInit = false;
-            });
-            btnSave[0].addEventListener('click', () => save(s));
-
-            // @ts-ignore
-            let nodeToolBtn = refNodeSheet.current.querySelector('.x-spreadsheet-toolbar-btns');
-            nodeToolBtn.prepend(btnNew[0], btnOpen[0], btnSave[0]);
-
-        }, 100)
+        // s.on('cells-selected', (cell, {sri, sci, eri, eci}) => {
+        //     console.log(cell, sri, sci, eri, eci)
+        // });
 
         // @ts-ignore
         s.validate()
@@ -201,8 +165,9 @@ const SheetReports = ({doc, setDoc, height = 40}) => {
 
     useEffect(() => {
         if (!spreadsheet || !Boolean(doc)) return;
+
         const _doc = fillWidthToColumnsExt(doc);
-        properties = _doc.map(it => it.properties);
+        properties = _doc.map(it => it?.properties ?? {});
 
         if (!didInit) spreadsheet.loadData(_doc) // load doc
         didInit = true;
@@ -222,6 +187,96 @@ const SheetReports = ({doc, setDoc, height = 40}) => {
         return s;
     };
 
+    const setHeader = (s: Spreadsheet) => {
+
+        // @ts-ignore
+        const {sri, eri, sci, eci} = s.sheet.selector.range;
+        console.log(sri, eri, sci, eci);
+
+        // @ts-ignore
+        const indexSheet = getNameSheet(s);
+        if (properties[indexSheet]?.pinHeader) {
+            delete properties[indexSheet].pinHeader;
+        } else {
+            properties[indexSheet].pinHeader = [sri, eri];
+        }
+
+        save(s);
+
+        // spreadsheet.sheet.selector.reset()
+        // spreadsheet.sheet.selector.set(4,0,true)
+        // spreadsheet.sheet.selector.setEnd(4,2,true)
+
+        return s;
+    };
+
+    const infLoop = (s: Spreadsheet) => {
+
+        const indexSheet = getNameSheet(s);
+
+        if (!refNodeSheet.current?.querySelector('.mark-btn-added')) {
+
+            //language=html
+            const btn: ChildNode[] = textToHtmlNodes(`
+                <div class="x-spreadsheet-toolbar-btn mark-btn-added" title="Новый документ">
+                    <div class="bi-file-earmark" style="font-size: 1.3em; color: #4d4d4d"></div>
+                </div>
+                <div class="x-spreadsheet-toolbar-btn" title="Загрузить шаблон">
+                    <div class="bi-folder2-open" style="font-size: 1.3em; color: #4d4d4d"></div>
+                </div>
+                <div class="x-spreadsheet-toolbar-btn zoom-out-container" title="Сохранить шаблон">
+                    <div class="bi-floppy2-fill" style="font-size: 1.2em; color: #4d4d4d"></div>
+                </div>
+                <div class="x-spreadsheet-toolbar-btn" title="Фиксировать строки">
+                    <div class="bi-file-earmark-break" style="font-size: 1.3em; color: #4d4d4d"></div>
+                </div>
+            `);
+
+            refSave.current = (btn[2] as HTMLElement).children[0] as HTMLElement;
+            refHeader.current = (btn[3] as HTMLElement).children[0] as HTMLElement;
+
+            btn[0].addEventListener('click', async (e) => {
+                clbConfirm = () =>
+                    s.loadData([{
+                        "name": "Шаблон1",
+                        "freeze": "A1",
+                        "styles": [],
+                        "merges": [],
+                        "rows": {"len": 100},
+                        "cols": {"len": 26},
+                        "validations": [],
+                        "autofilter": {}
+                    }])
+                setShowConfirm(true);
+
+            });
+
+            btn[1].addEventListener('click', async (e) => {
+                const arrayBuffer = await openFileDialog('xlsx');
+                let sheet = await convertExcelToXSpreadsheet({arrayBuffer});
+                const _sheet = fillWidthToColumns(sheet)
+                setDoc(_sheet);
+                didInit = false;
+            });
+            btn[2].addEventListener('click', () => save(s));
+            btn[3].addEventListener('click', () => setHeader(s));
+
+            // @ts-ignore
+            let nodeToolBtn = refNodeSheet.current.querySelector('.x-spreadsheet-toolbar-btns');
+            nodeToolBtn.prepend(...btn);
+        }
+
+        if (properties[indexSheet]?.pinHeader) {
+            refHeader.current.classList.add(classHead)
+        } else {
+            refHeader.current.classList.remove(classHead)
+        }
+
+
+        setTimeout(() => infLoop(s), 1000);
+    }
+
+
     const handleKeyDown = (e) => {
         const {ctrlKey, key}: KeyboardEvent = e;
         if (ctrlKey && key === 's') {
@@ -237,5 +292,5 @@ const SheetReports = ({doc, setDoc, height = 40}) => {
                 props={{className: 'modal-sm'}}/>
     </>;
 }
-//@ts-ignore
+
 export default SheetReports;

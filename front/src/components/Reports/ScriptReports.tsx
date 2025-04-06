@@ -108,7 +108,7 @@ function ScriptReports({code, setCode, width = '100%', height = '100%'}) {
         <Control>
             <BtnEx className="btn btn-secondary bi-card-text" onClick={() => {
                 setCode(beautify.js(code, optionsBeautyScript));
-            }}/>
+            }} title="Структурировать код"/>
             <SelectTheme arrList={arrTheme} onChange={changeTheme} value={theme} className="w-auto"/>
         </Control>
         <AceEditor

@@ -68,6 +68,31 @@ routerReport.get('/code', async (req, res) => {
     }
 });
 
+routerReport.post('/data', async (req, res) => {
+    try {
+        const {body: {data}} = req;
+        const db = glob.db as noSQL;
+        db.update({data: data})
+        console.log(data)
+
+        res.send('ok');
+    } catch (error) {
+        console.log(error)
+        res.status(error.status || 500).send({error: error?.message || error},);
+    }
+});
+
+routerReport.get('/data', async (req, res) => {
+    try {
+        const db = glob.db as noSQL;
+        let data = db.getByID('data');
+        res.send(data);
+    } catch (error) {
+        console.log(error)
+        res.status(error.status || 500).send({error: error?.message || error},);
+    }
+});
+
 // http://localhost:5173/api/v1/report-excel/day?ololo=1
 routerReport.get('/report-excel/:name', async (req, res) => {
     try {
@@ -95,7 +120,7 @@ routerReport.get('/report-excel/:name', async (req, res) => {
             }
         });
 
-        await reports({sheetData: sheet, clbGetData: exec, path});
+        await reports({sheetData: sheet, clbGetData: exec, path, type: 'excel'});
 
         global.OK(`Отчет "${path}" успешно сформирован`);
         res.send('ok');
@@ -106,26 +131,38 @@ routerReport.get('/report-excel/:name', async (req, res) => {
     }
 });
 
-routerReport.post('/data', async (req, res) => {
+routerReport.get('/report-pdf/:name', async (req, res) => {
     try {
-        const {body: {data}} = req;
-        const db = glob.db as noSQL;
-        db.update({data: data})
-        console.log(data)
+        const query: Query = req.query
 
+        const name = req.params.name;
+        let path: string = `${REPORT_DIR}/`;
+        path += (query?.fileName ? query.fileName : formatDateTime(new Date(), 'yyyy-MM-dd-hh-mm-ss-' + name)) + '.xlsx';
+
+        const db = glob.db as noSQL;
+        const arrSheet = structuredClone(db.getByID('doc'));
+        const strCode = db.getByID('code');
+        const sheet = [arrSheet.find(it => it.name.toLocaleLowerCase() == name)] as TArraySheet; //ищем шаблон
+        !sheet[0] && global.ERR("Отчет с таким именем не найден");
+
+        await createAndCheckDir(REPORT_DIR);
+
+        if (query?.innerData) setInnerData(db.getByID('data'));
+
+        const exec = execVMJS({
+            strCode, param: query, listExternalFunctions: {
+                //@ts-ignore
+                OK, WARN, ERR, addHour,
+                SQL, setDate, formatDateTime,
+            }
+        });
+
+        await reports({sheetData: sheet, clbGetData: exec, path, type: 'pdf'});
+
+        global.OK(`Отчет "${path}" успешно сформирован`);
         res.send('ok');
     } catch (error) {
-        console.log(error)
-        res.status(error.status || 500).send({error: error?.message || error},);
-    }
-});
-
-routerReport.get('/data', async (req, res) => {
-    try {
-        const db = glob.db as noSQL;
-        let data = db.getByID('data');
-        res.send(data);
-    } catch (error) {
+        global.ERR(error.message);
         console.log(error)
         res.status(error.status || 500).send({error: error?.message || error},);
     }

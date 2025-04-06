@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import './style.css'
 import ProgressBar from './ProgressBar/ProgressBar';
 import {ERR, LOG, OK, PopupMessage, WARN} from "./PopupMessage/PopupMessage.tsx";
@@ -13,6 +13,7 @@ import {createGlobalStyle} from "styled-components";
 import Storytelling from "./Storytelling/Storytelling.tsx";
 import SimpleTable from "./Sheets/SimpleTable/SimpleTable.tsx";
 import Reports from "./Reports/Reports.tsx";
+import {jsonToHtmlTable} from "./Reports/jsonToTable.ts";
 
 
 const GlobalStyle = createGlobalStyle`
@@ -25,7 +26,7 @@ function Index() {
     const [progress, setProgress] = useState(0)
     const [arrData, setArrData] = useState(['Элемент — 1', 'Элемент — 2', 'Элемент — 3'])
     const [newNode, setNewNode] = useState(null)
-
+    const refTbl = useRef();
 
     useEffect(() => {
 
@@ -174,6 +175,17 @@ function Index() {
                         </div>
                         <hr/>
                     </div>
+                </Tab>
+                <Tab eventKey="test" title="test" style={{flex: 1}}>
+                    <ButtonEx onAction={async () => {
+                        // let obj = await import('../../../data/db.json');
+                        // const table = jsonToHtmlTable(obj["doc"][0])
+                        let obj = await import('./objTable.json');
+                        const table = jsonToHtmlTable(obj)
+                        // @ts-ignore
+                        refTbl.current.innerHTML = table
+                    }}>Ok</ButtonEx>
+                    <div ref={refTbl}></div>
                 </Tab>
             </Tabs>
             <PopupMessage/>

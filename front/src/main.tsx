@@ -8,10 +8,11 @@ import {ERR, OK} from "./components/PopupMessage/PopupMessage.tsx";
 import {webSocket} from "./lib/services.ts";
 import {eventBus} from "./lib/events.ts";
 
-glob.host = 'http://192.168.10.108:5173/'
-glob.hostAPI = 'http://192.168.10.108:5173/api/v1/'
-glob.wsHost = '192.168.10.108'
-glob.wsPort = '3000'
+glob.hostName = window.location.hostname;
+glob.port = 5173;
+glob.hostAPI = `http://${glob.hostName}:${glob.port}/api/v1/`;
+glob.wsHostName = glob.hostName;
+glob.wsPort = '3000';
 
 let nodeRoot = document.getElementById('root');
 createRoot(nodeRoot!).render(
@@ -33,7 +34,7 @@ nodeRoot.addEventListener('mouseup', () => {
 async function createMessageSocket() {
     try {
         webSocket({
-            host: glob.wsHost, port: glob.wsPort, timeReconnect: 1500,
+            hostName: glob.wsHostName, port: glob.wsPort, timeReconnect: 1500,
             clbOpen: () => {
                 eventBus.dispatchEvent('connect-to-srv');
                 OK('Связь с сервером восстановлена')

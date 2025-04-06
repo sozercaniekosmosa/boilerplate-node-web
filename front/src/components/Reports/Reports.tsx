@@ -6,7 +6,6 @@ import axios from "axios";
 import glob from "../../glob.ts";
 import {debounce} from "../../lib/utils.ts";
 import TestReports from "./TestReports.tsx";
-import beautify from 'js-beautify';
 
 const saveDoc: (doc: string) => void = debounce((doc: string) => axios.post(glob.hostAPI + 'doc', {doc}), 1000);
 const saveCode: (code: string) => void = debounce((code: string) => axios.post(glob.hostAPI + 'code', {code}), 3000);
@@ -53,7 +52,7 @@ function Reports() {
         <Tab eventKey="template" title="Конструктор" style={{flex: 1}} className="h-100">
             <SheetReports doc={doc} setDoc={setDoc} height={80}/>
         </Tab>
-        <Tab eventKey="script" title="Скрипт" style={{flex: 1, height: "inherit"}} className="">
+        <Tab eventKey="data" title="Данные" style={{flex: 1, height: "inherit"}} className="">
             <ScriptReports code={code} setCode={setCode} height="calc(100% - 110px)"/>
         </Tab>
         <Tab eventKey="test" title="Тестирование" style={{flex: 1, height: "inherit"}} className="">

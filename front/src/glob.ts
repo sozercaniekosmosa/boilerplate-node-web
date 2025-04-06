@@ -1,14 +1,14 @@
 //здесь хранятся данные для обмена с другими модулями
 export default {
     root: '',
-    host: '',
+    hostName: '',
     port: 0,
     db: {},
     webDir: '',
     hostAPI: '',
     selectedText: '',
     draggingElement: null,
-    wsHost: '',
+    wsHostName: '',
     wsPort: '',
     links: '',
 }

@@ -29,6 +29,17 @@ export const getHtmlStr = (html: string) => {
     return content.childNodes.length ? content.childNodes : [content.firstChild];
 };
 
+export function textToHtmlNodes(htmlString: string): ChildNode[] {
+    // Создаем временный контейнер
+    const tempContainer = document.createElement('template');
+
+    // Вставляем HTML-код в контейнер
+    tempContainer.innerHTML = htmlString.trim().replace(/[\r\n]|(>)\s*(<)/g, '$1$2');
+
+    // Извлекаем дочерние узлы и возвращаем их в виде массива
+    return Array.from(tempContainer.content.childNodes);
+}
+
 export const setStyle = (strStyle, cssObjectID = generateUID('st')) => {
     let destNode = document.head;
     let node = destNode.querySelector('.' + cssObjectID);
