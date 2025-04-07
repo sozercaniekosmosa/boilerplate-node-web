@@ -36,29 +36,25 @@ export const reports = async ({sheetData, clbGetData, path, type}: TReportsParam
         await exportToExcel(sd as TArraySheet, path);
     } else if (type == "pdf") {
 
-        console.log(JSON.stringify(sd[0]));
+        // console.log(JSON.stringify(sd[0]));
         const table = jsonToHtmlTable(sd[0]);
         await generatePDFfromHTML(table, path)
     }
 }
 
 async function generatePDFfromHTML(htmlContent, outputPath) {
-    // Запуск браузера
-    const browser = await chromium.launch({headless: false});
-    // const context = await browser.newContext({viewport: {width: 1920, height: 1080}});
-    // const page = await context.newPage();
+    const browser = await chromium.launch({headless: true});
     const page = await browser.newPage();
-
-    // await page.goto(urlTemplate);
-
-    // Установка HTML-контента
     await page.setContent(htmlContent);
-
-    // Генерация PDF
-    await page.pdf({path: outputPath, format: 'A4'});
-
-    console.log('PDF успешно создан:', outputPath);
-
-    // Закрытие браузера
+    await page.pdf({
+        path: outputPath, format: 'A4', landscape: true,
+        margin: {
+            left: '5px',
+            top: '5px',
+            bottom: '5px',
+            right: '5px'
+        }
+    });
+    // console.log('PDF успешно создан:', outputPath);
     await browser.close();
 }

@@ -53,22 +53,23 @@ function getGroupCols(cols, colCount: number) {
     return `<colgroup>${html}</colgroup>`
 }
 
-function getCol(rowIndex: number, colIndex: number, mergeMap: {}, cells: {}, styles, listStyle: {}) {
+function getCell(rowIndex: number, colIndex: number, mergeMap: {}, cells: {}, styles, listStyle: {}) {
     let html: string = ''
 
     const cellKey = `${rowIndex},${colIndex}`;
     const mergeInfo = mergeMap[cellKey];
     const cell = cells[colIndex] || {};
-    const styleCell = styles[cell.style/* || 0*/] || {};
+    const styleCell = styles[cell.style] || {};
     const style = getStyle(styleCell)
     listStyle[style.className] = style.css;
+    const text = cell.text === undefined || cell.text === null ? '' : cell.text;
 
     if (mergeInfo) {
         const {rowspan, colspan} = mergeInfo;
 
-        html += `<td class="${"cell " + style.className}" rowspan="${rowspan}" colspan="${colspan}">${cell.text || ''}</td>`;
+        html += `<td class="${"cell " + style.className}" rowspan="${rowspan}" colspan="${colspan}">${text}</td>`;
     } else {
-        html += cell ? `<td class="${"cell " + style.className}">${cell.text || ''}</td>` : '<td></td>';
+        html += cell ? `<td class="${"cell " + style.className}">${text}</td>` : '<td></td>';
     }
     return html;
 }
@@ -82,7 +83,7 @@ function getRow(rows, rowIndex: number, colCount: number, mergedCells: boolean[]
 
     for (let colIndex = 0; colIndex < colCount; colIndex++) {
         if (mergedCells[rowIndex]?.[colIndex]) continue; // Пропускаем объединённые ячейки
-        html += getCol(rowIndex, colIndex, mergeMap, cells, styles, listStyle);
+        html += getCell(rowIndex, colIndex, mergeMap, cells, styles, listStyle);
     }
 
     html += '</tr>';

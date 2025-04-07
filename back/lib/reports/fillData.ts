@@ -1,3 +1,61 @@
+function columnToLetter(column: number): string {
+    let temp;
+    let letter = '';
+    let col = column;
+    while (col >= 0) {
+        temp = col % 26;
+        letter = String.fromCharCode(temp + 65) + letter;
+        col = Math.floor(col / 26) - 1;
+    }
+    return letter;
+}
+
+function getMergeRange(r: number, c: number, merge: [number, number]): string {
+    const rowSpan = merge[0] + 1;
+    const colSpan = merge[1] + 1;
+    const startRow = r + 1;
+    const startCol = columnToLetter(c);
+    const endRow = r + rowSpan;
+    const endCol = columnToLetter(c + colSpan - 1);
+    return `${startCol}${startRow}:${endCol}${endRow}`;
+}
+
+function addMissingMerges(sheet: any): void {
+    const existingMerges = new Set(sheet.merges);
+
+    for (const rowKey in sheet.rows) {
+        if (sheet.rows.hasOwnProperty(rowKey)) {
+            const rowIndex = parseInt(rowKey, 10);
+            const row = sheet.rows[rowKey];
+
+            for (const cellKey in row.cells) {
+                if (row.cells.hasOwnProperty(cellKey)) {
+                    const colIndex = parseInt(cellKey, 10);
+                    const cell = row.cells[cellKey];
+
+                    if (cell && cell.merge) {
+                        const [rowMerge, colMerge] = cell.merge;
+                        const mergeRange = getMergeRange(rowIndex, colIndex, [rowMerge, colMerge]);
+
+                        // Skip single-cell ranges
+                        const [start, end] = mergeRange.split(':');
+                        if (start === end) {
+                            continue;
+                        }
+
+                        if (!existingMerges.has(mergeRange)) {
+                            existingMerges.add(mergeRange);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    sheet.merges = Array.from(existingMerges);
+}
+
+
 /**
  * Если строка [undefined, null, NaN] тогда возвращаем пустую строку ""
  * @param value
@@ -110,6 +168,10 @@ const fillData = async (arrSheet: TArraySheet, callbackData: (cmd: string, name:
         for (let rowY = 0; rowY < resultArrRow.length; rowY++) {
             arr[i].rows[rowY] = resultArrRow[rowY];
         }
+
+        arr[0].rows.len = resultArrRow.length;
+
+        addMissingMerges(arr[i]); // Добавить недостающие объединения для вновь добавленных данных
     }
     return arr;
 };

@@ -178,10 +178,10 @@ function Index() {
                 </Tab>
                 <Tab eventKey="test" title="test" style={{flex: 1}}>
                     <ButtonEx onAction={async () => {
-                        // let obj = await import('../../../data/db.json');
-                        // const table = jsonToHtmlTable(obj["doc"][0])
-                        let obj = await import('./objTable.json');
-                        const table = jsonToHtmlTable(obj)
+                        let obj = await import('../../../data/db.json');
+                        const table = jsonToHtmlTable(obj["doc"][1])
+                        // let obj = await import('./objTable.json');
+                        // const table = jsonToHtmlTable(obj)
                         // @ts-ignore
                         refTbl.current.innerHTML = table
                     }}>Ok</ButtonEx>

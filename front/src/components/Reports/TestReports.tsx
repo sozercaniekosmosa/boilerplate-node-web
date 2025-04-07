@@ -1,10 +1,11 @@
 import ButtonEx from "../ButtonEx/ButtonEx.tsx";
 import axios from "axios";
 import glob from "../../glob.ts";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import Select from "../Select/Select.tsx";
 import {getCodeParam} from "../../lib/utils.ts";
-import styled from "styled-components";
+import styled, {createGlobalStyle} from "styled-components";
+import {Button, ButtonGroup} from "react-bootstrap";
 
 const listTypeReports = {'Excel': 'report-excel', 'Pdf': 'report-pdf',};
 
@@ -104,9 +105,20 @@ const URLReport = styled.div`
     }
 `
 
+const BtnEx = styled(ButtonEx).attrs<{ $variant?: string; }>(props => ({
+    className: `${props?.$variant} btn-sm flex-grow-0`
+}))<{ $selected?: string }>`
+    height: 2.2em;
+`
+const GlobalStyle = createGlobalStyle`
+    .selected-type {
+        background-color: #007652 !important;
+    }
+`
+
 function TestReports({doc, code, data, setData}) {
     const [url, setUrl] = useState('');
-    const [type, setType] = useState('');
+    const [type, setType] = useState('report-excel');
     const [listReports, setListReports] = useState([]);
     const [nameTemplate, setNameTemplate] = useState('');
     const [nameFile, setNameFile] = useState('');
@@ -143,7 +155,40 @@ function TestReports({doc, code, data, setData}) {
         setUrl(buildUrl);
     }, [listReports, type, nameTemplate, nameFile, paramReport]);
 
+    const reqReport = async (url: string) => {
+        try {
+            await axios.get(url);
+            return 0;
+        } catch (e) {
+            return 2;
+        }
+    }
+
+    let selectTypeReport = ({target}, type) => {
+        console.log(type);
+        // [...target.parentElement.querySelectorAll('.selected-type')].forEach(node => node.classList.remove('selected-type'))
+        // target.classList.add('selected-type')
+        setType(type)
+    };
+
     return <>
+        <GlobalStyle/>
+        <TestOptions>
+            <div>
+                <ButtonGroup>
+                    <BtnEx
+                        className={"btn btn-secondary bi-file-earmark-excel " + (type == 'report-excel' ? 'selected-type' : '')}
+                        onClick={(e) => selectTypeReport(e, 'report-excel')}>Excel</BtnEx>
+                    <BtnEx
+                        className={"btn btn-secondary bi-file-earmark-pdf " + (type == 'report-pdf' ? 'selected-type' : '')}
+                        onClick={(e) => selectTypeReport(e, 'report-pdf')}>Pdf</BtnEx>
+                </ButtonGroup>
+            </div>
+            {/*<TypeReport arrList={listTypeReports} onChange={(val) => setType(val)} value={type}/>*/}
+            <Template arrList={listReports} onChange={(val: string) => setNameTemplate(val)} value={nameTemplate}/>
+            <FileName type="text" value={nameFile} onChange={(e) => setNameFile(e.target.value)}/>
+        </TestOptions>
+
         <URLReport className="input-group mt-2 ms-2 mb-2">
             <span className="input-group-text">URL</span>
             <input type="text" className="form-control" placeholder="Введите url запроса" value={url}
@@ -151,21 +196,11 @@ function TestReports({doc, code, data, setData}) {
             <ButtonEx className="btn btn-secondary bi-copy"
                       onAction={async () => await navigator.clipboard.writeText(url)}></ButtonEx>
             <ButtonEx className="btn btn-secondary"
-                      onAction={async () => {
-                          try {
-                              await axios.get(buildGetUrl(url, [], 'innerData=1'));
-                              return 0;
-                          } catch (e) {
-                              return 2;
-                          }
-                      }}>Тест</ButtonEx>
-            <ButtonEx className="btn btn-secondary me-3" onAction={() => axios.get(url)}>Отчет</ButtonEx>
+                      onAction={() => reqReport(buildGetUrl(url, [], 'innerData=1'))}>Тест</ButtonEx>
+            <ButtonEx className="btn btn-secondary me-3"
+                      onAction={() => reqReport(url)}>Отчет</ButtonEx>
         </URLReport>
-        <TestOptions>
-            <TypeReport arrList={listTypeReports} onChange={(val) => setType(val)} value={type}/>
-            <Template arrList={listReports} onChange={(val: string) => setNameTemplate(val)} value={nameTemplate}/>
-            <FileName type="text" value={nameFile} onChange={(e) => setNameFile(e.target.value)}/>
-        </TestOptions>
+
         <TestParams>
             <DescParam>Параметры</DescParam>
             <div className="d-flex flex-row flex-wrap">
