@@ -1,9 +1,9 @@
 // import ButtonEx from "../ButtonEx/ButtonEx";
 import React from "react";
 
-import {ButtonGroup} from "react-bootstrap";
 import {GeneratorList} from "../GeneratorList.tsx";
-import ButtonEx from "../../ButtonEx/ButtonEx.tsx";
+import ButtonEx from "../../Auxiliary/ButtonEx.tsx";
+import ButtonGroup from "../../Auxiliary/ButtonGroup.tsx";
 
 
 export type TArrParam = Array<any> | Array<[any]>;
@@ -19,7 +19,7 @@ interface TPropsElement {
 function ButtonSeries({arrParam, onAction, className = '', style = {}}: TPropsElement) {
     return <ButtonGroup className={className} style={style}>
         <GeneratorList arrParam={arrParam} onGenerate={(...arrPar) =>
-            <ButtonEx variant="secondary btn-sm text-truncate" key={arrPar?.[arrPar.length - 1] ?? 0} onAction={() => onAction(...arrPar)}>
+            <ButtonEx key={arrPar?.[arrPar.length - 1] ?? 0} onAction={() => onAction(...arrPar)}>
                 {arrPar[0]}
             </ButtonEx>}/>
     </ButtonGroup>

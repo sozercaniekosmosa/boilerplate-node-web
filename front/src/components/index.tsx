@@ -4,23 +4,14 @@ import ProgressBar from './ProgressBar/ProgressBar';
 import {ERR, LOG, OK, PopupMessage, WARN} from "./PopupMessage/PopupMessage.tsx";
 import {eventBus} from "../lib/events.ts";
 import DropFile from "./DropFile/DropFile.tsx";
-import {Button, Tab, Tabs} from "react-bootstrap";
-import ButtonEx from "./ButtonEx/ButtonEx.tsx";
+import ButtonEx from "./Auxiliary/ButtonEx.tsx";
 import DraggableList from "./DraggableList/DraggableList.tsx";
 import CodeEditor from "./CodeEditor/CodeEditor.tsx";
 import {Editor, TEventEditor} from "./Editor/Editor.tsx";
-import {createGlobalStyle} from "styled-components";
-import Storytelling from "./Storytelling/Storytelling.tsx";
 import SimpleTable from "./Sheets/SimpleTable/SimpleTable.tsx";
-import Reports from "./Reports/Reports.tsx";
-import {jsonToHtmlTable} from "./Reports/jsonToTable.ts";
-
-
-const GlobalStyle = createGlobalStyle`
-    .tab-content {
-        height: 100%;
-    }
-`
+import Story from './Story/Story.tsx';
+import {Tab, Tabs} from './Auxiliary/Tabs.tsx';
+import ButtonGroup from './Auxiliary/ButtonGroup.tsx';
 
 function Index() {
     const [progress, setProgress] = useState(0)
@@ -75,14 +66,13 @@ function Index() {
     }
 
     return (
-        <div className="d-flex flex-column h-100">
-            <GlobalStyle/>
+        <div className="flex flex-col h-full">
             {progress >= 0 && <ProgressBar progress={progress}/>}
-            <Tabs defaultActiveKey="report" className="mb-1" id="main">
+            <Tabs defaultActiveKey="story" className="mb-1 h-full">
 
-                <Tab eventKey="report" title="report" style={{flex: 1}} className="h-100">
-                    <Reports/>
-                </Tab>
+                {/*<Tab eventKey="report" title="report" style={{flex: 1}} className="h-100">*/}
+                {/*    <Reports/>*/}
+                {/*</Tab>*/}
 
                 <Tab eventKey="excel" title="excel" style={{flex: 1}} className="h-100">
                     {/*<SpreadSheet data={doc} setData={setDoc}/>*/}
@@ -90,30 +80,31 @@ function Index() {
 
                 <Tab eventKey="story" title="story" style={{flex: 1}} className="h-100">
                     {/*<input type="file" accept=".xlsx, .xlsm, .xltx, .xltm" onChange={e => readExcel(e)}/>*/}
-                    <Storytelling/>
+                    {/*<Storytelling/>*/}
+                    <Story/>
                 </Tab>
 
                 <Tab eventKey="editor" title="editor" style={{flex: 1}} className="h-100">
-                    <div className="d-flex gap-1 m-1">
-                        <Button className="btn btn-secondary btn-sm " onClick={() => {
+                    <div className="flex gap-1 m-1">
+                        <ButtonEx className="btn btn-secondary btn-sm " onClick={() => {
                             setNewNode({
                                 nodeName: 'Подогрев нефти',
                                 arrIn: ['T', 'P'],
                                 arrOut: ['Продукт',],
                                 color: '#d7d7d7'
                             })
-                        }}>ПН</Button>
-                        <Button className="btn btn-secondary btn-sm" onClick={() => {
+                        }}>ПН</ButtonEx>
+                        <ButtonEx className="btn btn-secondary btn-sm" onClick={() => {
                             setNewNode({nodeName: 'УУН', arrIn: ['in'], arrOut: ['V м3', 'M кг'], color: '#efc3a7'})
-                        }}>УУН</Button>
-                        <Button className="btn btn-secondary btn-sm" onClick={() => {
+                        }}>УУН</ButtonEx>
+                        <ButtonEx className="btn btn-secondary btn-sm" onClick={() => {
                             setNewNode({
                                 nodeName: 'C-1',
                                 arrIn: ['in'],
                                 arrOut: ['L', 'T', 'Lн', 'Lг', 'Lв'],
                                 color: '#a7cbef'
                             })
-                        }}>C-1</Button>
+                        }}>C-1</ButtonEx>
                     </div>
                     <Editor newNode={newNode} setNewNode={setNewNode} onEvent={({name, data}: TEventEditor) => {
 
@@ -139,10 +130,10 @@ function Index() {
                     <h6>Перетащите сюда файл:</h6>
                     <DropFile onDrop={(data) => console.log(data)}/>
                 </Tab>
-                <Tab eventKey="aux" title="aux" style={{flex: 1}}>
-                    <div className="d-flex flex-column h-100 w-100 m-1">
+                <Tab eventKey="aux" title="aux" style={{flex: 1}} className="h-full">
+                    <div className="flex flex-col h-full w-100 m-1">
                         <h6>Кнопки button-spinner:</h6>
-                        <div className="d-flex flex-wrap flex-row gap-1">
+                        <div className="flex flex-wrap flex-row gap-1">
                             <ButtonEx className="btn btn-secondary" onAction={(a) => {
                                 console.log(a)
                             }}>Кнопка-спиннер</ButtonEx>
@@ -152,26 +143,27 @@ function Index() {
                         </div>
                         <hr/>
                         <h6>Всплывающие сообщения:</h6>
-                        <div className="d-flex flex-wrap flex-row gap-1">
-                            <Button className="btn btn-success" onClick={() => OK(new Date())}> OK</Button>
-                            <Button className="btn btn-secondary" onClick={() => LOG(new Date())}>LOG</Button>
-                            <Button className="btn btn-warning" onClick={() => WARN(new Date())}>WARN</Button>
-                            <Button className="btn btn-danger" onClick={() => ERR(new Date())}>ERR</Button>
+                        <div className="flex flex-wrap flex-row gap-1">
+                            <ButtonEx className="btn btn-success" onClick={() => OK(new Date())}> OK</ButtonEx>
+                            <ButtonEx className="btn btn-secondary" onClick={() => LOG(new Date())}>LOG</ButtonEx>
+                            <ButtonEx className="btn btn-warning" onClick={() => WARN(new Date())}>WARN</ButtonEx>
+                            <ButtonEx className="btn btn-danger" onClick={() => ERR(new Date())}>ERR</ButtonEx>
                         </div>
                         <hr/>
                         <h6>Список с перетаскиванием:</h6>
-                        <div className="d-flex flex-row gap-1">
+                        <div className="flex flex-row gap-1">
                             <DraggableList arrData={arrData} setArrData={setArrData}
-                                           onGetElement={val => <div className="border rounded p-2 m-1">{val}</div>}/>
+                                           onGetElement={val => <div
+                                               className="border border-gray-400 rounded-md p-2 m-1 bg-teal-100">{val}</div>}/>
                         </div>
                         <hr/>
                         <h6>Шакала:</h6>
-                        <div className="d-flex flex-row gap-1">
-                            <Button className="btn btn-primary" onClick={() => setProgress(0)}>0%</Button>
-                            <Button className="btn btn-primary" onClick={() => setProgress(25)}>25%</Button>
-                            <Button className="btn btn-primary" onClick={() => setProgress(50)}>50%</Button>
-                            <Button className="btn btn-primary" onClick={() => setProgress(75)}>75%</Button>
-                            <Button className="btn btn-primary" onClick={() => setProgress(100)}>100%</Button>
+                        <div className="flex flex-row gap-1">
+                            <ButtonEx className="btn btn-primary" onClick={() => setProgress(0)}>0%</ButtonEx>
+                            <ButtonEx className="btn btn-primary" onClick={() => setProgress(25)}>25%</ButtonEx>
+                            <ButtonEx className="btn btn-primary" onClick={() => setProgress(50)}>50%</ButtonEx>
+                            <ButtonEx className="btn btn-primary" onClick={() => setProgress(75)}>75%</ButtonEx>
+                            <ButtonEx className="btn btn-primary" onClick={() => setProgress(100)}>100%</ButtonEx>
                         </div>
                         <hr/>
                     </div>
@@ -180,8 +172,8 @@ function Index() {
                     <ButtonEx onAction={async () => {
                         // let obj = await import('../../../data/db.json');
                         // const table = jsonToHtmlTable(obj["doc"][0])
-                        let obj = await import('./objTable.json');
-                        const table = jsonToHtmlTable(obj)
+                        // let obj = await import('./objTable.json');
+                        // const table = jsonToHtmlTable(obj)
                         // @ts-ignore
                         refTbl.current.innerHTML = table
                     }}>Ok</ButtonEx>

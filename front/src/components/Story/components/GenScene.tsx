@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import ButtonEx from "../../Auxiliary/ButtonEx.tsx";
 import TextBlock from "./TextBlock.tsx";
 import {formatDateTime} from "../../../lib/time.ts";
-import {clButton, stButton} from "../Storytelling.tsx";
+import {clButton, stButton} from "../Story.tsx";
 import {isEmpty} from "../../../lib/utils.ts";
 
 const descScene = {
@@ -27,6 +27,7 @@ const descScene = {
     symbols: ['Символизм и подтекст', `— Символические элементы несущие скрытый смысл (разбитое зеркало, часы, старый портрет, гроза как символ кризиса).
 — Аллегории, намёки на темы произведения.`]
 }
+
 
 function SceneOpt({book, setBook, param}) {
 
@@ -84,7 +85,7 @@ const GenScene = ({book, setBook}) => {
                           setSceneName(Object.keys(scenes)?.[0]);
                           setBook({...book});
                       }}/>
-            {/*<SelectScene arrList={Object.keys(scenes)} value={sceneName} onChange={(val: string) => setSceneName(val)}/>*/}
+            {/*<select arrList={Object.keys(scenes)} value={sceneName} onChange={(val: string) => setSceneName(val)}/>*/}
         </div>
         {scene && !isEmpty(scene) && <>
             <input type="text" placeholder="Введите название сцены" value={sceneName ?? ''}

@@ -1,5 +1,6 @@
-import React, {useRef, useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {Tooltip} from "../../Auxiliary/Tooltip.tsx";
+
 
 function TextBlock({
                        value,

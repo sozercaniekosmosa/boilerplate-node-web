@@ -1,10 +1,11 @@
-import {Button, Modal} from "react-bootstrap";
+import Modal from "./ModalWindow.tsx";
+import ButtonEx from "./ButtonEx.tsx";
 
 interface DialogProps {
     onKeyDown?: ({key}: { key: any }) => void
 }
 
-export default ({
+const Dialog = ({
                     show,
                     setShow,
                     title = 'Заголовок',
@@ -28,10 +29,13 @@ export default ({
                 <Modal.Title className="h6">{title}</Modal.Title>
             </Modal.Header>
             <Modal.Body className="py-4">{children ? children : message}</Modal.Body>
-            {onConfirm && <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose} size="sm">Отмена</Button>
-                <Button variant="danger" onClick={() => setShow(false) || onConfirm()} size="sm" autoFocus={true}>{confirmName}</Button>
+            {onConfirm && <Modal.Footer className="gap-1">
+                <ButtonEx onAction={handleClose}>Отмена</ButtonEx>
+                <ButtonEx onAction={() => setShow(false) || onConfirm()}
+                          autoFocus={true} className="bg-lime-900">{confirmName}</ButtonEx>
             </Modal.Footer>}
         </Modal>
     </>);
 }
+
+export default Dialog;

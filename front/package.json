@@ -11,25 +11,26 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.1.5",
     "ace-builds": "^1.39.1",
     "acorn": "^8.14.1",
     "acorn-walk": "^8.3.4",
     "axios": "^1.7.7",
-    "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
+    "clsx": "^2.1.1",
     "exceljs": "^4.4.0",
+    "immer": "^10.1.1",
     "js-beautify": "^1.15.4",
     "photoswipe": "^5.4.4",
     "react": "^18.3.1",
-    "react-beautiful-dnd": "^13.1.1",
-    "react-bootstrap": "^2.10.5",
     "react-bootstrap-icons": "^1.11.5",
     "react-datasheet-grid": "^4.11.5",
     "react-dom": "^18.3.1",
     "react-split-pane": "^2.0.3",
     "resizable-panes-react": "^6.0.26",
-    "styled-components": "^6.1.15",
-    "x-data-spreadsheet": "^1.1.9"
+    "tailwindcss": "^4.1.5",
+    "x-data-spreadsheet": "^1.1.9",
+    "zustand": "^5.0.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",

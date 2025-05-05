@@ -1,7 +1,9 @@
 //0-ok, 1-processing, 2-error
 import React, {useEffect, useState} from "react";
-import {Button} from "react-bootstrap";
-import Dialog from "../Dialog/Dialog.tsx";
+import Dialog from "./Dialog.tsx";
+import {Tooltip} from "./Tooltip.tsx";
+import Spinner from "./Spinner.tsx";
+import clsx from "clsx";
 
 function ButtonEx({
                       style = {},
@@ -10,12 +12,13 @@ function ButtonEx({
                       onClick = null,
                       disabled = false,
                       hidden = false,
-                      variant = null,
                       children = null,
                       onConfirm = null,
                       title = null,
+                      dir = null,
                       description = 'Добавьте текст...',
-                      text = ''
+                      text = '',
+                      autoFocus = false
                   }) {
     const [_state, set_state] = useState(0)
     const [showAndDataEvent, setShowAndDataEvent] = useState<boolean | null | object>(false);
@@ -29,26 +32,31 @@ function ButtonEx({
         onClick && onClick(e)
         if (onAction) {
             set_state(1)
-            const s = await onAction(e)
+            const s = await onAction(e) //TODO: тут можно сделать try..catch на отлов ошибок или Promise callback
             setTimeout(() => set_state(s), 500);
         }
     }
 
-    return <> {hidden ? '' :
-        <Button variant={variant} className={className + ' d-flex justify-content-center align-items-center'}
-                onClick={onAct} disabled={_state == 1 || disabled} hidden={hidden}
-                style={{outline: _state == 2 ? '1px solid #cc0000' : 'none', ...style}}
-                title={title}>
-            <span className="spinner-border spinner-border-sm"
-                  style={{width: '1.75em', height: '1.75em', zIndex: '9999', position: 'absolute', color: 'white'}}
-                  hidden={_state != 1}/>
-            <span className="spinner-border spinner-border-sm"
-                  style={{width: '1.7em', height: '1.7em', zIndex: '9999', position: 'absolute', color: 'black'}}
-                  hidden={_state != 1}/>
-            {hidden ? '' : children}
-            {hidden ? '' : text}
-        </Button>
-    }
+    const btn = <div
+        autoFocus={autoFocus}
+        className={clsx(
+            className,
+            // 'w-6 h-6',
+            'focus:outline-3 outline-gray-500/50 select-none',
+            'bg-gray-500 text-white p-1 rounded-sm hover:bg-gray-600 transition',
+            'flex justify-center items-center',
+            _state == 2 ? '!outline-red-700 !outline-1 !outline-offset-1' : '',
+            _state == 1 || disabled ? '!bg-gray-400 pointer-events-none' : ''
+        )}
+        onClick={onAct} hidden={hidden}>
+        {_state == 1 && <Spinner/>}
+        {hidden ? '' : children}
+        {hidden ? '' : text}
+    </div>
+
+
+    return <>
+        {hidden ? '' : (title ? <Tooltip text={title} direction={dir}>{btn}</Tooltip> : btn)}
         {onConfirm ?
             <Dialog title={description} message="Уверены?" show={showAndDataEvent} setShow={setShowAndDataEvent}
                     onConfirm={async () => onConfirm(showAndDataEvent)}

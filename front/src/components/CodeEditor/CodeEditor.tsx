@@ -21,35 +21,12 @@ import "ace-builds/src-noconflict/snippets/javascript";
 
 import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/snippets/python";
-import styled from "styled-components";
+
 
 let code;
 let lang = 'javascript';
 let theme = 'monokai';
 
-// let isExecButton = true;
-
-const Editor = styled.div.attrs({})`
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    height: inherit;
-    margin: 1em;
-
-
-    .control {
-        display: flex;
-        align-self: end;
-        margin-bottom: 0.5em;
-    }
-
-    .editor {
-        border: 1px solid #e7e7e7;
-        //min-height: 50%;
-        height: inherit;
-        resize: vertical;
-    }
-`
 
 function CodeEditor({val, onChange, width = '100%', height = '100%'}) {
     const [update, setUpdate] = useState(Date.now())
@@ -85,8 +62,9 @@ function CodeEditor({val, onChange, width = '100%', height = '100%'}) {
         onChange({code, lang, theme})
     }
 
-    return <Editor>
-        <div className="control">
+
+    return <div className="flex flex-col flex-nowrap h-[inherit] m-[1em]">
+        <div className="flex self-end mb-2">
             {/*Кнопка выполнить<input type="checkbox" checked={isExecButton} onChange={changeExec}/>*/}
             <select name="Theme" onChange={changeTheme} value={theme!}>
                 <option value="monokai">monokai</option>
@@ -106,7 +84,7 @@ function CodeEditor({val, onChange, width = '100%', height = '100%'}) {
             </select>
         </div>
         <AceEditor
-            className="editor"
+            className="border border-gray-400 h-[inherit] resize-y"
 
             width={width}
             height={height}
@@ -123,7 +101,7 @@ function CodeEditor({val, onChange, width = '100%', height = '100%'}) {
             }}
             value={code}
         />
-    </Editor>
+    </div>
 }
 
 export default CodeEditor;

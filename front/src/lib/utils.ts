@@ -11,6 +11,8 @@ export const toShortString = (value, language = base64Language) => {
 };
 let __id = 0;
 export const generateUID = (pre = '') => pre + toShortString((new Date().getTime()) + Math.ceil(Math.random() * 100) + (__id++))
+// @ts-ignore
+window.generateUID = generateUID;
 
 export const getHashCyrb53 = function (str, seed = 0) {
     let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;

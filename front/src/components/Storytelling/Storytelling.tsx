@@ -1,12 +1,13 @@
 import {Button, ButtonGroup, Tab, Tabs} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import ButtonEx from "../ButtonEx/ButtonEx.tsx";
+import ButtonEx from "../Auxiliary/ButtonEx.tsx";
 import NestedList from "./components/NestedList.tsx";
 import Select from "../Select/Select.tsx";
 import Scene from "./components/Scene.tsx";
 import TextBlock from "./components/TextBlock.tsx";
 import GenScene from "./components/GenScene.tsx";
+import GenCharacter from "./components/GenCharacter.tsx";
 
 export const stButton = {width: '1.8em', height: '1.8em'}
 export const clButton = ' btn btn-sm flex-grow-0 d-flex justify-content-center align-items-center'
@@ -28,6 +29,7 @@ const arrControl = [EMPTY, CHARACTER, OBJECT, ACTION];
 let BOOK = {
     "worlds": {},
     "scenes": {
+        "": {},
         "Сцена: 01.04.2025 19:32:18": {
             "pointOfView": {"text": ""},
             "location": {"text": "1"},
@@ -47,7 +49,9 @@ let BOOK = {
             "symbols": {"text": ""}
         }
     },
-    "characters": {},
+    "characters": {
+        "": {}
+    },
     "objects": {},
     "content": {
         "arrChild": [{"arrChild": [], "data": {"opt": "Вступление"}, "hide": false}, {
@@ -69,6 +73,21 @@ const Base = ({book, setBook, param}) => {
         <Select arrList={arrControl} value={opt} onChange={(key) => (list.data.opt = key, setBook({...book}))}
                 style={{height: '1.7em', fontSize: '1.2em', lineHeight: 1.1}} className="ps-2 pe-5 py-0 w-auto"/>
     </>
+};
+
+const Action = ({book, setBook, param}) => {
+    const {parent, list, index, child} = param;
+    const {opt} = list.data
+    return <div className="d-flex flex-column">
+        <ButtonEx style={stButton} className="btn-danger btn-sm bi-x-lg flex-grow-0" description="Удалить" onConfirm={() => {
+            parent.arrChild.splice(index, 1);
+            setBook({...book});
+        }}/>
+        <div>Характер, предмет, сцена, диалог</div>
+        <div>Описание действия</div>
+        {/*<Select arrList={arrControl} value={opt} onChange={(key) => (list.data.opt = key, setBook({...book}))}*/}
+        {/*        style={{height: '1.7em', fontSize: '1.2em', lineHeight: 1.1}} className="ps-2 pe-5 py-0 w-auto"/>*/}
+    </div>
 };
 
 const Control = ({book, setBook, param}) => {
@@ -139,7 +158,7 @@ const Control = ({book, setBook, param}) => {
         </div>
     } else if (opt == ACTION) {
         return <div className="d-flex flex-row gap-1 mb-1">
-            <Base book={book} setBook={setBook} param={param}/>
+            <Action book={book} setBook={setBook} param={param}/>
         </div>
     } else if (opt == EMPTY) {
         return <div className="d-flex flex-row gap-1 mb-1">
@@ -175,6 +194,9 @@ const Storytelling: React.FC<any> = () => {
         </Tab>
         <Tab eventKey="gen-scene" title="Сцена" style={{flex: 1}} className="h-100">
             <GenScene book={book} setBook={setBook}/>
+        </Tab>
+        <Tab eventKey="gen-character" title="Персонаж" style={{flex: 1}} className="h-100">
+            <GenCharacter book={book} setBook={setBook}/>
         </Tab>
     </Tabs>
 };

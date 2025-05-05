@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <style>
+        .container {
+            display: grid;
+            grid-template-columns: auto 1fr; /* Две колонки */
+            gap: 16px; /* Расстояние между колонками */
+            align-items: start; /* Выравнивание по верхнему краю */
+        }
+
+        .column2 {
+            height: 0; /* Начальная высота 0 */
+            min-height: 100%; /* Минимальная высота = высоте строки grid */
+            overflow-y: auto; /* Вертикальная прокрутка при необходимости */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="column1">
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+    </div>
+
+    <div class="column2">
+        <div>Элемент A</div>
+        <div>Элемент B</div>
+        <div>Элемент C</div>
+        <div>Элемент D</div>
+        <div>Элемент E</div>
+        <div>Элемент F</div>
+        <div>Элемент G</div>
+        <div>Элемент H</div>
+        <div>Элемент I</div>
+        <div>Элемент J</div>
+    </div>
+</div>
+
+</body>
+</html>

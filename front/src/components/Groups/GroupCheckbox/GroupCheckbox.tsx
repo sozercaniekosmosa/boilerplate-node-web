@@ -1,6 +1,5 @@
 //0-ok, 1-processing, 2-error
 import React, {useCallback, useEffect, useState} from "react";
-import {Button} from "react-bootstrap";
 import {GeneratorList} from "../GeneratorList.tsx";
 
 export type TArrName = Array<[string, any]>;
@@ -22,14 +21,14 @@ function GroupCheckbox({state, arrNames, onChange, className = ''}: TGroupCheckb
     }, [selectedItem]);
 
     const getElement = useCallback((name: string, param: string, idi: number) =>
-            <div key={idi} className="d-flex">
+            <div key={idi} className="flex">
                 <input className="me-1" type="checkbox" checked={selectedItem == param}
                        onChange={(e) => e.target.checked && setSelectedItem(param)}/>
                 {name}
             </div>
         , [selectedItem]);
 
-    return <div className={"d-flex flex-row gap-1 text-nowrap align-items-center " + className}>
+    return <div className={"flex flex-row gap-1 text-nowrap items-center " + className}>
         <GeneratorList arrParam={arrNames} onGenerate={getElement}/>
     </div>
 }
