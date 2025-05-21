@@ -1,4 +1,4 @@
-import {getHashCyrb53} from "../utils";
+import {getHashCyrb53} from "../../lib/utils.ts";
 
 function mergeHandler(merges: any[], mergeMap: {}, mergedCells: boolean[][]) {
     merges.forEach((merge: string) => {

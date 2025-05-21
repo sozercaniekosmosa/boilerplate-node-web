@@ -137,7 +137,7 @@ routerReport.get('/report-pdf/:name', async (req, res) => {
 
         const name = req.params.name;
         let path: string = `${REPORT_DIR}/`;
-        path += (query?.fileName ? query.fileName : formatDateTime(new Date(), 'yyyy-MM-dd-hh-mm-ss-' + name)) + '.xlsx';
+        path += (query?.fileName ? query.fileName : formatDateTime(new Date(), 'yyyy-MM-dd-hh-mm-ss-' + name)) + '.pdf';
 
         const db = glob.db as noSQL;
         const arrSheet = structuredClone(db.getByID('doc'));
