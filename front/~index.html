@@ -1,18 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
+    <meta charset="UTF-8"/>
+    <link rel="icon" type="image/svg+xml" href="icon.png"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Boilerplate</title>
+
     <style>
-        .container {
-            display: grid;
-            grid-template-columns: auto 1fr; /* Две колонки */
-            gap: 16px; /* Расстояние между колонками */
-            align-items: start; /* Выравнивание по верхнему краю */
+        body {
+            height: 100vh;
+            margin: 0;
         }
 
-        .column2 {
-            height: 0; /* Начальная высота 0 */
-            min-height: 100%; /* Минимальная высота = высоте строки grid */
+        .container {
+            display: grid;
+            grid-template-columns: auto auto; /* Две колонки */
+            gap: 5px; /* Расстояние между колонками */
+            /*align-items: start; !* Выравнивание по верхнему краю *!*/
+            height: 100%;
+        }
+
+        /*.column2 {*/
+        .container > * {
+            /*height: 0; !* Начальная высота 0 *!*/
+            /*min-height: 100%; !* Минимальная высота = высоте строки grid *!*/
             overflow-y: auto; /* Вертикальная прокрутка при необходимости */
+            outline: 1px solid gray;
+            outline-offset: -1px;
         }
     </style>
 </head>
@@ -24,9 +38,158 @@
         <div>Элемент списка 2</div>
         <div>Элемент списка 3</div>
         <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+        <div>QЭлемент списка 1</div>
+        <div>Элемент списка 2</div>
+        <div>Элемент списка 3</div>
+        <div>Элемент списка 4</div>
+
     </div>
 
     <div class="column2">
+        <div>Элемент A</div>
+        <div>Элемент B</div>
+        <div>Элемент C</div>
+        <div>Элемент D</div>
+        <div>Элемент E</div>
+        <div>Элемент F</div>
+        <div>Элемент G</div>
+        <div>Элемент H</div>
+        <div>Элемент I</div>
+        <div>Элемент J</div>
+        <div>Элемент A</div>
+        <div>Элемент B</div>
+        <div>Элемент C</div>
+        <div>Элемент D</div>
+        <div>Элемент E</div>
+        <div>Элемент F</div>
+        <div>Элемент G</div>
+        <div>Элемент H</div>
+        <div>Элемент I</div>
+        <div>Элемент J</div>
+        <div>Элемент A</div>
+        <div>Элемент B</div>
+        <div>Элемент C</div>
+        <div>Элемент D</div>
+        <div>Элемент E</div>
+        <div>Элемент F</div>
+        <div>Элемент G</div>
+        <div>Элемент H</div>
+        <div>Элемент I</div>
+        <div>Элемент J</div>
+        <div>Элемент A</div>
+        <div>Элемент B</div>
+        <div>Элемент C</div>
+        <div>Элемент D</div>
+        <div>Элемент E</div>
+        <div>Элемент F</div>
+        <div>Элемент G</div>
+        <div>Элемент H</div>
+        <div>Элемент I</div>
+        <div>Элемент J</div>
+        <div>Элемент A</div>
+        <div>Элемент B</div>
+        <div>Элемент C</div>
+        <div>Элемент D</div>
+        <div>Элемент E</div>
+        <div>Элемент F</div>
+        <div>Элемент G</div>
+        <div>Элемент H</div>
+        <div>Элемент I</div>
+        <div>Элемент J</div>
+        <div>Элемент A</div>
+        <div>Элемент B</div>
+        <div>Элемент C</div>
+        <div>Элемент D</div>
+        <div>Элемент E</div>
+        <div>Элемент F</div>
+        <div>Элемент G</div>
+        <div>Элемент H</div>
+        <div>Элемент I</div>
+        <div>Элемент J</div>
         <div>Элемент A</div>
         <div>Элемент B</div>
         <div>Элемент C</div>

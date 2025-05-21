@@ -1,17 +1,26 @@
 import React, {useEffect, useRef, useState} from 'react'
 import './style.css'
 import ProgressBar from './ProgressBar/ProgressBar';
-import {ERR, LOG, OK, PopupMessage, WARN} from "./PopupMessage/PopupMessage.tsx";
+// import {ERR, LOG, OK, PopupMessage, WARN} from "./PopupMessage/PopupMessage.tsx";
 import {eventBus} from "../lib/events.ts";
-import DropFile from "./DropFile/DropFile.tsx";
+// import DropFile from "./DropFile/DropFile.tsx";
 import ButtonEx from "./Auxiliary/ButtonEx.tsx";
-import DraggableList from "./DraggableList/DraggableList.tsx";
-import CodeEditor from "./CodeEditor/CodeEditor.tsx";
+// import DraggableList from "./DraggableList/DraggableList.tsx";
+// import CodeEditor from "./CodeEditor/CodeEditor.tsx";
 import {Editor, TEventEditor} from "./Editor/Editor.tsx";
-import SimpleTable from "./Sheets/SimpleTable/SimpleTable.tsx";
-import Story from './Story/Story.tsx';
+// import SimpleTable from "./Sheets/SimpleTable/SimpleTable.tsx";
+// import Story from './Story/Story.tsx';
 import {Tab, Tabs} from './Auxiliary/Tabs.tsx';
-import ButtonGroup from './Auxiliary/ButtonGroup.tsx';
+import SpreadSheet from "./Sheets/SpreadSheet/SpreadSheet.tsx";
+import Story from "./Story/Story.tsx";
+import CodeEditor from "./CodeEditor/CodeEditor.tsx";
+import SimpleTable from "./Sheets/SimpleTable/SimpleTable.tsx";
+import DropFile from "./DropFile/DropFile.tsx";
+import DraggableList from "./DraggableList/DraggableList.tsx";
+import {ERR, LOG, OK, WARN} from "./PopupMessage/PopupMessage.tsx";
+import Zustand from "./LabComponent/zustand.tsx";
+
+// import ButtonGroup from './Auxiliary/ButtonGroup.tsx';
 
 function Index() {
     const [progress, setProgress] = useState(0)
@@ -70,21 +79,22 @@ function Index() {
             {progress >= 0 && <ProgressBar progress={progress}/>}
             <Tabs defaultActiveKey="story" className="mb-1 h-full">
 
-                {/*<Tab eventKey="report" title="report" style={{flex: 1}} className="h-100">*/}
+                {/*<Tab eventKey="report" title="report" style={{flex: 1}} className="h-full">*/}
                 {/*    <Reports/>*/}
                 {/*</Tab>*/}
 
-                <Tab eventKey="excel" title="excel" style={{flex: 1}} className="h-100">
-                    {/*<SpreadSheet data={doc} setData={setDoc}/>*/}
-                </Tab>
+                {/*<Tab eventKey="excel" title="excel" style={{flex: 1}} className="h-full">*/}
+                {/*    <SpreadSheet data={doc} setData={setDoc}/>*/}
+                {/*</Tab>*/}
 
-                <Tab eventKey="story" title="story" style={{flex: 1}} className="h-100">
+                <Tab eventKey="story" title="story" className="">
                     {/*<input type="file" accept=".xlsx, .xlsm, .xltx, .xltm" onChange={e => readExcel(e)}/>*/}
                     {/*<Storytelling/>*/}
                     <Story/>
+                    {/*<Zustand/>*/}
                 </Tab>
 
-                <Tab eventKey="editor" title="editor" style={{flex: 1}} className="h-100">
+                <Tab eventKey="editor" title="Node" style={{flex: 1}} className="h-full">
                     <div className="flex gap-1 m-1">
                         <ButtonEx className="btn btn-secondary btn-sm " onClick={() => {
                             setNewNode({
@@ -105,13 +115,15 @@ function Index() {
                                 color: '#a7cbef'
                             })
                         }}>C-1</ButtonEx>
+                        Масштаб - (wheel mouse),
+                        Удалить связь - (alt + r-button-mouse + move)
                     </div>
                     <Editor newNode={newNode} setNewNode={setNewNode} onEvent={({name, data}: TEventEditor) => {
 
                         switch (name) {
                             case 'init':
                                 const nui = data;
-                                nui.svg.innerHTML = '<g class="group-path" transform="translate(0,0)"><path class="link" stroke-linecap="round" d="M421.50000762939453 150.81248474121094 C 303.20052337646484 150.81248474121094, 362.3502655029297 225.81248474121094, 244.05078125 225.81248474121094" id="uDOZugD-uDOZtC9"></path><path class="link" stroke-linecap="round" d="M421.50000762939453 150.81248474121094 C 323.66927337646484 150.81248474121094, 372.5846405029297 59.8125, 274.75390625 59.8125" id="uDOZtZ5-uDOZtC9"></path></g><text x="0" y="0" class="node-text" opacity="0" id="temp-node-for-width-text">Подогрев нефти</text><g x="396" y="170.8125" class="node selected" data-node-name="C-1" data-cfg="" transform="translate(421.5,106.8125)" id="uDOZtC7"><rect x="0" y="-8" width="5" height="5" rx="1" stroke="#25334b" fill="#d5d5d5" class="node-status"></rect><rect x="0" y="0" width="55.33984375" height="88" rx="2" stroke="#25334b" fill="#a7cbef" class="handle"></rect><circle cx="0" cy="44" r="4" stroke="#25334b" fill="#bcffd6" class="pin-in" id="uDOZtC9" data-name="in" data-to="uDOZugD uDOZtZ5"></circle><text x="8" y="45" class="node-text" alignment-baseline="middle">in</text><circle cx="55.33984375" cy="12" r="4" stroke="#25334b" fill="#ffc69a" class="pin-out" id="uDOZtCb" data-name="L"></circle><text x="40.33984375" y="13" class="node-text" alignment-baseline="middle">L</text><circle cx="55.33984375" cy="28" r="4" stroke="#25334b" fill="#ffc69a" class="pin-out" id="uDOZtCc" data-name="T"></circle><text x="39.33984375" y="29" class="node-text" alignment-baseline="middle">T</text><circle cx="55.33984375" cy="44" r="4" stroke="#25334b" fill="#ffc69a" class="pin-out" id="uDOZtCd" data-name="Lн"></circle><text x="33.666015625" y="45" class="node-text" alignment-baseline="middle">Lн</text><circle cx="55.33984375" cy="60" r="4" stroke="#25334b" fill="#ffc69a" class="pin-out" id="uDOZtCe" data-name="Lг"></circle><text x="35.666015625" y="61" class="node-text" alignment-baseline="middle">Lг</text><circle cx="55.33984375" cy="76" r="4" stroke="#25334b" fill="#ffc69a" class="pin-out" id="uDOZtCf" data-name="Lв"></circle><text x="33.666015625" y="77" class="node-text" alignment-baseline="middle">Lв</text><text x="8" y="-2" class="node-text">C-1</text></g><g x="184" y="156.8125" class="node selected" data-node-name="УУН" data-cfg="" transform="translate(206.5,31.8125)" id="uDOZtZ1"><rect x="0" y="-8" width="5" height="5" rx="1" stroke="#25334b" fill="#d5d5d5" class="node-status"></rect><rect x="0" y="0" width="68.25390625" height="40" rx="2" stroke="#25334b" fill="#efc3a7" class="handle"></rect><circle cx="0" cy="20" r="4" stroke="#25334b" fill="#bcffd6" class="pin-in" id="uDOZtZ3" data-name="in"></circle><text x="8" y="21" class="node-text" alignment-baseline="middle">in</text><circle cx="68.25390625" cy="12" r="4" stroke="#25334b" fill="#ffc69a" class="pin-out" id="uDOZtZ4" data-name="V м3"></circle><text x="33.666015625" y="13" class="node-text" alignment-baseline="middle">V м3</text><circle cx="68.25390625" cy="28" r="4" stroke="#25334b" fill="#ffc69a" class="pin-out" id="uDOZtZ5" data-name="M кг" data-to="uDOZtC9"></circle><text x="36.673828125" y="29" class="node-text" alignment-baseline="middle">M кг</text><text x="8" y="-2" class="node-text">УУН</text></g><g x="180" y="178.8125" class="node selected" data-node-name="Подогрев нефти" data-cfg="" transform="translate(144.5,205.8125)" id="uDOZugz"><rect x="0" y="-8" width="5" height="5" rx="1" stroke="#25334b" fill="#d5d5d5" class="node-status"></rect><rect x="0" y="0" width="99.55078125" height="40" rx="2" stroke="#25334b" fill="#d7d7d7" class="handle"></rect><circle cx="0" cy="12" r="4" stroke="#25334b" fill="#bcffd6" class="pin-in" id="uDOZugA" data-name="T"></circle><text x="8" y="13" class="node-text" alignment-baseline="middle">T</text><circle cx="0" cy="28" r="4" stroke="#25334b" fill="#bcffd6" class="pin-in" id="uDOZugC" data-name="P"></circle><text x="8" y="29" class="node-text" alignment-baseline="middle">P</text><circle cx="99.55078125" cy="20" r="4" stroke="#25334b" fill="#ffc69a" class="pin-out" id="uDOZugD" data-name="Продукт" data-to="uDOZtC9"></circle><text x="45.455078125" y="21" class="node-text" alignment-baseline="middle">Продукт</text><text x="8" y="-2" class="node-text">Подогрев нефти</text></g>'
+                                nui.svg.innerHTML = '<g class="group-path" transform="translate(0,0)"><path class="link" stroke-linecap="round" d="M421.50000762939453 150.81248474121094 C 303.20052337646484 150.81248474121094, 362.3502655029297 225.81248474121094, 244.05078125 225.81248474121094" id="uDOZugD-uDOZtC9"></path><path class="link" stroke-linecap="round" d="M421.5 150.8125 C 323.6692708333333 150.8125, 372.5846354166667 59.8125, 274.75390625 59.8125" id="uDOZtZ5-uDOZtC9"></path></g><text x="0" y="0" class="node-text" opacity="0" id="temp-node-for-width-text">Подогрев нефти</text><g x="396" y="170.8125" class="node" data-node-name="C-1" data-cfg="" transform="translate(421.5,106.8125)" id="uDOZtC7"><rect x="0" y="-8" width="5" height="5" rx="1" stroke="#25334b" fill="#d5d5d5" class="node-status"></rect><rect x="0" y="0" width="55.33984375" height="88" rx="2" stroke="#25334b" fill="#a7cbef" class="handle"></rect><circle cx="0" cy="44" r="4" stroke="#25334b" fill="#bcffd6" class="pin-in" id="uDOZtC9" data-name="in" data-to="uDOZugD uDOZtZ5"></circle><text x="8" y="45" class="node-text" alignment-baseline="middle">in</text><circle cx="55.33984375" cy="12" r="4" stroke="#25334b" fill="#ffc69a" class="pin-out" id="uDOZtCb" data-name="L"></circle><text x="40.33984375" y="13" class="node-text" alignment-baseline="middle">L</text><circle cx="55.33984375" cy="28" r="4" stroke="#25334b" fill="#ffc69a" class="pin-out" id="uDOZtCc" data-name="T"></circle><text x="39.33984375" y="29" class="node-text" alignment-baseline="middle">T</text><circle cx="55.33984375" cy="44" r="4" stroke="#25334b" fill="#ffc69a" class="pin-out" id="uDOZtCd" data-name="Lн"></circle><text x="33.666015625" y="45" class="node-text" alignment-baseline="middle">Lн</text><circle cx="55.33984375" cy="60" r="4" stroke="#25334b" fill="#ffc69a" class="pin-out" id="uDOZtCe" data-name="Lг"></circle><text x="35.666015625" y="61" class="node-text" alignment-baseline="middle">Lг</text><circle cx="55.33984375" cy="76" r="4" stroke="#25334b" fill="#ffc69a" class="pin-out" id="uDOZtCf" data-name="Lв"></circle><text x="33.666015625" y="77" class="node-text" alignment-baseline="middle">Lв</text><text x="8" y="-2" class="node-text">C-1</text></g><g x="184" y="156.8125" class="node selected" data-node-name="УУН" data-cfg="" transform="translate(206.5,31.8125)" id="uDOZtZ1"><rect x="0" y="-8" width="5" height="5" rx="1" stroke="#25334b" fill="#d5d5d5" class="node-status"></rect><rect x="0" y="0" width="68.25390625" height="40" rx="2" stroke="#25334b" fill="#efc3a7" class="handle"></rect><circle cx="0" cy="20" r="4" stroke="#25334b" fill="#bcffd6" class="pin-in" id="uDOZtZ3" data-name="in"></circle><text x="8" y="21" class="node-text" alignment-baseline="middle">in</text><circle cx="68.25390625" cy="12" r="4" stroke="#25334b" fill="#ffc69a" class="pin-out" id="uDOZtZ4" data-name="V м3"></circle><text x="33.666015625" y="13" class="node-text" alignment-baseline="middle">V м3</text><circle cx="68.25390625" cy="28" r="4" stroke="#25334b" fill="#ffc69a" class="pin-out" id="uDOZtZ5" data-name="M кг" data-to="uDOZtC9"></circle><text x="36.673828125" y="29" class="node-text" alignment-baseline="middle">M кг</text><text x="8" y="-2" class="node-text">УУН</text></g><g x="180" y="178.8125" class="node" data-node-name="Подогрев нефти" data-cfg="" transform="translate(144.5,205.8125)" id="uDOZugz"><rect x="0" y="-8" width="5" height="5" rx="1" stroke="#25334b" fill="#d5d5d5" class="node-status"></rect><rect x="0" y="0" width="99.55078125" height="40" rx="2" stroke="#25334b" fill="#d7d7d7" class="handle"></rect><circle cx="0" cy="12" r="4" stroke="#25334b" fill="#bcffd6" class="pin-in" id="uDOZugA" data-name="T"></circle><text x="8" y="13" class="node-text" alignment-baseline="middle">T</text><circle cx="0" cy="28" r="4" stroke="#25334b" fill="#bcffd6" class="pin-in" id="uDOZugC" data-name="P"></circle><text x="8" y="29" class="node-text" alignment-baseline="middle">P</text><circle cx="99.55078125" cy="20" r="4" stroke="#25334b" fill="#ffc69a" class="pin-out" id="uDOZugD" data-name="Продукт" data-to="uDOZtC9"></circle><text x="45.455078125" y="21" class="node-text" alignment-baseline="middle">Продукт</text><text x="8" y="-2" class="node-text">Подогрев нефти</text></g>'
                                 break;
                         }
 
@@ -169,7 +181,7 @@ function Index() {
                     </div>
                 </Tab>
                 <Tab eventKey="test" title="test" style={{flex: 1}}>
-                    <ButtonEx onAction={async () => {
+                    <ButtonEx onAction={() => {
                         // let obj = await import('../../../data/db.json');
                         // const table = jsonToHtmlTable(obj["doc"][0])
                         // let obj = await import('./objTable.json');
@@ -180,7 +192,7 @@ function Index() {
                     <div ref={refTbl}></div>
                 </Tab>
             </Tabs>
-            <PopupMessage/>
+            {/*<PopupMessage/>*/}
 
         </div>
     )

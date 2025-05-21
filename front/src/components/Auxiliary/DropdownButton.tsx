@@ -1,95 +1,75 @@
+import clsx from 'clsx';
 import React, {useState, useEffect, useRef} from 'react';
 
 type DropdownVariant = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark';
 type DropdownSize = 'sm' | 'md' | 'lg';
 
 interface DropdownProps {
+    className?: string;
     title?: string;
     variant?: DropdownVariant;
     size?: DropdownSize;
     children?: React.ReactNode;
 }
 
-const DropdownButton: React.FC<DropdownProps> = ({
-                                                     title,
-                                                     variant = 'secondary',
-                                                     size = 'md',
-                                                     children
-                                                 }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const dropdownRef = useRef<HTMLDivElement>(null);
+const DropdownButton: React.FC<DropdownProps> =
+    ({className = '', title, variant = 'secondary', size = 'sm', children}) => {
+        const [isOpen, setIsOpen] = useState(false);
+        const dropdownRef = useRef<HTMLButtonElement>(null);
 
-    // Map variants to Tailwind classes
-    const variantClasses: Record<DropdownVariant, string> = {
-        primary: 'bg-blue-600 hover:bg-blue-700 text-white',
-        secondary: 'bg-gray-600 hover:bg-gray-700 text-white',
-        success: 'bg-green-600 hover:bg-green-700 text-white',
-        danger: 'bg-red-600 hover:bg-red-700 text-white',
-        warning: 'bg-yellow-600 hover:bg-yellow-700 text-white',
-        info: 'bg-cyan-600 hover:bg-cyan-700 text-white',
-        light: 'bg-white hover:bg-gray-100 text-gray-800 border border-gray-300',
-        dark: 'bg-gray-800 hover:bg-gray-900 text-white'
-    };
-
-    // Map sizes to Tailwind classes
-    const sizeClasses: Record<DropdownSize, string> = {
-        sm: 'text-sm px-2 py-1',
-        md: 'text-base px-3 py-2',
-        lg: 'text-lg px-4 py-2'
-    };
-
-    // Close dropdown when clicking outside
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-                setIsOpen(false);
-            }
+        // Map variants to Tailwind classes
+        const variantClasses: Record<DropdownVariant, string> = {
+            primary: 'bg-blue-600 hover:bg-blue-700 text-white',
+            secondary: 'bg-gray-500 hover:bg-gray-600 text-white',
+            success: 'bg-green-600 hover:bg-green-700 text-white',
+            danger: 'bg-red-600 hover:bg-red-700 text-white',
+            warning: 'bg-yellow-600 hover:bg-yellow-700 text-white',
+            info: 'bg-cyan-600 hover:bg-cyan-700 text-white',
+            light: 'bg-white hover:bg-gray-100 text-gray-800 border border-gray-300',
+            dark: 'bg-gray-800 hover:bg-gray-900 text-white'
         };
 
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+        // Map sizes to Tailwind classes
+        const sizeClasses: Record<DropdownSize, string> = {
+            sm: 'text-xs px-2 py-1',
+            md: 'text-base px-3 py-2',
+            lg: 'text-lg px-4 py-2'
+        };
 
-    const toggleDropdown = () => setIsOpen(!isOpen);
-
-    return (
-        <div className="relative inline-block text-left" ref={dropdownRef}>
-            <button
-                type="button"
-                onClick={toggleDropdown}
-                className={`inline-flex items-center justify-center w-full rounded-md ${variantClasses[variant]} ${sizeClasses[size]} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
-            >
-                {title}
-                <svg
-                    className="-mr-1 ml-2 h-5 w-5"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+        return (
+            <div className={clsx("relative inline-block text-left rounded-sm", className)}>
+                <button
+                    ref={dropdownRef}
+                    type="button"
+                    onClick={() => setIsOpen(true)}
+                    className={clsx(
+                        'relative text-left text-nowrap',
+                        'inline-flex items-center justify-center w-full',
+                        'rounded-[inherit]', variantClasses[variant], sizeClasses[size],
+                        'focus:outline-none focus:ring-3 focus:ring-offset-0 focus:ring-gray-500/50 select-none'
+                    )}
                 >
-                    <path
-                        fillRule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                    />
-                </svg>
-            </button>
-
-            {isOpen && (
-                <div
-                    style={{
-                        display: 'flex',
-                        width: 'max-content',
-                        maxHeight: '50vh',
-                        flexDirection: 'column',
-                        flexWrap: 'wrap'
-                    }}
-                    className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10 overflow-auto"
-                >
-                    {children}
-                </div>
-            )}
-        </div>
-    );
-};
+                    {title}
+                    <svg className="-mr-1 ml-2 h-[16px] w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" clipRule="evenodd"
+                              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+                    </svg>
+                </button>
+                {isOpen && <div className="fixed left-0 top-0 w-screen h-screen opacity-0 z-10" onClick={() => setIsOpen(false)}></div>}
+                {isOpen && (
+                    <div style={{maxHeight: '50vh',}} onClick={() => setIsOpen(false)} className={clsx(
+                        "absolute origin-top-left left-0 mt-1 w-56 z-20",
+                        "rounded-sm shadow-lg ",
+                        "bg-white ring-1 ring-gray-500/50",
+                        "focus:outline-none ",
+                        "overflow-auto")}
+                    >
+                        {children}
+                    </div>
+                )}
+            </div>
+        )
+            ;
+    };
 
 export default DropdownButton;

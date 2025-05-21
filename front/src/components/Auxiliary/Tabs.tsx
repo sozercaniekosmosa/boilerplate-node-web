@@ -42,8 +42,8 @@ export const Tabs = ({
 
     return (
         <TabContext.Provider value={{activeKey: resolvedActiveKey, setActiveKey: handleSelect}}>
-            <div className={className}>
-                <div role="tablist" className="flex border-black/20 border-b px-1">
+            <div role="tabs" className={clsx(className, 'flex flex-col')}>
+                <div role="tab-buttons" className="flex flex-row border-black/20 border-b px-1">
                     {React.Children.map(children, (child) => {
                         if (!React.isValidElement(child) || child.type !== Tab) return null;
 
@@ -52,21 +52,21 @@ export const Tabs = ({
 
                         return <div
                             key={key}
-                            role="tab"
+                            role="tab-button"
                             aria-selected={key === resolvedActiveKey}
                             onClick={() => handleSelect(key)}
                             className={clsx(
                                 'px-2 py-1 mt-1 cursor-pointer select-none',
                                 'rounded-t-sm border-1 border-inherit border-r-0 border-b-0 last:border-r-1',
-                                'transition-colors duration-200 hover:bg-gray-300',
-                                key === resolvedActiveKey ? 'bg-gray-200' : 'bg-none'
+                                'transition-colors duration-200 hover:bg-black/20',
+                                key === resolvedActiveKey ? 'bg-black/10' : 'bg-none'
                             )}
                         >
                             {title}
                         </div>;
                     })}
                 </div>
-                <div className="h-full">
+                <div role="tab-content" className="h-full min-h-0">
                     {React.Children.map(children, (child) => {
                         if (!React.isValidElement(child) || child.type !== Tab) return null;
 
@@ -79,7 +79,7 @@ export const Tabs = ({
                                 hidden={key !== resolvedActiveKey}
                                 className={clsx(
                                     'h-full',
-                                    key === resolvedActiveKey ? 'block' : 'hidden',
+                                    key === resolvedActiveKey ? 'contents' : 'hidden',
                                     className
                                 )}
                             >
@@ -102,5 +102,5 @@ interface TabProps {
 }
 
 export const Tab = ({eventKey, title, className = '', style, children}: TabProps) => {
-    return <div className={className}>{children}</div>;
+    return <div role="tab" className={className}>{children}</div>;
 };

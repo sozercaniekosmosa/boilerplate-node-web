@@ -7,6 +7,8 @@ import {ERR, OK} from "./components/PopupMessage/PopupMessage.tsx";
 import {webSocket} from "./lib/services.ts";
 import {eventBus} from "./lib/events.ts";
 
+// document.documentElement.classList.add('dark');
+
 glob.hostName = window.location.hostname;
 glob.port = 5173;
 glob.hostAPI = `http://${glob.hostName}:${glob.port}/api/v1/`;
@@ -52,4 +54,4 @@ async function createMessageSocket() {
     }
 }
 
-await createMessageSocket();
+// await createMessageSocket();

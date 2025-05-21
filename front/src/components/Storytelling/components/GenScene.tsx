@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import ButtonEx from "../../Auxiliary/ButtonEx.tsx";
-import TextBlock from "./TextBlock.tsx";
+import TextWrite from "../../Auxiliary/TextWrite.tsx";
 import {formatDateTime} from "../../../lib/time.ts";
 import {clButton, stButton} from "../Storytelling.tsx";
 import {isEmpty} from "../../../lib/utils.ts";
@@ -37,7 +37,7 @@ function SceneOpt({book, setBook, param}) {
     // if (isEmpty(scene)) return '';
     return <div className="d-flex flex-row pb-1 gap-1">
         <ButtonEx style={stButton} className="btn-secondary btn-sm flex-grow-0 bi-stars mt-2" onAction={() => null}/>
-        <TextBlock
+        <TextWrite
             className='w-100'
             value={scene?.[path].text ?? ''}
             onChange={({target}) => {

@@ -77,7 +77,7 @@ const Modal: React.FC<ModalProps> & {
                 {/* Модальное окно */}
                 <ModalContext.Provider value={{onHide}}>
                     <div
-                        className="relative inline-block transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 sm:align-middle">
+                        className="relative inline-block transform overflow-hidden rounded-sm bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 sm:align-middle">
                         {children}
                     </div>
                 </ModalContext.Provider>
@@ -98,7 +98,7 @@ Modal.Header = ({closeButton = true, children}) => {
             {closeButton && (
                 <button
                     type="button"
-                    className="ml-3 inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="ml-3 inline-flex rounded-sm bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-3 focus:ring-gray-500/50"
                     onClick={onHide}
                 >
                     <span className="sr-only">Close</span>
@@ -146,7 +146,7 @@ const Button: React.FC<ButtonProps> = ({
                                            autoFocus = false,
                                            children
                                        }) => {
-    const baseClasses = "inline-flex justify-center rounded-md border px-4 py-2 text-base font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:text-sm";
+    const baseClasses = "inline-flex justify-center rounded-sm border px-4 py-2 text-base font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:text-sm";
     const variantClasses = {
         secondary: "border-transparent bg-gray-300 text-gray-700 hover:bg-gray-400 focus:ring-gray-500",
         danger: "border-transparent bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",

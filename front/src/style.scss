@@ -1,14 +1,18 @@
 @import "tailwind";
 
 * {
-  //outline: 1px solid rgba(0, 0, 0, 0.05);
+  //outline: 1px solid rgba(0, 0, 0, 0.1);
   //margin: 1px;
 }
+
 
 body {
   height: 100vh;
   overflow: hidden;
-  font-size: .8em;
+  font-size: .8rem;
+  display: flex;
+  flex-direction: column;
+  //background: #8c93a1;
 }
 
 .no-scroll {
@@ -84,4 +88,20 @@ body {
 
 .header-set {
   outline: 1px dashed #6c6c6c;
+}
+
+.two-columns {
+  display: grid;
+  grid-template-columns: auto auto; /* Две колонки */
+  gap: 5px; /* Расстояние между колонками */
+  /*align-items: start; !* Выравнивание по верхнему краю *!*/
+  height: 100%;
+}
+
+.two-columns > * {
+  //height: 0;
+  min-height: 100%;
+  overflow-y: auto;
+  outline: 1px solid gray;
+  outline-offset: -1px;
 }

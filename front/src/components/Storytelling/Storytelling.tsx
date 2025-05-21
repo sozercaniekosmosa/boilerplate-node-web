@@ -1,13 +1,13 @@
-import {Button, ButtonGroup, Tab, Tabs} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import ButtonEx from "../Auxiliary/ButtonEx.tsx";
 import NestedList from "./components/NestedList.tsx";
 import Select from "../Select/Select.tsx";
 import Scene from "./components/Scene.tsx";
-import TextBlock from "./components/TextBlock.tsx";
+import TextWrite from "../Auxiliary/TextWrite.tsx";
 import GenScene from "./components/GenScene.tsx";
-import GenCharacter from "./components/GenCharacter.tsx";
+import {Tab, Tabs} from "../Auxiliary/Tabs.tsx";
+// import GenCharacter from "./components/GenCharacter.tsx";
 
 export const stButton = {width: '1.8em', height: '1.8em'}
 export const clButton = ' btn btn-sm flex-grow-0 d-flex justify-content-center align-items-center'
@@ -66,10 +66,11 @@ const Base = ({book, setBook, param}) => {
     const {parent, list, index, child} = param;
     const {opt} = list.data
     return <>
-        <ButtonEx style={stButton} className="btn-danger btn-sm bi-x-lg flex-grow-0" description="Удалить" onConfirm={() => {
-            parent.arrChild.splice(index, 1);
-            setBook({...book});
-        }}/>
+        <ButtonEx style={stButton} className="btn-danger btn-sm bi-x-lg flex-grow-0" description="Удалить"
+                  onConfirm={() => {
+                      parent.arrChild.splice(index, 1);
+                      setBook({...book});
+                  }}/>
         <Select arrList={arrControl} value={opt} onChange={(key) => (list.data.opt = key, setBook({...book}))}
                 style={{height: '1.7em', fontSize: '1.2em', lineHeight: 1.1}} className="ps-2 pe-5 py-0 w-auto"/>
     </>
@@ -79,10 +80,11 @@ const Action = ({book, setBook, param}) => {
     const {parent, list, index, child} = param;
     const {opt} = list.data
     return <div className="d-flex flex-column">
-        <ButtonEx style={stButton} className="btn-danger btn-sm bi-x-lg flex-grow-0" description="Удалить" onConfirm={() => {
-            parent.arrChild.splice(index, 1);
-            setBook({...book});
-        }}/>
+        <ButtonEx style={stButton} className="btn-danger btn-sm bi-x-lg flex-grow-0" description="Удалить"
+                  onConfirm={() => {
+                      parent.arrChild.splice(index, 1);
+                      setBook({...book});
+                  }}/>
         <div>Характер, предмет, сцена, диалог</div>
         <div>Описание действия</div>
         {/*<Select arrList={arrControl} value={opt} onChange={(key) => (list.data.opt = key, setBook({...book}))}*/}
@@ -97,26 +99,30 @@ const Control = ({book, setBook, param}) => {
     if (opt == ROOT) {
         return <>
             <div className="d-flex flex-row gap-1 mb-1">
-                <Select arrList={['Шаблон - 1']} value={opt} onChange={(key) => (list.data.opt = key, setBook({...book}))}
-                        style={{height: '1.7em', fontSize: '1.2em', lineHeight: 1.1}} className="flex-grow-0 ps-2 pe-5 py-0 w-auto mb-1"/>
+                <Select arrList={['Шаблон - 1']} value={opt}
+                        onChange={(key) => (list.data.opt = key, setBook({...book}))}
+                        style={{height: '1.7em', fontSize: '1.2em', lineHeight: 1.1}}
+                        className="flex-grow-0 ps-2 pe-5 py-0 w-auto mb-1"/>
             </div>
             <div className="flex-column border rounded p-1">{child}</div>
         </>
     } else if ((opt == INTRO) || (opt == MID) || (opt == END)) {
         return <>
             <div className="d-flex flex-row gap-1 mb-1">
-                <Button style={stButton} className={`btn-secondary bi-${list.hide ? 'plus-' : ''}square` + clButton} onClick={() => {
-                    list.hide = !list.hide;
-                    setBook({...book})
-                }}/>
-                <Button style={stButton} className={"btn-secondary bi-plus-circle" + clButton} onClick={() => {
+                <ButtonEx style={stButton} className={`btn-secondary bi-${list.hide ? 'plus-' : ''}square` + clButton}
+                          onClick={() => {
+                              list.hide = !list.hide;
+                              setBook({...book})
+                          }}/>
+                <ButtonEx style={stButton} className={"btn-secondary bi-plus-circle" + clButton} onClick={() => {
                     list.arrChild.push({arrChild: [], data: {opt: CHAPTER}, hide: false});
                     setBook({...book})
                 }}/>
-                <ButtonEx style={stButton} className="btn-danger btn-sm bi-x-lg flex-grow-0" description="Удалить" onConfirm={() => {
-                    parent.arrChild.splice(index, 1);
-                    setBook({...book});
-                }}/>
+                <ButtonEx style={stButton} className="btn-danger btn-sm bi-x-lg flex-grow-0" description="Удалить"
+                          onConfirm={() => {
+                              parent.arrChild.splice(index, 1);
+                              setBook({...book});
+                          }}/>
                 <div className="align-content-center">{opt}</div>
             </div>
             {!list.hide && <div className="flex-column border rounded p-1">{child}</div>}
@@ -124,24 +130,32 @@ const Control = ({book, setBook, param}) => {
     } else if (opt == CHAPTER) {
         return <>
             <div className="d-flex flex-row gap-1 mb-1">
-                <Button style={stButton} className={`btn-secondary bi-${list.hide ? 'plus-' : ''}square` + clButton} onClick={() => {
-                    list.hide = !list.hide;
-                    setBook({...book})
-                }}/>
-                <Button style={stButton} className={"btn-secondary bi-plus-circle" + clButton} onClick={() => {
+                <ButtonEx style={stButton} className={`btn-secondary bi-${list.hide ? 'plus-' : ''}square` + clButton}
+                          onClick={() => {
+                              list.hide = !list.hide;
+                              setBook({...book})
+                          }}/>
+                <ButtonEx style={stButton} className={"btn-secondary bi-plus-circle" + clButton} onClick={() => {
                     list.arrChild.push({
                         arrChild: [], data: {
                             opt: SCENE, scene: null, sceneDesc: {
-                                pointOfView: '', location: '', detailsEnv: '', time: '', mood: '', sensores: '', symbols: '',
+                                pointOfView: '',
+                                location: '',
+                                detailsEnv: '',
+                                time: '',
+                                mood: '',
+                                sensores: '',
+                                symbols: '',
                             }
                         }, hide: false
                     });
                     setBook({...book})
                 }}/>
-                <ButtonEx style={stButton} className="btn-danger btn-sm bi-x-lg flex-grow-0" description="Удалить" onConfirm={() => {
-                    parent.arrChild.splice(index, 1);
-                    setBook({...book});
-                }}/>
+                <ButtonEx style={stButton} className="btn-danger btn-sm bi-x-lg flex-grow-0" description="Удалить"
+                          onConfirm={() => {
+                              parent.arrChild.splice(index, 1);
+                              setBook({...book});
+                          }}/>
                 <div className="align-content-center">{opt}</div>
             </div>
             {!list.hide && <div className="flex-column border rounded p-1">{child}</div>}
@@ -167,10 +181,11 @@ const Control = ({book, setBook, param}) => {
     } else {
         return <div className="d-flex flex-row gap-1 mb-1">
             <div className="bg-warning">Не существует такого элемента</div>
-            <ButtonEx style={stButton} className="btn-danger btn-sm bi-x-lg flex-grow-0" description="Удалить" onConfirm={() => {
-                parent.arrChild.splice(index, 1);
-                setBook({...book});
-            }}/>
+            <ButtonEx style={stButton} className="btn-danger btn-sm bi-x-lg flex-grow-0" description="Удалить"
+                      onConfirm={() => {
+                          parent.arrChild.splice(index, 1);
+                          setBook({...book});
+                      }}/>
         </div>
     }
 }
@@ -196,7 +211,7 @@ const Storytelling: React.FC<any> = () => {
             <GenScene book={book} setBook={setBook}/>
         </Tab>
         <Tab eventKey="gen-character" title="Персонаж" style={{flex: 1}} className="h-100">
-            <GenCharacter book={book} setBook={setBook}/>
+            {/*<GenCharacter book={book} setBook={setBook}/>*/}
         </Tab>
     </Tabs>
 };

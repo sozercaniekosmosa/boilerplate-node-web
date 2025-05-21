@@ -10,7 +10,7 @@ export const toShortString = (value, language = base64Language) => {
     return acc.split('').reverse().join('').replace(/^0+/g, '');
 };
 let __id = 0;
-export const generateUID = (pre = '') => pre + toShortString((new Date().getTime()) + Math.ceil(Math.random() * 100) + (__id++))
+export const generateUID = (pre = '') => pre + toShortString(Math.trunc(new Date().getTime() / 1000) + (__id++))
 // @ts-ignore
 window.generateUID = generateUID;
 
