@@ -56,13 +56,16 @@ const Events = ({iPart, iChapter, iScene, scene}: IEventsProps) => {
             </Group>
             <Text>События</Text>
         </Row>
-        {!isHide(id + 'sa') && <Col noBorder={true} className="ml-4">
+        {!isHide(id + 'sa') && arrEvent.length>0 && <Col noBorder={true} className="ml-4">
             {arrEvent.map(({type}, iEvent) =>
                 <Row key={iEvent}>
-                    {type == 'replica' && <Replica iPart={iPart} iChapter={iChapter} iScene={iScene} iEvent={iEvent} arrEvent={arrEvent}/>}
+                    {type == 'replica' && <Replica iPart={iPart} iChapter={iChapter} iScene={iScene} iEvent={iEvent}
+                                                   arrEvent={arrEvent}/>}
                     {type == 'change-prop' &&
-                        <ChangeProp iPart={iPart} iChapter={iChapter} iScene={iScene} iEvent={iEvent} arrEvent={arrEvent}/>}
-                    {type == 'action' && <Action iPart={iPart} iChapter={iChapter} iScene={iScene} iEvent={iEvent} arrEvent={arrEvent}/>}
+                        <ChangeProp iPart={iPart} iChapter={iChapter} iScene={iScene} iEvent={iEvent}
+                                    arrEvent={arrEvent}/>}
+                    {type == 'action' &&
+                        <Action iPart={iPart} iChapter={iChapter} iScene={iScene} iEvent={iEvent} arrEvent={arrEvent}/>}
                 </Row>)}
         </Col>}
     </Col>

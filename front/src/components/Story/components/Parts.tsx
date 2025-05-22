@@ -13,7 +13,7 @@ const Parts = ({className = ''}) => {
 
     const name = useStoreBook(state => state.name);
     const setName = useStoreBook(state => state.setName);
-    const arrPart = useStoreBook(useShallow(state => state.arrPart));
+    const arrPart = useStoreBook(state => state.arrPart);
     const addPart = useStoreBook(state => state.addPart);
     const updatePart = useStoreBook(state => state.updatePart);
     const deletePart = useStoreBook(state => state.deletePart);
@@ -42,7 +42,8 @@ const Parts = ({className = ''}) => {
                 <Row>
                     <Group>
                         <SwitchHide id={id}/>
-                        <ButtonEx className={clsx("bi-plus-circle")} title="Добавить главу" onClick={() => addChapter(iPart)}/>
+                        <ButtonEx className={clsx("bi-plus-circle")} title="Добавить главу"
+                                  onClick={() => addChapter(iPart)}/>
                         <ButtonDelete onDelete={() => deletePart(iPart)}/>
                     </Group>
                     <Text>Часть {iPart + 1}.</Text>

@@ -19,6 +19,8 @@ import DropFile from "./DropFile/DropFile.tsx";
 import DraggableList from "./DraggableList/DraggableList.tsx";
 import {ERR, LOG, OK, WARN} from "./PopupMessage/PopupMessage.tsx";
 import Zustand from "./LabComponent/zustand.tsx";
+import Group from "./Auxiliary/Group.tsx";
+import TodoList from "./TodoList.tsx";
 
 // import ButtonGroup from './Auxiliary/ButtonGroup.tsx';
 
@@ -170,26 +172,18 @@ function Index() {
                         </div>
                         <hr/>
                         <h6>Шакала:</h6>
-                        <div className="flex flex-row gap-1">
+                        <Group className="m-1">
                             <ButtonEx className="btn btn-primary" onClick={() => setProgress(0)}>0%</ButtonEx>
                             <ButtonEx className="btn btn-primary" onClick={() => setProgress(25)}>25%</ButtonEx>
                             <ButtonEx className="btn btn-primary" onClick={() => setProgress(50)}>50%</ButtonEx>
                             <ButtonEx className="btn btn-primary" onClick={() => setProgress(75)}>75%</ButtonEx>
                             <ButtonEx className="btn btn-primary" onClick={() => setProgress(100)}>100%</ButtonEx>
-                        </div>
+                        </Group>
                         <hr/>
                     </div>
                 </Tab>
                 <Tab eventKey="test" title="test" style={{flex: 1}}>
-                    <ButtonEx onAction={() => {
-                        // let obj = await import('../../../data/db.json');
-                        // const table = jsonToHtmlTable(obj["doc"][0])
-                        // let obj = await import('./objTable.json');
-                        // const table = jsonToHtmlTable(obj)
-                        // @ts-ignore
-                        refTbl.current.innerHTML = table
-                    }}>Ok</ButtonEx>
-                    <div ref={refTbl}></div>
+                    <TodoList></TodoList>
                 </Tab>
             </Tabs>
             {/*<PopupMessage/>*/}

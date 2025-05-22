@@ -3,14 +3,22 @@ import {create} from "zustand/react";
 import {persist} from "zustand/middleware";
 import {immer} from "zustand/middleware/immer";
 import {generateUID} from "../../../lib/utils.ts";
+import {arrMapOfScene, getObjectMap} from "../maps.ts";
 
 
-export const useStoreScenesGen = create<IStoreScenesGen>((set) => ({
+export const useStoreScenesGen = create<IStoreScenesGen>()(
+    persist(immer(set => ({
         arrScenes: [],
-        add: (scene: ISceneGen) => set((state) => ({arrScenes: [...state.arrScenes, scene]})),
-        remove: (sceneName: string) => set((state) => ({arrScenes: [...state.arrScenes.filter(({name}) => name != sceneName)]})),
-        update: (scene: ISceneGen, sceneName: string) => set((state) => ({arrScenes: [...state.arrScenes.map((it) => it.name != sceneName ? scene : it)]})),
-        removeAll: () => set({arrScenes: []}),
-        fetch: async () => set({arrScenes: []})
-    })
+        addScene: (scene: ISceneGen) => set((state) => {
+            state.arrScenes.push(scene ?? (getObjectMap(arrMapOfScene) as ISceneGen));
+        }),
+        deleteScene: (iScene: number) => set((state) => {
+            state.arrScenes.splice(iScene, 1);
+        }),
+        updateScene: (iScene: number, scene: ISceneGen) => set((state) => {
+            Object.assign(state.arrScenes[iScene], scene)
+        }),
+        removeAllScenes: () => set({arrScenes: []}),
+        getData: async () => set((state) => ({arrScenes: state.arrScenes})),
+    })), {name: 'scenesGen', version: 0})
 )

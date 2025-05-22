@@ -1,3 +1,9 @@
+export interface IMap {
+    name: string,
+    title?: string,
+    desc: string,
+}
+
 export interface ISceneGen {
     id: string,
     name: string,
@@ -12,11 +18,11 @@ export interface ISceneGen {
 
 export interface IStoreScenesGen {
     arrScenes: ISceneGen[],
-    add: (scene: ISceneGen) => void,
-    remove: (sceneName: string) => void,
-    update: (scene: ISceneGen, sceneName: string) => void,
-    removeAll: () => void,
-    fetch: (sceneName: string) => Promise<void>,
+    addScene: (scene?: ISceneGen) => void,
+    deleteScene: (iScene: number) => void,
+    updateScene: (iScene: number, scene: ISceneGen) => void,
+    removeAllScenes: () => void,
+    getData: () => Promise<void>,
 }
 
 export interface ICharacter {

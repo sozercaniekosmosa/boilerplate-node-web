@@ -33,11 +33,12 @@ function TextWrite({
     return (
 
         <div className={clsx(
+            'w-full',
             caption ? 'relative mt-2' : 'contents h-fit',
             fitToTextSize ? '' : 'h-full',
         )}>
             {caption && <div className="absolute flex !flex-row select-none top-[-0.7em] left-[1em]">
-                <Tooltip style={{fontSize: '.8em'}} text={placeholder}>
+                <Tooltip style={{fontSize: '.8em'}} text={hint}>
                     <div
                         className="px-2 border border-black/20 rounded-full bg-white text-[.9em]/[0.7] pt-[3px] pb-[4px]">{caption}</div>
                 </Tooltip>
@@ -49,7 +50,8 @@ function TextWrite({
                       rows={1}
                       placeholder={placeholder}
                       className={clsx(
-                          "resize-none border border-black/20 rounded-sm w-full px-2 pt-[0.24rem] leading-[.9rem] min-h-[1.5rem]",
+                          caption ? 'pt-[0.4rem]' : 'pt-[0.24rem]',
+                          "resize-none border border-black/20 rounded-sm w-full px-2 leading-[.9rem] min-h-[1.5rem]",
                           className
                       )}
                       style={{...style}}></textarea>

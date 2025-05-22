@@ -36,9 +36,10 @@ export const ButtonDelete = ({onDelete}) => <ButtonEx
     description="Удалить"
     onConfirm={onDelete}/>
 
-export const TextInput = ({value, placeholder, onChange}) => <input type="text" value={value} placeholder={placeholder}
-                                                                    className={clsx("px-2 w-full",
-                                                                        // "border border-black/20 rounded-sm"
-                                                                    )}
-                                                                    onChange={onChange}/>
+export const TextInput =
+    ({value, placeholder, onChange}) => <input type="text" value={value} placeholder={placeholder}
+                                               className={clsx("px-2 w-full",
+                                                   // "border border-black/20 rounded-sm"
+                                               )}
+                                               onChange={onChange}/>
 

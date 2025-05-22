@@ -3,6 +3,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import {Tab, Tabs} from "../Auxiliary/Tabs.tsx";
 import Parts from "./components/Parts.tsx";
 import Details from "./components/Details.tsx";
+import SceneGen from "./components/Scene/SceneGen.tsx";
 
 const Story: React.FC<any> = () => {
 
@@ -12,7 +13,7 @@ const Story: React.FC<any> = () => {
             <Details className="p-1 w-[50%]"/>
         </Tab>
         <Tab eventKey=" gen-scene" title=" Сцены" style={{flex: 1}} className="">
-            {/*<GenScene book={book} setBook={setBook}/>*/}
+            <SceneGen className="overflow-auto grow p-1"/>
         </Tab>
         <Tab eventKey=" gen-character" title=" Персонажи" style={{flex: 1}} className="">
             {/*<GenCharacter book={book} setBook={setBook}/>*/}

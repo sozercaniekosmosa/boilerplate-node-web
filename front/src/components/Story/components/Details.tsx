@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import PropTypes from 'prop-types';
 import TextWrite from "../../Auxiliary/TextWrite.tsx";
 import {Col} from "./Auxiliary.tsx";
@@ -9,7 +9,7 @@ import {IPath} from "../types.ts";
 interface IDetails extends React.HTMLAttributes<HTMLDivElement> {
 }
 
-const Details: React.FC<IDetails> = (rest) => {
+const Details: React.FC<IDetails> = ({...rest}) => {
 
     const arrPart = useStoreBook(state => state.arrPart);
     const {iPart, iChapter, iScene, iEvent}: IPath = useStoreBook(state => state.currScenePath);
@@ -25,4 +25,4 @@ const Details: React.FC<IDetails> = (rest) => {
     </Col>;
 };
 
-export default Details;
+export default memo(Details);

@@ -4,7 +4,7 @@ import clsx from "clsx";
 export type TTooltipDirection = 'top' | 'right' | 'bottom' | 'left';
 
 // Пропсы компонента
-interface ITooltipProps {
+interface ITooltipProps extends React.HTMLAttributes<HTMLDivElement> {
     text: string;
     direction?: TTooltipDirection;
     children?: React.ReactNode;
@@ -30,18 +30,18 @@ const arrowPositionClasses: Record<TTooltipDirection, string> = {
 let scAni = 'delay-1000 opacity-0 group-hover:opacity-100 transition-opacity duration-300';
 
 // Компонент Tooltip
-export const Tooltip: React.FC<ITooltipProps> = ({text, direction = 'right', style, className, children}) => {
-    return <div className={clsx("group relative", className)} style={style}>
+export const Tooltip: React.FC<ITooltipProps> = ({text, direction = 'right', style, className, children, ...rest}) => {
+    return <div className={clsx("group relative cursor-help", className)} style={style}>
         {children}
-        <div
-            className={clsx(
-                'absolute z-10 bg-gray-800 text-white text-xs rounded-sm py-1 px-2 shadow-md',
-                'whitespace-nowrap pointer-events-none',
-                scAni,
-                tooltipPositionClasses[direction],
-            )}
+        <div {...rest}
+             className={clsx(
+                 'absolute z-10 bg-gray-800 text-white text-xs rounded-sm py-1 px-2 shadow-md',
+                 'whitespace-nowrap pointer-events-none',
+                 scAni,
+                 tooltipPositionClasses[direction],
+             )}
         >
-            {text}
+            {/\n/g.test(text) ? text.split('\n').map((it, i) => <div key={i}>{it}</div>) : text}
             <div className={clsx('absolute w-0 h-0 border', arrowPositionClasses[direction])}/>
         </div>
     </div>;
