@@ -60,6 +60,7 @@ function TextWrite({
                           "border border-black/20 rounded-sm w-full",
                           "px-2 leading-[.9rem] min-h-[1.5rem]",
                           "resize-none",
+                          "hover:bg-gray-500/10",
                           className
                       )}
                       style={{...style}}></textarea>

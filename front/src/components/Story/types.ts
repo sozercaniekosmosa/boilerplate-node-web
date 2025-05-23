@@ -18,6 +18,7 @@ export interface ISceneGen {
 
 export interface IStoreScenesGen {
     arrSceneGen: ISceneGen[],
+    mapID: { [key: string]: number },
     addSceneGen: (scene?: ISceneGen) => void,
     deleteSceneGen: (iScene: number) => void,
     updateSceneGen: (iScene: number, scene: ISceneGen) => void,

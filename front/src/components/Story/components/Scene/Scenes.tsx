@@ -27,9 +27,20 @@ export const Scenes = ({iPart, iChapter, arrScene}: IScenesProps) => {
     const setCurrentScenePath = useStoreBook(state => state.setCurrentScenePath);
     const currScenePath = useStoreBook(state => state.currScenePath);
     const arrSceneGen = useStoreScenesGen(state => state.arrSceneGen);
+    const mapID = useStoreScenesGen(state => state.mapID);
 
     return arrScene.map((scene, iScene) => {
         const {id, name, sceneID, arrItem, arrCharacter, arrEvent} = scene;
+        let {
+            detailsEnv,
+            location,
+            mood,
+            name: ns,
+            pointOfView,
+            sensors,
+            symbols,
+            time
+        } = mapID[sceneID] ? arrSceneGen[mapID[sceneID]] : {};
         return <Col role="scenes" key={iScene}
                     onClick={(e) => setCurrentScenePath({iPart, iChapter, iScene})}
                     className={clsx((currScenePath.iPart == iPart && currScenePath.iChapter == iChapter && currScenePath.iScene == iScene) ? "bg-gray-200" : "bg-none",)}>
@@ -37,15 +48,10 @@ export const Scenes = ({iPart, iChapter, arrScene}: IScenesProps) => {
                 <Group>
                     <SwitchHide id={id}/>
                     <DropdownButton
-                        title={sceneID == '' ? 'Выберите сцену' : 'Сцена ' + (iScene + 1) + '. ' + arrSceneGen.find(it => it.id == sceneID)?.name}>
-                        <div className="*:hover:bg-gray-500/50"
+                        title={sceneID == '' ? 'Выберите сцену' : 'Сцена ' + (iScene + 1) + '. ' + (arrSceneGen[mapID[sceneID]]?.name ?? 'Не выбрано')}>
+                        <div className="*:hover:bg-gray-500/50 *:p-1"
                              onClick={(e: any) => updateScene(iPart, iChapter, iScene, {sceneID: arrSceneGen[e.target.dataset.key].id})}>
-                            {arrSceneGen.map((sceneGen, i) => {
-                                const {
-                                    detailsEnv, id: id1, location, mood, name: name1, pointOfView, sensors, symbols, time
-                                } = sceneGen;
-                                return <div key={i} data-key={i}>{name1}</div>;
-                            })}
+                            {arrSceneGen.map((sceneGen, i) => <div key={i} data-key={i}>{sceneGen.name}</div>)}
                         </div>
                     </DropdownButton>
                     <ButtonDelete onDelete={() => deleteScene(iPart, iChapter, iScene)}/>
@@ -56,6 +62,15 @@ export const Scenes = ({iPart, iChapter, arrScene}: IScenesProps) => {
             </Row>
             {!isHide(id) &&
                 <Col role="container-scenes" noBorder={true} className="ml-1">
+                    <div>
+                        {detailsEnv}
+                        {location}
+                        {mood}
+                        {pointOfView}
+                        {sensors}
+                        {symbols}
+                        {time}
+                    </div>
                     <Characters iPart={iPart} iChapter={iChapter} iScene={iScene} scene={scene}/>
                     <Items iPart={iPart} iChapter={iChapter} iScene={iScene} scene={scene}/>
                     <Events iPart={iPart} iChapter={iChapter} iScene={iScene} scene={scene}/>

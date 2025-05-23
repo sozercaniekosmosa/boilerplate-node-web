@@ -34,7 +34,7 @@ const SceneGen: React.FC<ISceneGenProp> = ({className, ...rest}) => {
 
         {arrSceneGen.map(((scene, iScene) => {
             const {detailsEnv, id, location, mood, name, pointOfView, sensors, symbols, time} = scene;
-            return <Col key={iScene}>
+            return <Col key={iScene} noBorder={true}>
                 <Row role="scene-menu">
                     <Group>
                         <SwitchHide id={id}/>
@@ -46,16 +46,14 @@ const SceneGen: React.FC<ISceneGenProp> = ({className, ...rest}) => {
                 {!isHide(id) && <div className="pl-1 flex flex-wrap gap-1">
                     {arrMapOfScene.map(({name, title, desc}, i) => {
                         return !arrExclude.includes(name) &&
-                            <Col role="scene-item" noBorder={true} key={i} className="w-[33%]">
-                                <Col noBorder={true}>
-                                    <Row>
-                                        <Tooltip text={desc} className="bi-info-circle"/>
-                                        {title}
-                                    </Row>
-                                    <TextWrite value={arrSceneGen[iScene][name]} className="w-full" fitToTextSize={true}
-                                               placeholder={title}
-                                               onChange={(e: any) => updateSceneGen(iScene, {[name]: e.target.value} as ISceneGen)}/>
-                                </Col>
+                            <Col role="scene-item" key={i} className="w-[33%]">
+                                <Row className="text-black/60">
+                                    <Tooltip text={desc} className="bi-info-circle"/>
+                                    {title}
+                                </Row>
+                                <TextWrite value={arrSceneGen[iScene][name]} className="w-full border-none" fitToTextSize={true}
+                                           placeholder={title}
+                                           onChange={(e: any) => updateSceneGen(iScene, {[name]: e.target.value} as ISceneGen)}/>
                             </Col>
                     })}
                 </div>}
