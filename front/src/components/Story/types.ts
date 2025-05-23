@@ -17,11 +17,11 @@ export interface ISceneGen {
 }
 
 export interface IStoreScenesGen {
-    arrScenes: ISceneGen[],
-    addScene: (scene?: ISceneGen) => void,
-    deleteScene: (iScene: number) => void,
-    updateScene: (iScene: number, scene: ISceneGen) => void,
-    removeAllScenes: () => void,
+    arrSceneGen: ISceneGen[],
+    addSceneGen: (scene?: ISceneGen) => void,
+    deleteSceneGen: (iScene: number) => void,
+    updateSceneGen: (iScene: number, scene: ISceneGen) => void,
+    removeAllScenesGen: () => void,
     getData: () => Promise<void>,
 }
 
@@ -60,7 +60,7 @@ export type TEvent = IReplica | IAction | IChangeProperties;
 
 export interface IScene {
     id: string,
-    sceneSelected: string,
+    sceneID: string,
     name: string,
     text: string,
     arrCharacter: ICharacter[],

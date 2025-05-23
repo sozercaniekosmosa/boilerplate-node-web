@@ -12,13 +12,13 @@ const Story: React.FC<any> = () => {
             <Parts className="overflow-auto grow p-1 w-[50%]"/>
             <Details className="p-1 w-[50%]"/>
         </Tab>
-        <Tab eventKey=" gen-scene" title=" Сцены" style={{flex: 1}} className="">
+        <Tab eventKey="gen-scene" title=" Сцены" style={{flex: 1}} className="">
             <SceneGen className="overflow-auto grow p-1"/>
         </Tab>
-        <Tab eventKey=" gen-character" title=" Персонажи" style={{flex: 1}} className="">
+        <Tab eventKey="gen-character" title=" Персонажи" style={{flex: 1}} className="">
             {/*<GenCharacter book={book} setBook={setBook}/>*/}
         </Tab>
-        <Tab eventKey=" gen-item" title=" Предметы" style={{flex: 1}} className="">
+        <Tab eventKey="gen-item" title=" Предметы" style={{flex: 1}} className="">
             {/*<GenCharacter book={book} setBook={setBook}/>*/}
         </Tab>
     </Tabs>

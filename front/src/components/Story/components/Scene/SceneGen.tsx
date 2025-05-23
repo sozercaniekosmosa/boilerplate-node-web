@@ -19,40 +19,43 @@ interface ISceneGenProp extends React.HTMLAttributes<HTMLDivElement> {
 
 const SceneGen: React.FC<ISceneGenProp> = ({className, ...rest}) => {
 
-    const arrScenes = useStoreScenesGen(state => state.arrScenes);
-    const addScene = useStoreScenesGen(state => state.addScene);
-    const updateScene = useStoreScenesGen(state => state.updateScene);
-    const deleteScene = useStoreScenesGen(state => state.deleteScene);
+    const arrSceneGen = useStoreScenesGen(state => state.arrSceneGen);
+    const addSceneGen = useStoreScenesGen(state => state.addSceneGen);
+    const updateSceneGen = useStoreScenesGen(state => state.updateSceneGen);
+    const deleteSceneGen = useStoreScenesGen(state => state.deleteSceneGen);
     const {isHide} = useStoreFolding();
     const arrExclude = ['name', 'id'];
 
     return <Col role="scenes-gen" noBorder={true} className={clsx(className, "h-full", "bg-white")}>
         <Row role="scenes-menu">
-            <ButtonEx className={clsx("bi-plus-circle")} title="Добавить новую сцену" onClick={() => addScene()}/>
+            <ButtonEx className={clsx("bi-plus-circle")} title="Добавить новую сцену" onClick={() => addSceneGen()}/>
             <Text>Создать сцену</Text>
         </Row>
-        {arrScenes.map(((scene, iScene) => {
+
+        {arrSceneGen.map(((scene, iScene) => {
             const {detailsEnv, id, location, mood, name, pointOfView, sensors, symbols, time} = scene;
             return <Col key={iScene}>
-                <Row>
+                <Row role="scene-menu">
                     <SwitchHide id={id}/>
-                    <TextInput value={arrScenes[iScene].name} placeholder="Название сцены"
-                               onChange={(e: any) => updateScene(iScene, {'name': e.target.value} as ISceneGen)}/>
+                    <TextInput value={arrSceneGen[iScene].name} placeholder="Название сцены"
+                               onChange={(e: any) => updateSceneGen(iScene, {'name': e.target.value} as ISceneGen)}/>
                 </Row>
-                {!isHide(id) && arrMapOfScene.map(({name, title, desc}, i) => {
-                    return !arrExclude.includes(name) &&
-                        <Col role="scene-item" noBorder={true} key={i}>
-                            <Col noBorder={true}>
-                                <Row>
-                                    <Tooltip text={desc}>
+                {!isHide(id) && <div className="pl-1 flex flex-wrap gap-1">
+                    {arrMapOfScene.map(({name, title, desc}, i) => {
+                        return !arrExclude.includes(name) &&
+                            <Col role="scene-item" noBorder={true} key={i} className="w-[33%]">
+                                <Col noBorder={true}>
+                                    <Row>
+                                        <Tooltip text={desc} className="bi-info-circle"/>
                                         {title}
-                                    </Tooltip>
-                                </Row>
-                                <TextWrite value={arrScenes[iScene][name]} className="w-full" fitToTextSize={true}
-                                           onChange={(e: any) => updateScene(iScene, {[name]: e.target.value} as ISceneGen)}/>
+                                    </Row>
+                                    <TextWrite value={arrSceneGen[iScene][name]} className="w-full" fitToTextSize={true}
+                                               placeholder={title}
+                                               onChange={(e: any) => updateSceneGen(iScene, {[name]: e.target.value} as ISceneGen)}/>
+                                </Col>
                             </Col>
-                        </Col>
-                })}
+                    })}
+                </div>}
             </Col>
 
         }))}

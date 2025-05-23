@@ -11,6 +11,7 @@ import Characters from "./Characters.tsx";
 import Items from "./Items.tsx";
 import Events from "./Action/Events.tsx";
 import Group from "../../../Auxiliary/Group.tsx";
+import {useStoreScenesGen} from "../../Stores/storeScenes.ts";
 
 interface IScenesProps {
     iPart: number;
@@ -25,21 +26,24 @@ export const Scenes = ({iPart, iChapter, arrScene}: IScenesProps) => {
     const updateScene = useStoreBook(state => state.updateScene);
     const setCurrentScenePath = useStoreBook(state => state.setCurrentScenePath);
     const currScenePath = useStoreBook(state => state.currScenePath);
+    const arrSceneGen = useStoreScenesGen(state => state.arrSceneGen);
 
     return arrScene.map((scene, iScene) => {
-        const {id, name, sceneSelected, arrItem, arrCharacter, arrEvent} = scene;
+        const {id, name, sceneID, arrItem, arrCharacter, arrEvent} = scene;
         return <Col role="scenes" key={iScene}
                     onClick={(e) => setCurrentScenePath({iPart, iChapter, iScene})}
                     className={clsx((currScenePath.iPart == iPart && currScenePath.iChapter == iChapter && currScenePath.iScene == iScene) ? "bg-gray-200" : "bg-none",)}>
             <Row role="menu-scenes">
                 <Group>
                     <SwitchHide id={id}/>
-                    <DropdownButton title={name == '' ? 'Выберите сцену' : 'Сцена ' + (iScene + 1) + '. ' + sceneSelected}>
-                        <div className="*:hover:bg-black"
-                             onClick={(e: any) => updateScene(iPart, iChapter, iScene, {sceneSelected: e.target.textContent})}>
-                            <div data-value={1}>1</div>
-                            <div data-value={2}>2</div>
-                            <div data-value={3}>3</div>
+                    <DropdownButton
+                        title={sceneID == '' ? 'Выберите сцену' : 'Сцена ' + (iScene + 1) + '. ' + arrSceneGen.find(it=>it.id==sceneID)?.name}>
+                        <div className="*:hover:bg-gray-500/50"
+                             onClick={(e: any) => updateScene(iPart, iChapter, iScene, {sceneID: arrSceneGen[e.target.dataset.key].id})}>
+                            {arrSceneGen.map((sceneGen, i) => {
+                                const {detailsEnv, id: id1, location, mood, name: name1, pointOfView, sensors, symbols, time} = sceneGen;
+                                return <div key={i} data-key={i}>{name1}</div>;
+                            })}
                         </div>
                     </DropdownButton>
                     <ButtonDelete onDelete={() => deleteScene(iPart, iChapter, iScene)}/>

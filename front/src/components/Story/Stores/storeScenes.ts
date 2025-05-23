@@ -8,17 +8,17 @@ import {arrMapOfScene, getObjectMap} from "../maps.ts";
 
 export const useStoreScenesGen = create<IStoreScenesGen>()(
     persist(immer(set => ({
-        arrScenes: [],
-        addScene: (scene: ISceneGen) => set((state) => {
-            state.arrScenes.push(scene ?? (getObjectMap(arrMapOfScene) as ISceneGen));
+        arrSceneGen: [],
+        addSceneGen: (scene: ISceneGen) => set((state) => {
+            state.arrSceneGen.push(scene ?? (getObjectMap(arrMapOfScene) as ISceneGen));
         }),
-        deleteScene: (iScene: number) => set((state) => {
-            state.arrScenes.splice(iScene, 1);
+        deleteSceneGen: (iScene: number) => set((state) => {
+            state.arrSceneGen.splice(iScene, 1);
         }),
-        updateScene: (iScene: number, scene: ISceneGen) => set((state) => {
-            Object.assign(state.arrScenes[iScene], scene)
+        updateSceneGen: (iScene: number, scene: ISceneGen) => set((state) => {
+            Object.assign(state.arrSceneGen[iScene], scene)
         }),
-        removeAllScenes: () => set({arrScenes: []}),
-        getData: async () => set((state) => ({arrScenes: state.arrScenes})),
+        removeAllScenesGen: () => set({arrSceneGen: []}),
+        getData: async () => set((state) => ({arrSceneGen: state.arrSceneGen})),
     })), {name: 'scenesGen', version: 0})
 )

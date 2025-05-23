@@ -48,6 +48,7 @@ const Replica = ({iPart, iChapter, iScene, iEvent, arrEvent}) => {
                            onChange={({target}) => updateSubEvent(iEvent, {manner: target.value,} as IReplica)}/>
             </Row>
             <TextWrite value={text} placeholder="Текст реплики" className="w-full grow *:border-none *:rounded-sm"
+                       fitToTextSize={true}
                        onChange={({target}) => updateSubEvent(iEvent, {text: target.value,} as IReplica)}/>
         </Col>
     );
