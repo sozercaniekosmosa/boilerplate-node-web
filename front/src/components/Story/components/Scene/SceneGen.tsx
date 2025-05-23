@@ -36,7 +36,10 @@ const SceneGen: React.FC<ISceneGenProp> = ({className, ...rest}) => {
             const {detailsEnv, id, location, mood, name, pointOfView, sensors, symbols, time} = scene;
             return <Col key={iScene}>
                 <Row role="scene-menu">
-                    <SwitchHide id={id}/>
+                    <Group>
+                        <SwitchHide id={id}/>
+                        <ButtonDelete onDelete={() => deleteSceneGen(iScene)}/>
+                    </Group>
                     <TextInput value={arrSceneGen[iScene].name} placeholder="Название сцены"
                                onChange={(e: any) => updateSceneGen(iScene, {'name': e.target.value} as ISceneGen)}/>
                 </Row>

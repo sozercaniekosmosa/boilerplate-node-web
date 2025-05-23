@@ -37,11 +37,13 @@ export const Scenes = ({iPart, iChapter, arrScene}: IScenesProps) => {
                 <Group>
                     <SwitchHide id={id}/>
                     <DropdownButton
-                        title={sceneID == '' ? 'Выберите сцену' : 'Сцена ' + (iScene + 1) + '. ' + arrSceneGen.find(it=>it.id==sceneID)?.name}>
+                        title={sceneID == '' ? 'Выберите сцену' : 'Сцена ' + (iScene + 1) + '. ' + arrSceneGen.find(it => it.id == sceneID)?.name}>
                         <div className="*:hover:bg-gray-500/50"
                              onClick={(e: any) => updateScene(iPart, iChapter, iScene, {sceneID: arrSceneGen[e.target.dataset.key].id})}>
                             {arrSceneGen.map((sceneGen, i) => {
-                                const {detailsEnv, id: id1, location, mood, name: name1, pointOfView, sensors, symbols, time} = sceneGen;
+                                const {
+                                    detailsEnv, id: id1, location, mood, name: name1, pointOfView, sensors, symbols, time
+                                } = sceneGen;
                                 return <div key={i} data-key={i}>{name1}</div>;
                             })}
                         </div>
