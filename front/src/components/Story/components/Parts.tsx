@@ -7,7 +7,6 @@ import {useStoreFolding} from "../Stores/storeAux.ts";
 import {ButtonDelete, Col, Row, SwitchHide, Text} from "./Auxiliary.tsx";
 import Chapters from "./Chapters.tsx";
 import Group from "../../Auxiliary/Group.tsx";
-import {useShallow} from "zustand/react/shallow";
 
 const Parts = ({className = ''}) => {
 

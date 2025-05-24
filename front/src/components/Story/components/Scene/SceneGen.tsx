@@ -33,7 +33,7 @@ const SceneGen: React.FC<ISceneGenProp> = ({className, ...rest}) => {
         </Row>
 
         {arrSceneGen.map(((scene, iScene) => {
-            const {detailsEnv, id, location, mood, name, pointOfView, sensors, symbols, time} = scene;
+            const {detailsEnv, id, location, mood, name, sensors, symbols, time} = scene;
             return <Col key={iScene} noBorder={true}>
                 <Row role="scene-menu">
                     <Group>

@@ -7,7 +7,6 @@ export interface IMap {
 export interface ISceneGen {
     id: string,
     name: string,
-    pointOfView: string,
     location: string,
     detailsEnv: string,
     time: string,

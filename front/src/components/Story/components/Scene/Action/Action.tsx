@@ -1,9 +1,9 @@
 import React, {memo} from 'react';
-import {ButtonDelete, Col, Row, TextInput} from "../../Auxiliary.tsx";
+import {ButtonDelete, Col, Row} from "../../Auxiliary.tsx";
 import Group from "../../../../Auxiliary/Group.tsx";
 import clsx from "clsx";
 import DropdownButton from "../../../../Auxiliary/DropdownButton.tsx";
-import {IAction, IReplica} from "../../../types.ts";
+import {IAction} from "../../../types.ts";
 import TextWrite from "../../../../Auxiliary/TextWrite.tsx";
 import {useStoreBook} from "../../../Stores/storeBook.ts";
 

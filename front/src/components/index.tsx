@@ -12,7 +12,9 @@ import {Editor, TEventEditor} from "./Editor/Editor.tsx";
 // import Story from './Story/Story.tsx';
 import {Tab, Tabs} from './Auxiliary/Tabs.tsx';
 import SpreadSheet from "./Sheets/SpreadSheet/SpreadSheet.tsx";
-import Story from "./Story/Story.tsx";
+
+// @ts-ignore
+import Story from "./Story/Story";
 import CodeEditor from "./CodeEditor/CodeEditor.tsx";
 import SimpleTable from "./Sheets/SimpleTable/SimpleTable.tsx";
 import DropFile from "./DropFile/DropFile.tsx";
@@ -20,7 +22,7 @@ import DraggableList from "./DraggableList/DraggableList.tsx";
 import {ERR, LOG, OK, WARN} from "./PopupMessage/PopupMessage.tsx";
 import Zustand from "./LabComponent/zustand.tsx";
 import Group from "./Auxiliary/Group.tsx";
-import TodoList from "./TodoList.tsx";
+// import TodoList from "./TodoList.tsx";
 
 // import ButtonGroup from './Auxiliary/ButtonGroup.tsx';
 
@@ -183,7 +185,7 @@ function Index() {
                     </div>
                 </Tab>
                 <Tab eventKey="test" title="test" style={{flex: 1}}>
-                    <TodoList></TodoList>
+                    {/*<TodoList></TodoList>*/}
                 </Tab>
             </Tabs>
             {/*<PopupMessage/>*/}

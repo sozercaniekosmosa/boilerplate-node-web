@@ -39,9 +39,10 @@ export const ButtonDelete = ({onDelete}) => <ButtonEx
 export const TextInput =
     ({value, placeholder, onChange}) => <input type="text" value={value} placeholder={placeholder}
                                                className={clsx("px-2 w-full",
-                                                   'focus:outline-none focus:ring-3 focus:ring-offset-0 focus:ring-gray-500/20 select-none',
-                                                   "rounded-sm"
+                                                   'focus:bg-inherit focus:outline-none focus:ring-3 focus:ring-offset-0 focus:ring-black/20 select-none',
+                                                   "rounded-sm",
                                                    // "border border-black/20 ",
+                                                   "hover:bg-gray-500/10",
                                                )}
                                                onChange={onChange}/>
 

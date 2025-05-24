@@ -35,12 +35,10 @@ export const Scenes = ({iPart, iChapter, arrScene}: IScenesProps) => {
             detailsEnv,
             location,
             mood,
-            name: ns,
-            pointOfView,
             sensors,
             symbols,
             time
-        } = mapID[sceneID] ? arrSceneGen[mapID[sceneID]] : {};
+        } = mapID[sceneID] != undefined ? arrSceneGen[mapID[sceneID]] : {};
         return <Col role="scenes" key={iScene}
                     onClick={(e) => setCurrentScenePath({iPart, iChapter, iScene})}
                     className={clsx((currScenePath.iPart == iPart && currScenePath.iChapter == iChapter && currScenePath.iScene == iScene) ? "bg-gray-200" : "bg-none",)}>
@@ -66,7 +64,6 @@ export const Scenes = ({iPart, iChapter, arrScene}: IScenesProps) => {
                         {detailsEnv}
                         {location}
                         {mood}
-                        {pointOfView}
                         {sensors}
                         {symbols}
                         {time}

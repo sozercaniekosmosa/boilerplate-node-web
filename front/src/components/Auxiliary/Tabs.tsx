@@ -12,7 +12,7 @@ const TabContext = createContext<TabContextType | undefined>(undefined);
 interface TabsProps {
     defaultActiveKey?: string;
     activeKey?: string;
-    onSelect?: (key: string) => void;
+    onSelected?: (key: string) => void;
     className?: string;
     children: ReactNode;
     id?: string;
@@ -21,7 +21,7 @@ interface TabsProps {
 export const Tabs = ({
                          defaultActiveKey,
                          activeKey,
-                         onSelect,
+                         onSelected,
                          className = '',
                          children,
                          id = '',
@@ -33,8 +33,8 @@ export const Tabs = ({
     const resolvedActiveKey = activeKey !== undefined ? activeKey : internalActiveKey;
 
     const handleSelect = (key: string) => {
-        if (onSelect) {
-            onSelect(key);
+        if (onSelected) {
+            onSelected(key);
         } else {
             setInternalActiveKey(key);
         }
@@ -73,6 +73,7 @@ export const Tabs = ({
                         const key = child.props.eventKey;
                         const className = child.props.className;
 
+                        if (key !== resolvedActiveKey) return null;
                         return (
                             <div
                                 role="tabpanel"

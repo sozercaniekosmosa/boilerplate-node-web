@@ -31,7 +31,6 @@ let BOOK = {
     "scenes": {
         "": {},
         "Сцена: 01.04.2025 19:32:18": {
-            "pointOfView": {"text": ""},
             "location": {"text": "1"},
             "detailsEnv": {"text": ""},
             "time": {"text": ""},
@@ -40,7 +39,6 @@ let BOOK = {
             "symbols": {"text": ""}
         },
         "Сцена: 01.04.2025 19:32:29": {
-            "pointOfView": {"text": ""},
             "location": {"text": "й"},
             "detailsEnv": {"text": ""},
             "time": {"text": ""},

@@ -1,4 +1,5 @@
-import {IMap} from "./types";
+// @ts-ignore
+import {IMap} from "./types.ts";
 import {generateUID, getID} from "../../lib/utils.ts";
 
 export const arrMapOfItem: IMap[] = [

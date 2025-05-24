@@ -6,10 +6,10 @@ import {getFontHeight} from "../../lib/dom.ts";
 function fitToText(node: HTMLTextAreaElement) {
     node.style.height = 'auto';
     node.style.overflow = 'hidden';
-    // node.style.height = `${node.scrollHeight + 3}px`;
-    const height = getFontHeight(node);
-    const len = node.textContent.split('\n').length;
-    node.style.height = height * (len + 1) - 3 + 'px';
+    node.style.height = `${node.scrollHeight}px`;
+    // const height = getFontHeight(node);
+    // const len = node.textContent.split('\n').length;
+    // node.style.height = height * (len + 1) - 3 + 'px';
 }
 
 function TextWrite({
@@ -55,9 +55,9 @@ function TextWrite({
                       rows={1}
                       placeholder={placeholder}
                       className={clsx(
-                          'focus:outline-none focus:ring-3 focus:ring-offset-0 focus:ring-gray-500/20 select-none',
+                          'focus:outline-none focus:bg-inherit focus:ring-3 focus:ring-offset-0 focus:ring-gray-500/20 select-none',
                           caption ? 'pt-[0.4rem]' : 'pt-[0.24rem]',
-                          "border border-black/20 rounded-sm w-full",
+                          "border border-none rounded-sm w-full",
                           "px-2 leading-[.9rem] min-h-[1.5rem]",
                           "resize-none",
                           "hover:bg-gray-500/10",
