@@ -13,7 +13,7 @@ interface DropdownProps {
 }
 
 const DropdownButton: React.FC<DropdownProps> =
-    ({className = '', title, variant = 'secondary', size = 'sm', children}) => {
+    ({className = '', title, variant = 'light', size = 'sm', children}) => {
         const [isOpen, setIsOpen] = useState(false);
         const dropdownRef = useRef<HTMLButtonElement>(null);
 
@@ -25,7 +25,8 @@ const DropdownButton: React.FC<DropdownProps> =
             danger: 'bg-red-600 hover:bg-red-700 text-white',
             warning: 'bg-yellow-600 hover:bg-yellow-700 text-white',
             info: 'bg-cyan-600 hover:bg-cyan-700 text-white',
-            light: 'bg-white hover:bg-gray-100 text-gray-800 border border-gray-300',
+            // light: 'bg-white hover:bg-gray-100 text-gray-800 border border-gray-300',
+            light: 'st-air st-focus st-air-hover',
             dark: 'bg-gray-800 hover:bg-gray-900 text-white'
         };
 
@@ -46,7 +47,6 @@ const DropdownButton: React.FC<DropdownProps> =
                         'relative text-left text-nowrap',
                         'inline-flex items-center justify-center w-full',
                         'rounded-[inherit]', variantClasses[variant], sizeClasses[size],
-                        'focus:outline-none focus:ring-3 focus:ring-offset-0 focus:ring-gray-500/50 select-none'
                     )}
                 >
                     {title}

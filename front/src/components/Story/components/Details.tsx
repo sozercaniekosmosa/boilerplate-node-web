@@ -1,7 +1,7 @@
 import React, {memo} from 'react';
 import PropTypes from 'prop-types';
 import TextWrite from "../../Auxiliary/TextWrite.tsx";
-import {Col, Row} from "./Auxiliary.tsx";
+import {Col, Row, SwitchHide} from "./Auxiliary.tsx";
 import {useStoreBook} from "../Stores/storeBook.ts";
 import {IPath, ISceneGen} from "../types.ts";
 import {Tab, Tabs} from "../../Auxiliary/Tabs.tsx";
@@ -10,6 +10,8 @@ import Items from "./Scene/Items.tsx";
 import Events from "./Scene/Action/Events.tsx";
 import {arrMapOfScene} from "../maps.ts";
 import {Tooltip} from "../../Auxiliary/Tooltip.tsx";
+import {useStoreFolding} from "../Stores/storeAux.ts";
+import clsx from "clsx";
 
 
 interface IDetails extends React.HTMLAttributes<HTMLDivElement> {
@@ -17,6 +19,7 @@ interface IDetails extends React.HTMLAttributes<HTMLDivElement> {
 
 const Details: React.FC<IDetails> = ({...rest}) => {
 
+    const {isHide} = useStoreFolding();
     const arrPart = useStoreBook(state => state.arrPart);
     const {iPart, iChapter, iScene, iEvent}: IPath = useStoreBook(state => state.currScenePath);
     const updateScene = useStoreBook(state => state.updateScene);
@@ -24,37 +27,50 @@ const Details: React.FC<IDetails> = ({...rest}) => {
     const arrSceneGen = useStoreScenesGen(state => state.arrSceneGen);
     const mapID = useStoreScenesGen(state => state.mapID);
 
-
-    const {id, name, sceneID, arrItem, arrCharacter, arrEvent} = scene;
-    if (mapID[sceneID]) return null;
-
-    let {
-        detailsEnv,
-        location,
-        mood,
-        sensors,
-        symbols,
-        time
-    } = mapID[sceneID] != undefined ? arrSceneGen[mapID[sceneID]] : {};
-
+    if (scene == undefined) return null;
+    const {id, aim, sceneID, arrItem, arrCharacter, arrEvent} = scene;
+    if (mapID[sceneID] == undefined) return null;
 
     const arrExclude = ['name', 'id'];
 
+    const sceneName = arrSceneGen[mapID[sceneID]]?.name;
+    const sceneAim = scene?.aim?.length ? scene?.aim : null;
+
     return <Tabs defaultActiveKey="scene" className="h-full" {...rest}>
-        <Tab eventKey="scene" title="Сцена" className="flex flex-row">
-            <Col role="container-scenes" noBorder={true} className="ml-1">
-                {arrMapOfScene.map(({name, title, desc}, i) => {
-                    return !arrExclude.includes(name) &&
-                        <Col role="scene-item" key={i} noBorder={true}>
-                            <div className="text-black/60">{title}</div>
-                            <div className="text-black">{arrSceneGen[mapID[sceneID]]?.[name]}</div>
-                        </Col>
-                })}
+        <Tab eventKey="scene" title="Сцена" className="flex flex-row p-1">
+            <Col role="container-scenes" noBorder={true} className="w-full">
+                <Row>
+                    <SwitchHide id={id + 'prop'}/>
+                    <div className={clsx("content-center",
+                        sceneName ?? 'st-tx-light-black/60')}>
+                        {sceneName ?? 'Не выбрано'}
+                    </div>
+                    <div className={clsx("content-center",
+                        sceneAim ?? 'st-tx-light-black/60')}>
+                        {sceneAim ?? 'Введите цель сцены'}
+                    </div>
+                </Row>
+                {!isHide(id + 'prop') && <Col className="ml-1">
+                    {arrMapOfScene.map(({name, title, desc}, i) => {
+                        const text = arrSceneGen[mapID[sceneID]]?.[name];
+                        if (!text) return null;
+                        return !arrExclude.includes(name) &&
+                            <div role="scene-item" key={i} className="flex flex-col w-full">
+                                <div className="text-black/60">{title}</div>
+                                <div className={clsx(
+                                    "st-tx-light-black",
+                                    "border border-none rounded-sm w-full",
+                                    "px-1 leading-[.9rem] min-h-[1.5rem]",
+                                )}>{text}</div>
+                            </div>
+                    })}
+                </Col>}
             </Col>
         </Tab>
-        <Tab eventKey="text" title="Текст" className="flex flex-row">
+        <Tab eventKey="text" title="Текст" className="flex flex-row p-1">
             <Col noBorder={true} className="w-full">
-                <div>{scene?.name ?? 'Название сцены'}</div>
+                <div>{sceneName} </div>
+                <div>{sceneAim}</div>
                 <TextWrite value={scene?.text} className="h-full" placeholder="Введите текст описывающий сцену"
                            onChange={(e: any) => {
                                updateScene(iPart, iChapter, iScene, {text: e.target.value});

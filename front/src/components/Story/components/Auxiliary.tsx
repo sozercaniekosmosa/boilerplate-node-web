@@ -27,22 +27,21 @@ export const Row = ({children, className = '', role = ''}) => <div role={role}
                                                                    className={clsx(className, "flex flex-row gap-1")}>{children}</div>;
 
 export const SwitchHide = ({id}) => <ButtonEx
-    // className={clsx(useStoreFolding.getState().isHide(id) ? 'bi-plus-square' : 'bi-square')}
     className={clsx(useStoreFolding.getState().isHide(id) ? 'bi-caret-right-square' : 'bi-caret-down-square')}
     onClick={() => useStoreFolding.getState().switchVisibility(id)}/>
 
 export const ButtonDelete = ({onDelete}) => <ButtonEx
-    className={clsx("bi-x-lg flex-grow-0 hover:bg-red-700")}
+    className={clsx("bi-x-lg flex-grow-0 st-danger", onDelete)}
     description="Удалить"
     onConfirm={onDelete}/>
 
 export const TextInput =
     ({value, placeholder, onChange}) => <input type="text" value={value} placeholder={placeholder}
                                                className={clsx("px-2 w-full",
-                                                   'focus:bg-inherit focus:outline-none focus:ring-3 focus:ring-offset-0 focus:ring-black/20 select-none',
+                                                   'focus:bg-inherit st-focus',
                                                    "rounded-sm",
                                                    // "border border-black/20 ",
-                                                   "hover:bg-gray-500/10",
+                                                   "st-air-hover",
                                                )}
                                                onChange={onChange}/>
 

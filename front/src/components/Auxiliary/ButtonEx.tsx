@@ -62,14 +62,12 @@ const ButtonEx: FC<IButtonExProps> = ({
             style={style}
             className={clsx(
                 className,
-                // 'w-6 h-6',
                 'relative',
-                'text-base text-white p-1 rounded-sm',
-                'focus:outline-none focus:ring-3 focus:ring-offset-0 focus:ring-gray-500/50 select-none',
-                'bg-gray-500  hover:bg-gray-600 transition',
                 'flex justify-center items-center',
-                _state == 2 ? '!outline-red-700 !outline-1 !outline-offset-1' : '',
-                _state == 1 || disabled ? '!bg-gray-400 pointer-events-none' : ''
+                'p-1',
+                'st-air st-focus st-air-hover',
+                _state == 2 ? 'st-danger' : '',
+                _state == 1 || disabled ? 'bg-light-disabled' : '',
             )}
             onClick={onAct} hidden={hidden}>
             {title && <Tooltip text={title} direction={dir} className="!absolute w-full h-full"/>}

@@ -42,7 +42,7 @@ function TextWrite({
                 <Tooltip style={{fontSize: '.8em'}} text={hint}>
                     <div
                         className={clsx(
-                            "px-2 pt-[3px] pb-[4px] text-[.9em]/[0.7]",
+                            "px-2 pt-[3px] pb-[4px] st-tx-light-[.9em]/[0.7]",
                             "border border-black/20 rounded-full",
                             "bg-white")}>
                         {caption}
@@ -55,12 +55,12 @@ function TextWrite({
                       rows={1}
                       placeholder={placeholder}
                       className={clsx(
-                          'focus:outline-none focus:bg-inherit focus:ring-3 focus:ring-offset-0 focus:ring-gray-500/20 select-none',
+                          'focus:bg-inherit st-focus',
                           caption ? 'pt-[0.4rem]' : 'pt-[0.24rem]',
                           "border border-none rounded-sm w-full",
                           "px-2 leading-[.9rem] min-h-[1.5rem]",
                           "resize-none",
-                          "hover:bg-gray-500/10",
+                          "st-air-hover",
                           className
                       )}
                       style={{...style}}></textarea>

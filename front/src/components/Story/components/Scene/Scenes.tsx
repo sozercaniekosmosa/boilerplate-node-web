@@ -30,15 +30,7 @@ export const Scenes = ({iPart, iChapter, arrScene}: IScenesProps) => {
     const mapID = useStoreScenesGen(state => state.mapID);
 
     return arrScene.map((scene, iScene) => {
-        const {id, name, sceneID, arrItem, arrCharacter, arrEvent} = scene;
-        let {
-            detailsEnv,
-            location,
-            mood,
-            sensors,
-            symbols,
-            time
-        } = mapID[sceneID] != undefined ? arrSceneGen[mapID[sceneID]] : {};
+        const {id, aim, sceneID, arrItem, arrCharacter, arrEvent} = scene;
         return <Col role="scenes" key={iScene}
                     onClick={(e) => setCurrentScenePath({iPart, iChapter, iScene})}
                     className={clsx((currScenePath.iPart == iPart && currScenePath.iChapter == iChapter && currScenePath.iScene == iScene) ? "bg-gray-200" : "bg-none",)}>
@@ -54,20 +46,12 @@ export const Scenes = ({iPart, iChapter, arrScene}: IScenesProps) => {
                     </DropdownButton>
                     <ButtonDelete onDelete={() => deleteScene(iPart, iChapter, iScene)}/>
                 </Group>
-                <TextInput value={name} onChange={(e: any) => {
-                    updateScene(iPart, iChapter, iScene, {name: e.target.value});
-                }} placeholder="Название сцены"/>
+                <TextInput value={aim} onChange={(e: any) => {
+                    updateScene(iPart, iChapter, iScene, {aim: e.target.value});
+                }} placeholder="Введите цель сцены"/>
             </Row>
             {!isHide(id) &&
                 <Col role="container-scenes" noBorder={true} className="ml-1">
-                    <div>
-                        {detailsEnv}
-                        {location}
-                        {mood}
-                        {sensors}
-                        {symbols}
-                        {time}
-                    </div>
                     <Characters iPart={iPart} iChapter={iChapter} iScene={iScene} scene={scene}/>
                     <Items iPart={iPart} iChapter={iChapter} iScene={iScene} scene={scene}/>
                     <Events iPart={iPart} iChapter={iChapter} iScene={iScene} scene={scene}/>

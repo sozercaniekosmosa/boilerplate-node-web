@@ -34,11 +34,11 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
             className={
                 clsx(
                     'relative',
-                    'text-base p-1 rounded-sm bg-gray-500 hover:bg-gray-600',
-                    'focus:outline-3 outline-gray-500/50 select-none',
+                    'st-air-tx',
+                    'st-focus',
                     'inline-flex items-center justify-center p-1 rounded-md cursor-pointer transition-colors duration-300',
-                    checked ? 'bg-gray-700  text-white/80' : 'text-white',
-                    disabled ? '!bg-gray-400 !cursor-not-allowed' : '',
+                    checked ? 'bg-checked' : 'bg-unchecked',
+                    disabled ? 'bg-light-disabled' : '',
                     className)
             }
             style={{boxShadow: (checked ? 'rgba(0, 0, 0, 0.41) 0px 2px 2px 1px inset, rgb(177 177 177) 0px 0px 0px 1px inset' : ''), ...style}}

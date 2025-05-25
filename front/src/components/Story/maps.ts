@@ -84,7 +84,7 @@ export const arrMapOfCharacter: IMap[] = [
     {name: 'InternalConflicts', desc: 'Внутренние конфликты'},
 
     {name: 'age', desc: 'Возраст'},
-    {name: 'sex', desc: 'Биологический пол'},
+    {name: 'sex', desc: 'Пол'},
     {name: 'height', desc: 'Рост в сантиметрах'},
     {name: 'physique', desc: 'Телосложение'},
     {name: 'hairColor', desc: 'Цвет волос'},

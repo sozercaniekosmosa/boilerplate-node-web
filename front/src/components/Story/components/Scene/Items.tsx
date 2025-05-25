@@ -16,7 +16,7 @@ interface IItemsProps {
 }
 
 const Items = ({iPart, iChapter, iScene, scene}: IItemsProps) => {
-    const {id, name, arrItem, arrCharacter, arrEvent} = scene;
+    const {id, aim, arrItem, arrCharacter, arrEvent} = scene;
 
     const {isHide} = useStoreFolding();
     const addItem = useStoreBook(state => state.addItem);

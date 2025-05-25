@@ -18,14 +18,16 @@ const ChangeProp = ({iPart, iChapter, iScene, iEvent, arrEvent}) => {
     return (
         <Col className="grow bg-white">
             <Row>
-                <Group className="h-full grow">
-                    <div className={clsx('bi-list-task', 'relative h-fit',
-                        'text-base text-white p-1 rounded-sm',
-                        'focus:outline-none focus:ring-3 focus:ring-offset-0 focus:ring-gray-500/50 select-none',
-                        'bg-gray-500',
-                        'flex justify-center items-center',)}/>
+                <Group className="h-full">
+                    <div className={clsx(
+                        'bi-list-task',
+                        'relative',
+                        'flex justify-center items-center',
+                        'h-fit p-1',
+                        'st-air',
+                    )}/>
                     <ButtonDelete onDelete={() => deleteEvent(iPart, iChapter, iScene, iEvent)}/>
-                    <DropdownButton title={"object"}>
+                    <DropdownButton title={"subject"}>
                         <div className="*:hover:bg-black" onClick={(e: any) => {
                             console.log(e.target)
                         }}>
@@ -34,7 +36,7 @@ const ChangeProp = ({iPart, iChapter, iScene, iEvent, arrEvent}) => {
                             <div>3</div>
                         </div>
                     </DropdownButton>
-                    <DropdownButton title={"subject"}>
+                    <DropdownButton title={"object"}>
                         <div className="*:hover:bg-black" onClick={(e: any) => {
                             console.log(e.target)
                         }}>

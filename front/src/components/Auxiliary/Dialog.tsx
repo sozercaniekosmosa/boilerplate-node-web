@@ -32,7 +32,7 @@ const Dialog = ({
             {onConfirm && <Modal.Footer className="gap-1">
                 <ButtonEx onAction={handleClose}>Отмена</ButtonEx>
                 <ButtonEx onAction={() => setShow(false) || onConfirm()}
-                          autoFocus={true} className="bg-lime-900">{confirmName}</ButtonEx>
+                          autoFocus={true} className="bg-st-accept">{confirmName}</ButtonEx>
             </Modal.Footer>}
         </Modal>
     </>);

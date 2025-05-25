@@ -1,10 +1,73 @@
 @import "tailwind";
 
+@theme {
+  --color-st-white: #fff;
+  --color-st-air: #6a7282;
+  --color-st-air-disable: #d1d5dc;
+  --color-st-bg: #e5e7eb;
+  --color-st-hover-bg: #d1d5dc;
+  --color-st-bg-dis: #f3f4f6;
+  --color-st-bg-red: #c10007;
+  --color-st-accept: #35530e;
+}
+
+//bg-white hover:bg-gray-100 st-tx-light-gray-800 border border-gray-300
+
+@layer components {
+  .st-focus {
+    @apply focus:outline-none focus:ring-1 focus:ring-inset focus:ring-offset-0 focus:ring-gray-500/50 select-none;
+  }
+
+  .st-border {
+    @apply rounded-sm;
+  }
+
+  .st-air-tx {
+    @apply text-base text-gray-600;
+  }
+
+  .st-air-bg {
+    //@apply bg-gray-200;
+  }
+
+  .st-air {
+    @extend .st-air-tx;
+    @extend .st-air-bg;
+    @extend .st-border;
+  }
+
+  .st-air-hover {
+    @apply hover:bg-gray-500/10 transition;
+  }
+
+  .st-danger {
+    @apply hover:bg-red-700 hover:text-white transition;
+  }
+
+  .bg-light-disabled {
+    @apply bg-gray-100 pointer-events-none cursor-not-allowed;
+  }
+
+  .st-group {
+    //@apply bg-gray-500/10;
+    //outline: 1px solid #00000010;
+    //outline-offset: -1px;
+    //border-radius: 0.25rem;
+  }
+
+  .bg-checked {
+    @apply bg-gray-700  text-white/80;
+  }
+
+  .bg-unchecked {
+    @apply text-white;
+  }
+}
+
 * {
   //outline: 1px solid rgba(0, 0, 0, 0.1);
   //margin: 1px;
 }
-
 
 body {
   height: 100vh;

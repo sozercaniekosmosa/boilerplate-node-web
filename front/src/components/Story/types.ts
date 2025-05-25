@@ -38,8 +38,8 @@ export interface IItem {
 export interface IEventBase {
     id: string
     type: 'replica' | 'action' | 'change-prop'
-    object: string; // Обьект который производит действия
-    subject: string; // Обьект испытывающий действие
+    subject: string; // Обьект который производит действия
+    object: string; // Обьект испытывающий действие
 }
 
 export interface IReplica extends IEventBase {
@@ -61,7 +61,7 @@ export type TEvent = IReplica | IAction | IChangeProperties;
 export interface IScene {
     id: string,
     sceneID: string,
-    name: string,
+    aim: string, //цель
     text: string,
     arrCharacter: ICharacter[],
     arrItem: IItem[],

@@ -22,7 +22,7 @@ interface IEventsProps {
 }
 
 const Events = ({iPart, iChapter, iScene, scene}: IEventsProps) => {
-    const {id, name, arrItem, arrCharacter, arrEvent} = scene;
+    const {id, aim, arrItem, arrCharacter, arrEvent} = scene;
 
     const {isHide} = useStoreFolding();
     const addAction = useStoreBook(state => state.addEvent);
@@ -38,7 +38,7 @@ const Events = ({iPart, iChapter, iScene, scene}: IEventsProps) => {
         <Row role="menu-items">
             <Group>
                 <SwitchHide id={id + 'sa'}/>
-                <ButtonEx className="bi-lightning-charge-fill" title="Добавить дествие"
+                <ButtonEx className="bi-lightning-charge-fill" title="Добавить действие"
                           onClick={() => addAction(iPart, iChapter, iScene, {
                               id: getID(), type: 'action', object: '', subject: '',
                               desc: '',
@@ -56,7 +56,7 @@ const Events = ({iPart, iChapter, iScene, scene}: IEventsProps) => {
             </Group>
             <Text>События</Text>
         </Row>
-        {!isHide(id + 'sa') && arrEvent.length>0 && <Col noBorder={true} className="ml-4">
+        {!isHide(id + 'sa') && arrEvent.length > 0 && <Col noBorder={true} className="ml-4">
             {arrEvent.map(({type}, iEvent) =>
                 <Row key={iEvent}>
                     {type == 'replica' && <Replica iPart={iPart} iChapter={iChapter} iScene={iScene} iEvent={iEvent}
