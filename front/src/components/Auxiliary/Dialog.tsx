@@ -30,9 +30,9 @@ const Dialog = ({
             </Modal.Header>
             <Modal.Body className="py-4">{children ? children : message}</Modal.Body>
             {onConfirm && <Modal.Footer className="gap-1">
-                <ButtonEx onAction={handleClose}>Отмена</ButtonEx>
+                <ButtonEx className="hover:bg-gray-600 text-white bg-gray-500" onAction={handleClose}>Отмена</ButtonEx>
                 <ButtonEx onAction={() => setShow(false) || onConfirm()}
-                          autoFocus={true} className="bg-st-accept">{confirmName}</ButtonEx>
+                          autoFocus={true} className="hover:bg-red-800 text-white bg-red-700">{confirmName}</ButtonEx>
             </Modal.Footer>}
         </Modal>
     </>);

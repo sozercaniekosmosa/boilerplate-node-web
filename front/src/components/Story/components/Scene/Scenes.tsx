@@ -11,7 +11,7 @@ import Characters from "./Characters.tsx";
 import Items from "./Items.tsx";
 import Events from "./Action/Events.tsx";
 import Group from "../../../Auxiliary/Group.tsx";
-import {useStoreScenesGen} from "../../Stores/storeGenerators.ts";
+import {useStoreGenScene} from "../../Stores/storeGenerators.ts";
 
 interface IScenesProps {
     iPart: number;
@@ -26,8 +26,8 @@ export const Scenes = ({iPart, iChapter, arrScene}: IScenesProps) => {
     const updateScene = useStoreBook(state => state.updateScene);
     const setCurrentScenePath = useStoreBook(state => state.setCurrentScenePath);
     const currScenePath = useStoreBook(state => state.currScenePath);
-    const arrSceneGen = useStoreScenesGen(state => state.arrSceneGen);
-    const mapID = useStoreScenesGen(state => state.listID);
+    const arrGenScene = useStoreGenScene(state => state.arrGenScene);
+    const mapID = useStoreGenScene(state => state.listID);
 
     return arrScene.map((scene, iScene) => {
         const {id, aim, sceneID, arrItem, arrCharacter, arrEvent} = scene;
@@ -38,10 +38,10 @@ export const Scenes = ({iPart, iChapter, arrScene}: IScenesProps) => {
                 <Group>
                     <SwitchHide id={id}/>
                     <DropdownButton
-                        title={sceneID == '' ? 'Выберите сцену' : 'Сцена ' + (iScene + 1) + '. ' + (arrSceneGen[mapID[sceneID]]?.name ?? 'Не выбрано')}>
+                        title={sceneID == '' ? 'Выберите сцену' : 'Сцена ' + (iScene + 1) + '. ' + (arrGenScene[mapID[sceneID]]?.name ?? 'Не выбрано')}>
                         <div className="*:hover:bg-gray-500/50 *:p-1"
-                             onClick={(e: any) => updateScene(iPart, iChapter, iScene, {sceneID: arrSceneGen[e.target.dataset.key].id})}>
-                            {arrSceneGen.map((sceneGen, i) => <div key={i} data-key={i}>{sceneGen.name}</div>)}
+                             onClick={(e: any) => updateScene(iPart, iChapter, iScene, {sceneID: arrGenScene[e.target.dataset.key].id})}>
+                            {arrGenScene.map((GenScene, i) => <div key={i} data-key={i}>{GenScene.name}</div>)}
                         </div>
                     </DropdownButton>
                     <ButtonDelete onDelete={() => deleteScene(iPart, iChapter, iScene)}/>

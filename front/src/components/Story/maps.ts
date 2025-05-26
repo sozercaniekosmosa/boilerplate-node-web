@@ -1,8 +1,8 @@
 // @ts-ignore
-import {IMapItem} from "./types.ts";
+import {IMapProp} from "./types.ts";
 import {generateUID, getID} from "../../lib/utils.ts";
 
-export const arrMapOfItem: IMapItem[] = [
+export const arrMapOfItem: IMapProp[] = [
     {name: 'name', desc: 'Название'},
     {name: 'names', desc: 'Другие названия/имена'},
     {
@@ -43,7 +43,7 @@ export const arrMapOfItem: IMapItem[] = [
     {name: 'dimensions', desc: 'Длина, ширина, высота'},
     {name: 'form', desc: 'Форма, геометрическая конфигурация'},
 ]
-export const arrMapOfCharacter: IMapItem[] = [
+export const arrMapOfCharacter: IMapProp[] = [
     {name: 'name', title: 'Рабочее имя персонажа', desc: 'Рабочее имя персонажа'},
     {name: 'names', title: 'Возможные имена', desc: 'Возможные имена'},
 
@@ -132,7 +132,7 @@ export const arrMapOfCharacter: IMapItem[] = [
     {name: 'have', title: 'Предметы при себе', desc: 'Предметы при себе'},
     {name: 'notes', title: 'Текущие заметки', desc: 'Текущие заметки'},
 ]
-export const arrMapOfScene: IMapItem[] = [
+export const arrMapOfScene: IMapProp[] = [
     {
         name: 'location',
         title: 'Место действия',
@@ -166,7 +166,7 @@ export const arrMapOfScene: IMapItem[] = [
 ]
 
 
-export const getObjectMap = (arrMap: IMapItem[]): { [key: string]: string } | any => {
+export const getObjectMap = (arrMap: IMapProp[]): { [key: string]: string } | any => {
     const resultObj = {id: generateUID()};
     for (let i = 0; i < arrMap.length; i++) {
         const {desc, name} = arrMap[i];
@@ -175,7 +175,7 @@ export const getObjectMap = (arrMap: IMapItem[]): { [key: string]: string } | an
 
     return resultObj;
 }
-export const getArrMap = (arrMap: IMapItem[]): { [key: string]: string } | any => {
+export const getArrMap = (arrMap: IMapProp[]): { [key: string]: string } | any => {
     const resultObj = {id: generateUID()};
     for (let i = 0; i < arrMap.length; i++) {
         const {desc, name} = arrMap[i];

@@ -15,7 +15,7 @@
 
 @layer components {
   .st-focus {
-    @apply focus:outline-none focus:ring-1 focus:ring-inset focus:ring-offset-0 focus:ring-gray-500/50 select-none;
+    @apply focus:outline-none focus:ring-3 focus:ring-offset-0 focus:ring-gray-500/50 select-none;
   }
 
   .st-border {

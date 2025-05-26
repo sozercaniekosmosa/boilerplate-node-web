@@ -1,4 +1,4 @@
-import {IPart, IScene, ISceneGen, IStoreBook, IStoreFolding, IStoreScenesGen} from "../types.ts";
+import {IPart, IScene, IGenScene, IStoreBook, IStoreFolding, IStoreGenScene} from "../types.ts";
 import {create} from "zustand/react";
 import {persist} from "zustand/middleware";
 import {immer} from "zustand/middleware/immer";

@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import TextWrite from "../../Auxiliary/TextWrite.tsx";
 import {Col, Row, SwitchHide} from "./Auxiliary.tsx";
 import {useStoreBook} from "../Stores/storeBook.ts";
-import {IPath, ISceneGen} from "../types.ts";
+import {IPath, IGenScene} from "../types.ts";
 import {Tab, Tabs} from "../../Auxiliary/Tabs.tsx";
-import {useStoreScenesGen} from "../Stores/storeGenerators.ts";
+import {useStoreGenScene} from "../Stores/storeGenerators.ts";
 import Items from "./Scene/Items.tsx";
 import Events from "./Scene/Action/Events.tsx";
 import {arrMapOfScene} from "../maps.ts";
@@ -24,8 +24,8 @@ const Details: React.FC<IDetails> = ({...rest}) => {
     const {iPart, iChapter, iScene, iEvent}: IPath = useStoreBook(state => state.currScenePath);
     const updateScene = useStoreBook(state => state.updateScene);
     const scene = arrPart[iPart]?.arrChapter[iChapter]?.arrScene[iScene];
-    const arrSceneGen = useStoreScenesGen(state => state.arrSceneGen);
-    const mapID = useStoreScenesGen(state => state.listID);
+    const arrGenScene = useStoreGenScene(state => state.arrGenScene);
+    const mapID = useStoreGenScene(state => state.listID);
 
     if (scene == undefined) return null;
     const {id, aim, sceneID, arrItem, arrCharacter, arrEvent} = scene;
@@ -33,7 +33,7 @@ const Details: React.FC<IDetails> = ({...rest}) => {
 
     const arrExclude = ['name', 'id'];
 
-    const sceneName = arrSceneGen[mapID[sceneID]]?.name;
+    const sceneName = arrGenScene[mapID[sceneID]]?.name;
     const sceneAim = scene?.aim?.length ? scene?.aim : null;
 
     return <Tabs defaultActiveKey="scene" className="h-full" {...rest}>
@@ -52,7 +52,7 @@ const Details: React.FC<IDetails> = ({...rest}) => {
                 </Row>
                 {!isHide(id + 'prop') && <Col className="ml-1">
                     {arrMapOfScene.map(({name, title, desc}, i) => {
-                        const text = arrSceneGen[mapID[sceneID]]?.[name];
+                        const text = arrGenScene[mapID[sceneID]]?.[name];
                         if (!text) return null;
                         return !arrExclude.includes(name) &&
                             <Row role="scene-item" key={i}>

@@ -1,4 +1,4 @@
-import {ICharacterGen, IMap, IMapItem, ISceneGen, IStoreCharacterGen, IStoreScenesGen} from "../types.ts";
+import {ICharacterGen, IMap, IMapProp, IGenScene, IStoreCharacterGen, IStoreGenScene} from "../types.ts";
 import {create} from "zustand/react";
 import {persist} from "zustand/middleware";
 import {immer} from "zustand/middleware/immer";
@@ -36,33 +36,40 @@ export const useStoreCharacterGen = create<IStoreCharacterGen>()(
 )
 
 
-export const useStoreScenesGen = create<IStoreScenesGen>()(
+export const useStoreGenScene = create<IStoreGenScene>()(
     persist(immer(set => ({
-        arrSceneGen: [],
+        arrGenScene: [],
         listID: {},
 
-        addSceneGen: (scene: IMap) => set((state) => {
+        addGenScene: (scene: IMap) => set((state) => {
             //делаем копию карты свойств описания сцены
-            const arrMap: IMapItem[] = (arrMapOfScene.map((scene) => ({...scene, text: ''} as IMapItem)));
+            const arrMapProp: IMapProp[] = (arrMapOfScene.map((scene) => ({...scene, text: ''} as IMapProp)));
             let id = generateUID();
-            state.arrSceneGen.push(scene ?? {id, name: '', arrMap});
-            state.listID[id] = state.arrSceneGen.length - 1;
+            state.arrGenScene.push(scene ?? {id, name: '', arrMapProp});
+            state.listID[id] = state.arrGenScene.length - 1;
         }),
-        deleteSceneGen: (iScene: number) => set((state) => {
-            const {id} = state.arrSceneGen[iScene];
-            state.arrSceneGen.splice(iScene, 1);
+        deleteGenScene: (iScene: number) => set((state) => {
+            const {id} = state.arrGenScene[iScene];
+            state.arrGenScene.splice(iScene, 1);
             delete state.listID[id];
 
-            for (let i = 0; i < state.arrSceneGen.length; i++)
-                state.listID[state.arrSceneGen[i].id] = i; //обновим id
+            for (let i = 0; i < state.arrGenScene.length; i++)
+                state.listID[state.arrGenScene[i].id] = i; //обновим id
         }),
-        updateSceneGen: (iScene: number, scene: IMap) => set((state) => {
-            state.arrSceneGen[iScene] = scene;
+        updateGenSceneName: (iScene: number, name: string) => set((state) => {
+            state.arrGenScene[iScene].name = name;
         }),
-        removeAllScenesGen: () => set(state => {
-            state.arrSceneGen = [];
+        updateGenSceneProp: (iScene: number, iProp: number, key: string, val: any) => set((state) => {
+            state.arrGenScene[iScene].arrMapProp[iProp][key] = val;
+        }),
+        addGenSceneProp: (iScene: number, prop: IMapProp) => set((state) => {
+            state.arrGenScene[iScene].arrMapProp.push(prop ?? {desc: '', name: '', text: '', title: '', type: ''} as IMapProp);
+        }),
+
+        removeAllGenScene: () => set(state => {
+            state.arrGenScene = [];
             state.listID = {};
         }),
-        getData: async () => set((state) => ({arrSceneGen: state.arrSceneGen})),
-    })), {name: 'scenesGen', version: 0})
+        getData: async () => set((state) => ({arrGenScene: state.arrGenScene})),
+    })), {name: 'genScene', version: 0})
 )

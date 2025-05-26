@@ -1,4 +1,4 @@
-export interface IMapItem {
+export interface IMapProp {
     name: string;
     type?: string;
     title?: string;
@@ -9,10 +9,10 @@ export interface IMapItem {
 export interface IMap {
     id: string;
     name: string;
-    arrMap: IMapItem[];
+    arrMapProp: IMapProp[];
 }
 
-export interface ISceneGen {
+export interface IGenScene {
     id: string;
     name: string; //Название сцены
     location: string; //Место
@@ -106,13 +106,16 @@ export interface IStoreCharacterGen {
     getData: () => Promise<void>,
 }
 
-export interface IStoreScenesGen {
-    arrSceneGen: IMap[],
+export interface IStoreGenScene {
+    arrGenScene: IMap[],
     listID: { [key: string]: number },
-    addSceneGen: (scene?: IMap) => void,
-    deleteSceneGen: (iScene: number) => void,
-    updateSceneGen: (iScene: number, scene: IMap) => void,
-    removeAllScenesGen: () => void,
+    addGenScene: (scene?: IMap) => void,
+    deleteGenScene: (iScene: number) => void,
+
+    updateGenSceneName: (iScene: number, name: string) => void
+    updateGenSceneProp: (iScene: number, iItem: number, key: string, val: any) => void
+    addGenSceneProp: (iScene: number, prop?: IMapProp) => void
+
     getData: () => Promise<void>,
 }
 

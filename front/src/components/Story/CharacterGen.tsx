@@ -3,10 +3,10 @@ import clsx from "clsx";
 import {ButtonDelete, Col, Row, SwitchHide, Text, TextInput} from "./components/Auxiliary.tsx";
 import ButtonEx from "../Auxiliary/ButtonEx.tsx";
 import Group from "../Auxiliary/Group.tsx";
-import {useStoreCharacterGen, useStoreScenesGen} from "./Stores/storeGenerators.ts";
+import {useStoreCharacterGen, useStoreGenScene} from "./Stores/storeGenerators.ts";
 import {useStoreFolding} from "./Stores/storeAux.ts";
 import {arrMapOfCharacter, arrMapOfScene} from "./maps.ts";
-import {ICharacterGen, ISceneGen} from "./types.ts";
+import {ICharacterGen, IGenScene} from "./types.ts";
 import TextWrite from "../Auxiliary/TextWrite.tsx";
 import {Tooltip} from "../Auxiliary/Tooltip.tsx";
 
