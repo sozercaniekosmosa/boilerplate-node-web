@@ -11,7 +11,7 @@
   --color-st-accept: #35530e;
 }
 
-//bg-white hover:bg-gray-100 st-tx-light-gray-800 border border-gray-300
+//bg-white hover:bg-gray-100 text-gray-800 border border-gray-300
 
 @layer components {
   .st-focus {
@@ -37,7 +37,7 @@
   }
 
   .st-air-hover {
-    @apply hover:bg-gray-500/10 transition;
+    @apply hover:bg-gray-500/20 transition;
   }
 
   .st-danger {

@@ -1,8 +1,8 @@
-import {IPart, IScene, ISceneGen, IStoreBook, IStoreFolding, IStoreScenesGen} from "../types.ts";
+import {IChapter, IPart, IScene, ISceneGen, IStoreBook, IStoreFolding, IStoreScenesGen} from "../types.ts";
 import {create} from "zustand/react";
 import {persist} from "zustand/middleware";
 import {immer} from "zustand/middleware/immer";
-import {generateUID} from "../../../lib/utils.ts";
+import {generateUID as getUID} from "../../../lib/utils.ts";
 
 const arrPart: IPart[] = [
     /*    {
@@ -71,42 +71,6 @@ const arrPart: IPart[] = [
 
 
 // Helper functions
-const createPartCRUD = (key: string, name: string, clbDef: () => any, set: any) => ({
-    [`add${name}`]: (v?: any) => set((s: any) => {
-        s[key].push(v ?? clbDef())
-    }),
-    [`update${name}`]: (iPart: number, val: any) => set((s: any) => {
-        iPart in s[key] && Object.assign(s[key][iPart], val)
-    }),
-    [`delete${name}`]: (iPart: number) => set((s: any) => {
-        s[key].splice(iPart, 1)
-    })
-})
-
-const createChapterCRUD = (parent: string, child: string, name: string, clbDef: () => any, set: any) => ({
-    [`add${name}`]: (iPart: number, v?: any) => set((s: any) => {
-        s[parent][iPart]?.[child].push(v ?? clbDef())
-    }),
-    [`update${name}`]: (iPart: number, iChapter: number, v: any) => set((s: any) => {
-        iChapter in s[parent][iPart]?.[child] && Object.assign(s[parent][iPart][child][iChapter], v)
-    }),
-    [`delete${name}`]: (iPart: number, iChapter: number) => set((s: any) => {
-        s[parent][iPart]?.[child].splice(iChapter, 1)
-    })
-})
-
-const createSceneCRUD = (gParent: string, parent: string, child: string, name: string, clbDef: () => any, set: any) => ({
-    [`add${name}`]: (iPart: number, iChapter: number, v?: any) => set((s: any) => {
-        s[gParent][iPart]?.[parent][iChapter]?.[child].push(v ?? clbDef())
-    }),
-    [`update${name}`]: (iPart: number, iChapter: number, iScene: number, v: any) => set((s: any) => {
-        iScene in s[gParent][iPart]?.[parent][iChapter]?.[child] && Object.assign(s[gParent][iPart][parent][iChapter][child][iScene], v)
-    }),
-    [`delete${name}`]: (iPart: number, iChapter: number, iScene: number) => set((s: any) => {
-        s[gParent][iPart]?.[parent][iChapter]?.[child].splice(iScene, 1)
-    })
-})
-
 const createSceneItemCRUD = (key: string, name: string, clbDef: () => any, set: any) => ({
     [`add${name}`]: (iPart: number, iChapter: number, iScene: number, v?: any) => set((s: any) => {
         s.arrPart[iPart]?.arrChapter[iChapter]?.arrScene[iScene]?.[key].push(v ?? clbDef())
@@ -138,12 +102,39 @@ export const useStoreBook = create<IStoreBook>()(
             iEvent != undefined && (state.currScenePath.iEvent = iEvent);
         }),
 
-        ...createPartCRUD('arrPart', 'Part', () => ({id: generateUID(), name: '', arrChapter: []}), set),
-        ...createChapterCRUD('arrPart', 'arrChapter', 'Chapter', () => ({id: generateUID(), name: '', arrScene: []}), set),
-        ...createSceneCRUD('arrPart', 'arrChapter', 'arrScene', 'Scene',
-            () => ({id: generateUID(), sceneSelected: '', name: '', text: '', arrCharacter: [], arrItem: [], arrEvent: []}), set),
-        ...createSceneItemCRUD('arrCharacter', 'Character', () => ({id: generateUID(), name: ''}), set),
-        ...createSceneItemCRUD('arrItem', 'Item', () => ({id: generateUID(), name: ''}), set),
+        addPart: (part?: IPart) => set((state: any) => {
+            state.arrPart.push(part ?? {id: getUID(), name: '', arrChapter: []})
+        }),
+        updatePart: (iPart: number, val: any) => set((state: any) => {
+            iPart in state.arrPart && Object.assign(state.arrPart[iPart], val)
+        }),
+        deletePart: (iPart: number) => set((state: any) => {
+            state.arrPart.splice(iPart, 1)
+        }),
+
+        addChapter: (iPart: number, chapter?: IChapter) => set((state: any) => {
+            state.arrPart[iPart]?.arrChapter.push(chapter ?? {id: getUID(), name: '', arrScene: []})
+        }),
+        updateChapter: (iPart: number, iChapter: number, v: any) => set((state: any) => {
+            iChapter in state.arrPart[iPart]?.arrChapter && Object.assign(state.arrPart[iPart].arrChapter[iChapter], v)
+        }),
+        deleteChapter: (iPart: number, iChapter: number) => set((state: any) => {
+            state.arrPart[iPart]?.arrChapter.splice(iChapter, 1)
+        }),
+
+        addScene: (iPart: number, iChapter: number, scene?: IScene) => set((s: any) => {
+            var d = {id: getUID(), sceneSelected: '', name: '', text: '', arrCharacter: [], arrItem: [], arrEvent: []};
+            s.arrPart[iPart]?.arrChapter[iChapter]?.arrScene.push(scene ?? d)
+        }),
+        updateScene: (iPart: number, iChapter: number, iScene: number, v: any) => set((s: any) => {
+            iScene in s.arrPart[iPart]?.arrChapter[iChapter]?.arrScene && Object.assign(s.arrPart[iPart].arrChapter[iChapter].arrScene[iScene], v)
+        }),
+        deleteScene: (iPart: number, iChapter: number, iScene: number) => set((s: any) => {
+            s.arrPart[iPart]?.arrChapter[iChapter]?.arrScene.splice(iScene, 1)
+        }),
+
+        ...createSceneItemCRUD('arrCharacter', 'Character', () => ({id: getUID(), name: ''}), set),
+        ...createSceneItemCRUD('arrItem', 'Item', () => ({id: getUID(), name: ''}), set),
         ...createSceneItemCRUD('arrEvent', 'Event', () => null, set),
 
         getData: async () => set((state) => ({arrPart: state.arrPart})),

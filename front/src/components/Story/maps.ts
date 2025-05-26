@@ -1,8 +1,8 @@
 // @ts-ignore
-import {IMap} from "./types.ts";
+import {IMapItem} from "./types.ts";
 import {generateUID, getID} from "../../lib/utils.ts";
 
-export const arrMapOfItem: IMap[] = [
+export const arrMapOfItem: IMapItem[] = [
     {name: 'name', desc: 'Название'},
     {name: 'names', desc: 'Другие названия/имена'},
     {
@@ -43,79 +43,96 @@ export const arrMapOfItem: IMap[] = [
     {name: 'dimensions', desc: 'Длина, ширина, высота'},
     {name: 'form', desc: 'Форма, геометрическая конфигурация'},
 ]
-export const arrMapOfCharacter: IMap[] = [
-    {name: 'name', desc: 'Рабочее имя персонажа'},
-    {name: 'names', desc: 'Возможные имена'},
+export const arrMapOfCharacter: IMapItem[] = [
+    {name: 'name', title: 'Рабочее имя персонажа', desc: 'Рабочее имя персонажа'},
+    {name: 'names', title: 'Возможные имена', desc: 'Возможные имена'},
 
-    {name: 'inPast', desc: 'История жизни в прошлом'},
-    {name: 'now', desc: 'Текущая ситуация в жизни'},
+    {name: 'inPast', title: 'История жизни в прошлом', desc: 'История жизни в прошлом'},
+    {name: 'now', title: 'Текущая ситуация в жизни', desc: 'Текущая ситуация в жизни'},
 
 
-    {name: 'relationships', desc: 'Отношения (друзья, семья, знакомые, коллеги)'},
+    {
+        name: 'relationships',
+        title: 'Отношения (друзья, семья, знакомые, коллеги)',
+        desc: 'Отношения (друзья, семья, знакомые, коллеги)'
+    },
 
-    {name: 'goalsMotivation', desc: 'Цели и мотвация'},
-    {name: 'secretsMotives', desc: 'Скрытые цели и мотвация'},
-    {name: 'morality', desc: 'Моральные аспекты личности'},
-    {name: 'courage', desc: 'Шкала 0-10: от трусости до безрассудства'},
-    {name: 'loyalty', desc: 'Шкала 0-10: вероятность предательства'},
+    {name: 'goalsMotivation', title: 'Цели и мотвация', desc: 'Цели и мотвация'},
+    {name: 'secretsMotives', title: 'Скрытые цели и мотвация', desc: 'Скрытые цели и мотвация'},
+    {name: 'morality', title: 'Моральные аспекты личности', desc: 'Моральные аспекты личности'},
+    {
+        name: 'courage',
+        title: 'Шкала 0-10: от трусости до безрассудства',
+        desc: 'Шкала 0-10: от трусости до безрассудства'
+    },
+    {name: 'loyalty', title: 'Шкала 0-10: вероятность предательства', desc: 'Шкала 0-10: вероятность предательства'},
 
     // Эмоциональные реакции и устойчивость
-    {name: 'empathy', desc: 'Способность к сопереживанию (0-10)'},
-    {name: 'temper', desc: 'Тип темперамента'},
-    {name: 'resilience', desc: 'Устойчивость к стрессу (0 = сломление, 10 = сталь)'},
+    {name: 'empathy', title: 'Способность к сопереживанию (0-10)', desc: 'Способность к сопереживанию (0-10)'},
+    {name: 'temper', title: 'Тип темперамента', desc: 'Тип темперамента'},
+    {
+        name: 'resilience',
+        title: 'Устойчивость к стрессу (0 = сломление, 10 = сталь)',
+        desc: 'Устойчивость к стрессу (0 = сломление, 10 = сталь)'
+    },
 
     // Социальное взаимодействие
-    {name: 'charisma', desc: 'Влияние на других (0-10)'},
-    {name: 'isLeader', desc: 'Лидерские качества'},
-    {name: 'trustInOthers', desc: '0 = параноик, 10 = наивный'},
+    {
+        name: 'charisma',
+        title: 'Харизма влияние на других (0-10)',
+        desc: 'Влияние на других, способность мобилизовать и вести за собой'
+    },
+    {name: 'trustInOthers', title: '0 = параноик, 10 = наивный', desc: '0 = параноик, 10 = наивный'},
 
 
     // Интеллект и творчество
-    {name: 'abilities', desc: 'Интеллектуальные и творческие способности'},
-    {name: 'creativity', desc: '0 = шаблонное мышление, 10 = новатор'},
-    {name: 'isAnalytical', desc: 'Преобладание логики над эмоциями'},
-    {name: 'curiosity', desc: '0 = консерватор, 10 = исследователь'},
+    {
+        name: 'abilities',
+        title: 'Интеллектуальные и творческие способности',
+        desc: 'Интеллектуальные и творческие способности'
+    },
+    {name: 'creativity', title: '0 = шаблонное мышление, 10 = новатор', desc: '0 = шаблонное мышление, 10 = новатор'},
+    {name: 'isAnalytical', title: 'Преобладание логики над эмоциями', desc: 'Преобладание логики над эмоциями'},
+    {name: 'curiosity', title: '0 = консерватор, 10 = исследователь', desc: '0 = консерватор, 10 = исследователь'},
 
     // Особенности
-    {name: 'isSarcastic', desc: 'Склонность к сарказму'},
-    {name: 'habits', desc: 'Привычки'},
-    {name: 'gestures', desc: 'Типичные жесты'},
-    {name: 'phobias', desc: 'список страхов'},
-    {name: 'InternalConflicts', desc: 'Внутренние конфликты'},
+    {name: 'isSarcastic', title: 'Склонность к сарказму', desc: 'Склонность к сарказму'},
+    {name: 'habits', title: 'Привычки', desc: 'Привычки'},
+    {name: 'gestures', title: 'Типичные жесты', desc: 'Типичные жесты'},
+    {name: 'phobias', title: 'список страхов', desc: 'список страхов'},
+    {name: 'InternalConflicts', title: 'Внутренние конфликты', desc: 'Внутренние конфликты'},
 
-    {name: 'age', desc: 'Возраст'},
-    {name: 'sex', desc: 'Пол'},
-    {name: 'height', desc: 'Рост в сантиметрах'},
-    {name: 'physique', desc: 'Телосложение'},
-    {name: 'hairColor', desc: 'Цвет волос'},
-    {name: 'hairLength', desc: 'Длина волос'},
-    {name: 'hairStyle', desc: 'Причёска'},
-    {name: 'eyesColor', desc: 'Цвет глаз'},
-    {name: 'features', desc: 'Особенности'},
+    // Тело
+    {name: 'age', title: 'Возраст', desc: 'Возраст'},
+    {name: 'sex', title: 'Пол', desc: 'Пол'},
+    {name: 'height', title: 'Рост в сантиметрах', desc: 'Рост в сантиметрах'},
+    {name: 'physique', title: 'Телосложение', desc: 'Телосложение'},
+    {name: 'hairColor', title: 'Цвет волос', desc: 'Цвет волос'},
+    {name: 'hairLength', title: 'Длина волос', desc: 'Длина волос'},
+    {name: 'hairStyle', title: 'Причёска', desc: 'Причёска'},
+    {name: 'eyesColor', title: 'Цвет глаз', desc: 'Цвет глаз'},
+    {name: 'features', title: 'Особенности', desc: 'Особенности'},
+    {name: 'posture', title: 'Осанка', desc: 'Осанка'},
 
-    // Стиль и визуальные особенности
-
-    {name: 'clothingStyle', desc: 'Стиль одежды'},
-    {name: 'clothingCondition', desc: 'Состояние одежды'},
-    {name: 'clothingItems', desc: 'Предметы одежды'},
-    {name: 'clothingAccessories', desc: 'Аксессуары'},
-
-    // Уникальные черты
-
-    {name: 'scarsInjuries', desc: 'Шрамы и травмы'},
-    {name: 'tattoos', desc: 'Татуирвоки'},
-    {name: 'peculiarities', desc: 'Особенности (близко посаженные глаза, выдющийся подбородок и т.д.)'},
-
-    {name: 'have', desc: 'Предметы при себе'},
-    {name: 'notes', desc: 'Текущие заметки'},
+    // Уникальные физические черты
+    {name: 'scarsInjuries', title: 'Шрамы и травмы', desc: 'Шрамы и травмы'},
+    {name: 'tattoos', title: 'Татуирвоки', desc: 'Татуирвоки'},
+    {name: 'peculiarities', title: 'Внешние особенности', desc: 'Близко посаженные глаза, выдющийся подбородок и т.д.'},
 
     // Динамические характеристики
-    {name: 'posture', desc: 'Осанка'},
-    {name: 'timbreVoice', desc: 'Тембр голоса'},
-    {name: 'speakingRate', desc: 'Скорость речи'},
+    {name: 'timbreVoice', title: 'Тембр голоса', desc: 'Тембр голоса'},
+    {name: 'speakingRate', title: 'Скорость речи', desc: 'Скорость речи'},
+
+    // Стиль и визуальные особенности
+    {name: 'clothingStyle', title: 'Стиль одежды', desc: 'Стиль одежды'},
+    {name: 'clothingCondition', title: 'Состояние одежды', desc: 'Состояние одежды'},
+    {name: 'clothingItems', title: 'Предметы одежды', desc: 'Предметы одежды'},
+    {name: 'clothingAccessories', title: 'Аксессуары', desc: 'Аксессуары'},
+
+    {name: 'have', title: 'Предметы при себе', desc: 'Предметы при себе'},
+    {name: 'notes', title: 'Текущие заметки', desc: 'Текущие заметки'},
 ]
-export const arrMapOfScene: IMap[] = [
-    {name: 'name', desc: 'Название сцены'},
+export const arrMapOfScene: IMapItem[] = [
     {
         name: 'location',
         title: 'Место действия',
@@ -149,7 +166,16 @@ export const arrMapOfScene: IMap[] = [
 ]
 
 
-export const getObjectMap = (arrMap: IMap[]): { [key: string]: string } | any => {
+export const getObjectMap = (arrMap: IMapItem[]): { [key: string]: string } | any => {
+    const resultObj = {id: generateUID()};
+    for (let i = 0; i < arrMap.length; i++) {
+        const {desc, name} = arrMap[i];
+        resultObj[name] = '';
+    }
+
+    return resultObj;
+}
+export const getArrMap = (arrMap: IMapItem[]): { [key: string]: string } | any => {
     const resultObj = {id: generateUID()};
     for (let i = 0; i < arrMap.length; i++) {
         const {desc, name} = arrMap[i];

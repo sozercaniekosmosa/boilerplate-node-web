@@ -1,17 +1,14 @@
 import React, {memo} from 'react';
 import clsx from "clsx";
-import {ButtonDelete, Col, Row, SwitchHide, Text, TextInput} from "../Auxiliary.tsx";
-import ButtonEx from "../../../Auxiliary/ButtonEx.tsx";
-import Group from "../../../Auxiliary/Group.tsx";
-import Chapters from "../Chapters.tsx";
-import {useStoreBook} from "../../Stores/storeBook.ts";
-import {useShallow} from "zustand/react/shallow";
-import {useStoreScenesGen} from "../../Stores/storeScenes.ts";
-import {useStoreFolding} from "../../Stores/storeAux.ts";
-import {arrMapOfScene} from "../../maps.ts";
-import {IReplica, ISceneGen} from "../../types.ts";
-import TextWrite from "../../../Auxiliary/TextWrite.tsx";
-import {Tooltip} from "../../../Auxiliary/Tooltip.tsx";
+import {ButtonDelete, Col, Row, SwitchHide, Text, TextInput} from "./components/Auxiliary.tsx";
+import ButtonEx from "../Auxiliary/ButtonEx.tsx";
+import Group from "../Auxiliary/Group.tsx";
+import {useStoreScenesGen} from "./Stores/storeGenerators.ts";
+import {useStoreFolding} from "./Stores/storeAux.ts";
+import {arrMapOfScene} from "./maps.ts";
+import {IMap, ISceneGen} from "./types.ts";
+import TextWrite from "../Auxiliary/TextWrite.tsx";
+import {Tooltip} from "../Auxiliary/Tooltip.tsx";
 
 interface ISceneGenProp extends React.HTMLAttributes<HTMLDivElement> {
     className?: string;
@@ -33,27 +30,28 @@ const SceneGen: React.FC<ISceneGenProp> = ({className, ...rest}) => {
         </Row>
 
         {arrSceneGen.map(((scene, iScene) => {
-            const {detailsEnv, id, location, mood, name, sensors, symbols, time} = scene;
+            const {id, name, arrMap} = scene;
             return <Col key={iScene} noBorder={true}>
                 <Row role="scene-menu">
                     <Group>
                         <SwitchHide id={id}/>
                         <ButtonDelete onDelete={() => deleteSceneGen(iScene)}/>
                     </Group>
-                    <TextInput value={arrSceneGen[iScene].name} placeholder="Название сцены"
-                               onChange={(e: any) => updateSceneGen(iScene, {'name': e.target.value} as ISceneGen)}/>
+                    <TextInput value={name} placeholder="Название сцены"
+                               onChange={(e: any) => updateSceneGen(iScene, {name} as IMap)}/>
                 </Row>
                 {!isHide(id) && <div className="pl-1 flex flex-wrap gap-1">
-                    {arrMapOfScene.map(({name, title, desc}, i) => {
+                    {arrMap.map(({name, title, desc}, i) => {
                         return !arrExclude.includes(name) &&
-                            <Col role="scene-item" key={i} className="w-[33%]">
+                            <Col role="scene-item" key={i} className="w-[33%] !gap-0">
                                 <Row className="text-black/60">
                                     <Tooltip text={desc} className="bi-info-circle"/>
                                     {title}
                                 </Row>
-                                <TextWrite value={arrSceneGen[iScene][name]} className="w-full border-none" fitToTextSize={true}
-                                           placeholder={title}
-                                           onChange={(e: any) => updateSceneGen(iScene, {[name]: e.target.value} as ISceneGen)}/>
+                                <TextWrite
+                                    className="w-full border-none" fitToTextSize={true} placeholder={title}
+                                    value={arrSceneGen[iScene][name]}
+                                    onChange={(e: any) => updateSceneGen(iScene, {[name]: e.target.value} as ISceneGen)}/>
                             </Col>
                     })}
                 </div>}

@@ -11,7 +11,7 @@ import Characters from "./Characters.tsx";
 import Items from "./Items.tsx";
 import Events from "./Action/Events.tsx";
 import Group from "../../../Auxiliary/Group.tsx";
-import {useStoreScenesGen} from "../../Stores/storeScenes.ts";
+import {useStoreScenesGen} from "../../Stores/storeGenerators.ts";
 
 interface IScenesProps {
     iPart: number;
@@ -27,7 +27,7 @@ export const Scenes = ({iPart, iChapter, arrScene}: IScenesProps) => {
     const setCurrentScenePath = useStoreBook(state => state.setCurrentScenePath);
     const currScenePath = useStoreBook(state => state.currScenePath);
     const arrSceneGen = useStoreScenesGen(state => state.arrSceneGen);
-    const mapID = useStoreScenesGen(state => state.mapID);
+    const mapID = useStoreScenesGen(state => state.listID);
 
     return arrScene.map((scene, iScene) => {
         const {id, aim, sceneID, arrItem, arrCharacter, arrEvent} = scene;

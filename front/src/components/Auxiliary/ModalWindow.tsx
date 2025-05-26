@@ -146,10 +146,10 @@ const Button: React.FC<ButtonProps> = ({
                                            autoFocus = false,
                                            children
                                        }) => {
-    const baseClasses = "inline-flex justify-center rounded-sm border px-4 py-2 st-tx-light-base font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:st-tx-light-sm";
+    const baseClasses = "inline-flex justify-center rounded-sm border px-4 py-2 text-base font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:text-sm";
     const variantClasses = {
-        secondary: "border-transparent bg-gray-300 st-tx-light-gray-700 hover:bg-gray-400 focus:ring-gray-500",
-        danger: "border-transparent bg-red-600 st-tx-light-white hover:bg-red-700 focus:ring-red-500",
+        secondary: "border-transparent bg-gray-300 text-gray-700 hover:bg-gray-400 focus:ring-gray-500",
+        danger: "border-transparent bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
     };
 
     return (

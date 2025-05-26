@@ -42,7 +42,7 @@ function TextWrite({
                 <Tooltip style={{fontSize: '.8em'}} text={hint}>
                     <div
                         className={clsx(
-                            "px-2 pt-[3px] pb-[4px] st-tx-light-[.9em]/[0.7]",
+                            "px-2 pt-[3px] pb-[4px] text-[.9em]/[0.7]",
                             "border border-black/20 rounded-full",
                             "bg-white")}>
                         {caption}
