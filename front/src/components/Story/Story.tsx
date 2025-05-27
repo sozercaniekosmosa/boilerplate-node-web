@@ -17,7 +17,7 @@ const Story: React.FC<any> = () => {
             <GenScene className="overflow-auto grow p-1"/>
         </Tab>
         <Tab eventKey="gen-character" title=" Персонажи" style={{flex: 1}} className="">
-            <CharacterGen className="overflow-auto grow p-1"/>
+            {/*<CharacterGen className="overflow-auto grow p-1"/>*/}
         </Tab>
         <Tab eventKey="gen-item" title=" Предметы" style={{flex: 1}} className="">
             {/*<GenCharacter book={book} setBook={setBook}/>*/}

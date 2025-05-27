@@ -1,5 +1,4 @@
 export interface IMapProp {
-    name: string;
     type?: string;
     title?: string;
     desc: string;
@@ -107,14 +106,28 @@ export interface IStoreCharacterGen {
 }
 
 export interface IStoreGenScene {
-    arrGenScene: IMap[],
+    arrGen: IMap[],
     listID: { [key: string]: number },
     addGenScene: (scene?: IMap) => void,
     deleteGenScene: (iScene: number) => void,
 
     updateGenSceneName: (iScene: number, name: string) => void
-    updateGenSceneProp: (iScene: number, iItem: number, key: string, val: any) => void
+    updateGenSceneProp: (iScene: number, iItem: number, prop: any) => void
     addGenSceneProp: (iScene: number, prop?: IMapProp) => void
+    deleteGenSceneProp: (iScene: number, iProp: number) => void
+
+    getData: () => Promise<void>,
+}
+export interface IStoreGen {
+    arrGen: IMap[],
+    listID: { [key: string]: number },
+    addGen: (item?: IMap) => void,
+    deleteGen: (i: number) => void,
+
+    updateGenName: (i: number, name: string) => void
+    updateGenProp: (i: number, iItem: number, prop: any) => void
+    addGenProp: (i: number, prop?: IMapProp) => void
+    deleteGenProp: (i: number, iProp: number) => void
 
     getData: () => Promise<void>,
 }

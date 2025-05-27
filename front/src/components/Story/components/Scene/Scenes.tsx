@@ -26,7 +26,7 @@ export const Scenes = ({iPart, iChapter, arrScene}: IScenesProps) => {
     const updateScene = useStoreBook(state => state.updateScene);
     const setCurrentScenePath = useStoreBook(state => state.setCurrentScenePath);
     const currScenePath = useStoreBook(state => state.currScenePath);
-    const arrGenScene = useStoreGenScene(state => state.arrGenScene);
+    const arrGenScene = useStoreGenScene(state => state.arrGen);
     const mapID = useStoreGenScene(state => state.listID);
 
     return arrScene.map((scene, iScene) => {

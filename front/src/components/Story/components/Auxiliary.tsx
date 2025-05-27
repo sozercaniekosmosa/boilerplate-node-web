@@ -14,6 +14,9 @@ interface IComponentCol extends React.HTMLAttributes<HTMLDivElement> {
     noBorder?: boolean;
 }
 
+interface IComponentRow extends React.HTMLAttributes<HTMLDivElement> {
+}
+
 export const Col = ({children, className = '', noBorder = false, role = '', ...rest}: IComponentCol) => <div
     role={role}
     className={clsx(
@@ -23,15 +26,16 @@ export const Col = ({children, className = '', noBorder = false, role = '', ...r
         "gap-1"
     )} {...rest}>{children}</div>;
 
-export const Row = ({children, className = '', role = ''}) => <div role={role}
-                                                                   className={clsx(className, "flex flex-row gap-1")}>{children}</div>;
+export const Row = ({children, className = '', role = '', ...rest}: IComponentRow) => {
+    return <div role={role} className={clsx(className, "flex flex-row gap-1")} {...rest}>{children}</div>;
+}
 
 export const SwitchHide = ({id}) => <ButtonEx
     className={clsx(useStoreFolding.getState().isHide(id) ? 'bi-caret-right-square' : 'bi-caret-down-square')}
     onClick={() => useStoreFolding.getState().switchVisibility(id)}/>
 
-export const ButtonDelete = ({onDelete}) => <ButtonEx
-    className={clsx("bi-x-lg flex-grow-0 st-danger", onDelete)}
+export const ButtonDelete = ({onDelete, className = ''}) => <ButtonEx
+    className={clsx("bi-x-lg flex-grow-0 st-danger", className)}
     description="Удалить"
     onConfirm={onDelete}/>
 

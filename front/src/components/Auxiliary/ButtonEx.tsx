@@ -11,6 +11,7 @@ interface IButtonExProps extends PropsWithChildren {
     onAction?: (e?: React.MouseEvent<HTMLElement>) => Promise<number> | number | void,
     onClick?: (e?: React.MouseEvent<HTMLElement>) => void,
     onConfirm?: (e?: React.MouseEvent<HTMLElement>) => void,
+    dialogContent?: React.ReactElement,
     disabled?: boolean,
     hidden?: boolean,
     title?: string,
@@ -29,6 +30,7 @@ const ButtonEx: FC<IButtonExProps> = ({
                                           hidden = false,
                                           children = null,
                                           onConfirm = null,
+                                          dialogContent = null,
                                           title = null,
                                           dir = "right",
                                           description = 'Добавьте текст...',
@@ -75,10 +77,11 @@ const ButtonEx: FC<IButtonExProps> = ({
             {hidden ? '' : children}
             {hidden ? '' : text}
         </button>}
-        {onConfirm ?
-            <Dialog title={description} message="Уверены?" show={showAndDataEvent} setShow={setShowAndDataEvent}
-                    onConfirm={async () => onConfirm(showAndDataEvent)}
-                    props={{className: 'modal-sm'}}/> : ''}
+        {onConfirm ? <Dialog
+            title={description} message="Уверены?"
+            show={showAndDataEvent} setShow={setShowAndDataEvent}
+            onConfirm={async () => onConfirm(showAndDataEvent)}
+            props={{className: 'modal-sm'}}>{dialogContent}</Dialog> : ''}
     </>
 };
 

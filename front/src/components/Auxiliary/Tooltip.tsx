@@ -1,5 +1,6 @@
 // Возможные направления подсказки
 import clsx from "clsx";
+import React from "react";
 
 export type TTooltipDirection = 'top' | 'right' | 'bottom' | 'left';
 

@@ -32,6 +32,10 @@ function TextWrite({
         if (fitToTextSize && textareaRef.current) fitToText(textareaRef.current);
     }, [textareaRef, value]);
 
+    function onInput() {
+        if (fitToTextSize && textareaRef.current) fitToText(textareaRef.current);
+    }
+
     return (
         <div className={clsx(
             'w-full',
@@ -51,6 +55,7 @@ function TextWrite({
             </div>}
             <textarea value={value}
                       onChange={onChange}
+                      onInput={onInput}
                       ref={textareaRef}
                       rows={1}
                       placeholder={placeholder}

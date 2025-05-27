@@ -24,7 +24,7 @@ const Details: React.FC<IDetails> = ({...rest}) => {
     const {iPart, iChapter, iScene, iEvent}: IPath = useStoreBook(state => state.currScenePath);
     const updateScene = useStoreBook(state => state.updateScene);
     const scene = arrPart[iPart]?.arrChapter[iChapter]?.arrScene[iScene];
-    const arrGenScene = useStoreGenScene(state => state.arrGenScene);
+    const arrGenScene = useStoreGenScene(state => state.arrGen);
     const mapID = useStoreGenScene(state => state.listID);
 
     if (scene == undefined) return null;
@@ -51,11 +51,11 @@ const Details: React.FC<IDetails> = ({...rest}) => {
                     </div>
                 </Row>
                 {!isHide(id + 'prop') && <Col className="ml-1">
-                    {arrMapOfScene.map(({name, title, desc}, i) => {
-                        const text = arrGenScene[mapID[sceneID]]?.[name];
-                        if (!text) return null;
-                        return !arrExclude.includes(name) &&
-                            <Row role="scene-item" key={i}>
+                    {arrGenScene.map(({name, id, arrMapProp}, i) => {
+                        if (!name) return null;
+                        return !arrExclude.includes(name) && arrMapProp.map(({title, text}, i) => {
+                            if(!text) return null;
+                            return <Row role="scene-item" key={i}>
                                 <div className="text-black/60 text-nowrap">{title}:</div>
                                 <div className={clsx(
                                     "text-black",
@@ -63,6 +63,7 @@ const Details: React.FC<IDetails> = ({...rest}) => {
                                     "pl-1 leading-[.9rem]",
                                 )}>{text}</div>
                             </Row>
+                        })
                     })}
                 </Col>}
             </Col>
