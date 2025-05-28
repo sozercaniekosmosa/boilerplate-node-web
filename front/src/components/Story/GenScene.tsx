@@ -5,18 +5,23 @@ import ButtonEx from "../Auxiliary/ButtonEx.tsx";
 import Group from "../Auxiliary/Group.tsx";
 import {useStoreGenScene} from "./Stores/storeGenerators.ts";
 import {useStoreFolding} from "./Stores/storeAux.ts";
-import {arrMapOfScene} from "./maps.ts";
-import {IMap, IGenScene, IMapProp} from "./types.ts";
+import {IMapProp, IStoreGen} from "./types.ts";
 import TextWrite from "../Auxiliary/TextWrite.tsx";
 import {Tooltip} from "../Auxiliary/Tooltip.tsx";
-import Dialog from "../Auxiliary/Dialog.tsx";
 import {useShallow} from "zustand/react/shallow";
+import {ExtractState, StoreApi} from "zustand/vanilla";
 
 interface IGenSceneProp extends React.HTMLAttributes<HTMLDivElement> {
     className?: string;
+    storeGen: {
+        (): ExtractState<StoreApi<IStoreGen>>,
+        <U>(selector: (state: ExtractState<StoreApi<IStoreGen>>) => U): U
+    } & StoreApi<IStoreGen>;
+    title?: string;
+    titleAddNew?: string;
 }
 
-const GenScene: React.FC<IGenSceneProp> = ({className, ...rest}) => {
+const GenScene: React.FC<IGenSceneProp> = ({className, storeGen, title, titleAddNew, ...rest}) => {
 
     const [props, setProps] = useState<IMapProp>({desc: '', title: '', text: '', type: null})
 
@@ -28,7 +33,7 @@ const GenScene: React.FC<IGenSceneProp> = ({className, ...rest}) => {
         deleteGenProp,
         updateGenName,
         updateGenProp
-    } = useStoreGenScene(
+    } = storeGen(
         useShallow((state) => ({
             arrGen: state.arrGen,
             addGen: state.addGen,
@@ -46,26 +51,23 @@ const GenScene: React.FC<IGenSceneProp> = ({className, ...rest}) => {
     const arrExclude = ['name', 'id'];
 
     let dialogContent: React.ReactElement = <Col noBorder={true}>
-        <Row>
-            <div>Имя</div>
-            <TextInput value={props.title} placeholder="Введите имя"
-                       onChange={(e: any) => setProps(state => ({...state, title: e.target.value}))}/>
-        </Row>
-        <Row>
-            <div>Описание</div>
-            <TextWrite value={props.desc} placeholder="Введите описание" fitToTextSize={true}
-                       onChange={(e: any) => setProps(state => ({...state, desc: e.target.value}))}/>
-        </Row>
+        <div>Имя</div>
+        <TextInput value={props.title} placeholder="Введите имя" className="st-air-tx-imp mb-2"
+                   onChange={(e: any) => setProps(state => ({...state, title: e.target.value}))}/>
+
+        <div>Описание</div>
+        <TextWrite value={props.desc} placeholder="Введите описание" fitToTextSize={true} className="st-air-tx-imp"
+                   onChange={(e: any) => setProps(state => ({...state, desc: e.target.value}))}/>
+
     </Col>
 
-    useEffect(() => {
-        console.log(props)
-    }, [props]);
+    // useEffect(() => {
+    //     console.log(props)
+    // }, [props]);
 
     return <Col role="scenes-gen" noBorder={true} className={clsx(className, "h-full", "bg-white")}>
         <Row role="scenes-menu">
-            <ButtonEx className={clsx("bi-plus-circle")} title="Добавить новую сцену" onClick={() => addGen()}/>
-            <Text>Создать сцену</Text>
+            <ButtonEx className={clsx("bi-plus-circle")} title={titleAddNew} onClick={() => addGen()}/>
         </Row>
 
         {arrGen.map(((scene, iScene) => {
@@ -76,25 +78,27 @@ const GenScene: React.FC<IGenSceneProp> = ({className, ...rest}) => {
                         <SwitchHide id={id}/>
                         <ButtonEx className={clsx("bi-plus-circle")} title="Добавить новое свойство"
                                   description="Добавить новое свойство"
+                                  onClick={() => setProps({title: '', desc: ''})}
                                   onConfirm={() => addGenProp(iScene, props)} dialogContent={dialogContent}/>
                         <ButtonDelete onDelete={() => deleteGen(iScene)}/>
                     </Group>
-                    <TextInput value={name} placeholder="Название сцены"
+                    <TextInput value={name} placeholder={title}
                                onChange={(e: any) => updateGenName(iScene, e.target.value)}/>
                 </Row>
-                {!isHide(id) && <div className="pl-1 flex flex-wrap gap-1" onClick={(e) => {
-                    const node = e.target as Element;
-                    const index = +(node.closest('[role=scene-prop]') as HTMLElement).dataset.key;
-                    setProps(arrMapProp[index])
-                }}>
+                {!isHide(id) && <div className="pl-1 flex flex-wrap gap-1">
                     {arrMapProp.map((mapProp, iProp) => {
                         const {title, desc, type, text} = mapProp;
                         return !arrExclude.includes(name) &&
-                            <Col role="scene-prop" key={iProp} className="w-[33%] !gap-0" data-key={iProp}>
+                            <Col role="scene-prop" key={iProp} className="w-[33%] !gap-0">
                                 <Row className="text-black/60">
                                     <Tooltip text={desc} className="bi-info-circle  leading-6"/>
-                                    <ButtonEx className={clsx("bi-pen")} title="Редактировать свойство"
+                                    <ButtonEx className={clsx("bi-pencil", 'text-sm')} title="Редактировать свойство"
                                               description="Редактировать свойство"
+                                              data-key={iProp}
+                                              onClick={(e) => {
+                                                  const index = +((e.target as HTMLElement).parentNode as HTMLElement).dataset.key;
+                                                  setProps(arrMapProp[index])
+                                              }}
                                               onConfirm={() => updateGenProp(iScene, iProp, props)}
                                               dialogContent={dialogContent}/>
                                     <div className="leading-6 w-full">{title}</div>
@@ -103,7 +107,7 @@ const GenScene: React.FC<IGenSceneProp> = ({className, ...rest}) => {
                                     }}/>
                                 </Row>
                                 <TextWrite
-                                    className="w-full border-none" fitToTextSize={true}
+                                    className="w-full border-none st-air-tx-imp" fitToTextSize={true}
                                     placeholder={desc}
                                     value={text}
                                     onChange={(e: any) => updateGenProp(iScene, iProp, {text: e.target.value})}/>

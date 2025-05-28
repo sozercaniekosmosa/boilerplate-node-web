@@ -59,7 +59,7 @@ const DropdownButton: React.FC<DropdownProps> =
                 {isOpen && (
                     <div style={{maxHeight: '50vh',}} onClick={() => setIsOpen(false)} className={clsx(
                         "absolute origin-top-left left-0 mt-1 w-56 z-20",
-                        "rounded-sm shadow-lg ",
+                        "rounded-sm shadow-xl/20",
                         "bg-white ring-1 ring-gray-500/50",
                         "focus:outline-none ",
                         "overflow-auto")}

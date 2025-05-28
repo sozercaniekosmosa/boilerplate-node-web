@@ -60,7 +60,7 @@ function TextWrite({
                       rows={1}
                       placeholder={placeholder}
                       className={clsx(
-                          'focus:bg-inherit st-focus',
+                          'focus:bg-inherit st-focus st-air-tx',
                           caption ? 'pt-[0.4rem]' : 'pt-[0.24rem]',
                           "border border-none rounded-sm w-full",
                           "px-2 leading-[.9rem] min-h-[1.5rem]",

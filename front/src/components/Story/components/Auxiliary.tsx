@@ -40,12 +40,15 @@ export const ButtonDelete = ({onDelete, className = ''}) => <ButtonEx
     onConfirm={onDelete}/>
 
 export const TextInput =
-    ({value, placeholder, onChange}) => <input type="text" value={value} placeholder={placeholder}
-                                               className={clsx("px-2 w-full",
-                                                   'focus:bg-inherit st-focus',
-                                                   "rounded-sm",
-                                                   // "border border-black/20 ",
-                                                   "st-air-hover",
-                                               )}
-                                               onChange={onChange}/>
+    ({value, placeholder, onChange, className=''}) => {
+        return <input type="text" value={value} placeholder={placeholder}
+                      role="text-input"
+                      className={clsx("px-2 w-full",
+                          'focus:bg-inherit st-focus st-air-tx',
+                          "rounded-sm",
+                          "st-air-hover",
+                          className
+                      )}
+                      onChange={onChange}/>;
+    }
 

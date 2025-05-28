@@ -35,13 +35,15 @@ const ButtonEx: FC<IButtonExProps> = ({
                                           dir = "right",
                                           description = 'Добавьте текст...',
                                           text = '',
-                                          autoFocus = false
+                                          autoFocus = false,
+                                          ...rest
                                       }) => {
     const [_state, set_state] = useState<number | void>(0)
     const [showAndDataEvent, setShowAndDataEvent] = useState<React.MouseEvent<HTMLElement>>();
 
 
     let onAct = async (e: React.MouseEvent<HTMLElement>) => {
+        onClick && onClick(e);
         if (onConfirm) {
             if (e.ctrlKey) { //если с ctrl то без подтверждения
                 onConfirm(showAndDataEvent);
@@ -50,7 +52,6 @@ const ButtonEx: FC<IButtonExProps> = ({
             }
             return e;
         }
-        onClick && onClick(e)
         if (onAction) {
             set_state(1)
             const s = await onAction(e) //TODO: тут можно сделать try..catch на отлов ошибок или Promise callback
@@ -71,7 +72,7 @@ const ButtonEx: FC<IButtonExProps> = ({
                 _state == 2 ? 'st-danger' : '',
                 _state == 1 || disabled ? 'bg-light-disabled' : '',
             )}
-            onClick={onAct} hidden={hidden}>
+            onClick={onAct} hidden={hidden} {...rest}>
             {title && <Tooltip text={title} direction={dir} className="!absolute w-full h-full"/>}
             {_state == 1 && <Spinner/>}
             {hidden ? '' : children}

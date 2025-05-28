@@ -1,4 +1,4 @@
-import {IChapter, IPart, IScene, IGenScene, IStoreBook, IStoreFolding, IStoreGenScene} from "../types.ts";
+import {IChapter, IPart, IScene, IStoreBook} from "../types.ts";
 import {create} from "zustand/react";
 import {persist} from "zustand/middleware";
 import {immer} from "zustand/middleware/immer";
@@ -123,8 +123,17 @@ export const useStoreBook = create<IStoreBook>()(
         }),
 
         addScene: (iPart: number, iChapter: number, scene?: IScene) => set((s: any) => {
-            var d = {id: getUID(), sceneSelected: '', name: '', text: '', arrCharacter: [], arrItem: [], arrEvent: []};
-            s.arrPart[iPart]?.arrChapter[iChapter]?.arrScene.push(scene ?? d)
+            var def = {
+                id: getUID(),
+                sceneSelected: '',
+                name: '',
+                text: '',
+                aim: '',
+                arrCharacter: [],
+                arrItem: [],
+                arrEvent: []
+            };
+            s.arrPart[iPart]?.arrChapter[iChapter]?.arrScene.push(scene ?? def)
         }),
         updateScene: (iPart: number, iChapter: number, iScene: number, v: any) => set((s: any) => {
             iScene in s.arrPart[iPart]?.arrChapter[iChapter]?.arrScene && Object.assign(s.arrPart[iPart].arrChapter[iChapter].arrScene[iScene], v)

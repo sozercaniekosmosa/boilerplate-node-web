@@ -1,15 +1,10 @@
 import React, {memo} from 'react';
-import PropTypes from 'prop-types';
 import TextWrite from "../../Auxiliary/TextWrite.tsx";
 import {Col, Row, SwitchHide} from "./Auxiliary.tsx";
 import {useStoreBook} from "../Stores/storeBook.ts";
-import {IPath, IGenScene} from "../types.ts";
+import {IPath} from "../types.ts";
 import {Tab, Tabs} from "../../Auxiliary/Tabs.tsx";
 import {useStoreGenScene} from "../Stores/storeGenerators.ts";
-import Items from "./Scene/Items.tsx";
-import Events from "./Scene/Action/Events.tsx";
-import {arrMapOfScene} from "../maps.ts";
-import {Tooltip} from "../../Auxiliary/Tooltip.tsx";
 import {useStoreFolding} from "../Stores/storeAux.ts";
 import clsx from "clsx";
 
@@ -29,11 +24,12 @@ const Details: React.FC<IDetails> = ({...rest}) => {
 
     if (scene == undefined) return null;
     const {id, aim, sceneID, arrItem, arrCharacter, arrEvent} = scene;
-    if (mapID[sceneID] == undefined) return null;
+    let iSceneSelected = mapID[sceneID];
+    if (iSceneSelected == undefined) return null;
 
     const arrExclude = ['name', 'id'];
 
-    const sceneName = arrGenScene[mapID[sceneID]]?.name;
+    const sceneName = arrGenScene[iSceneSelected]?.name;
     const sceneAim = scene?.aim?.length ? scene?.aim : null;
 
     return <Tabs defaultActiveKey="scene" className="h-full" {...rest}>
@@ -47,23 +43,18 @@ const Details: React.FC<IDetails> = ({...rest}) => {
                     </div>
                     <div className={clsx("content-center",
                         sceneAim ?? 'text-black/60')}>
-                        {sceneAim ?? '...'}
+                        ({sceneAim ?? '...'})
                     </div>
                 </Row>
                 {!isHide(id + 'prop') && <Col className="ml-1">
-                    {arrGenScene.map(({name, id, arrMapProp}, i) => {
-                        if (!name) return null;
-                        return !arrExclude.includes(name) && arrMapProp.map(({title, text}, i) => {
-                            if(!text) return null;
-                            return <Row role="scene-item" key={i}>
-                                <div className="text-black/60 text-nowrap">{title}:</div>
-                                <div className={clsx(
-                                    "text-black",
-                                    "border border-none w-full",
-                                    "pl-1 leading-[.9rem]",
-                                )}>{text}</div>
-                            </Row>
-                        })
+                    {arrGenScene[iSceneSelected].arrMapProp.map(({title, text}, i) => {
+                        if (!text) return null;
+                        return <Row role="scene-item" key={i}>
+                            <div className="text-black/60 text-nowrap">{title}:</div>
+                            <div className={clsx("text-black", "border border-none w-full", "pl-1")}>
+                                {text}
+                            </div>
+                        </Row>
                     })}
                 </Col>}
             </Col>

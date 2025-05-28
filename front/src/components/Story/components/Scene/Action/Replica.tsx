@@ -46,10 +46,10 @@ const Replica = ({iPart, iChapter, iScene, iEvent, arrEvent}) => {
                         </div>
                     </DropdownButton>
                 </Group>
-                <TextInput value={manner} placeholder="Манера/тон реплики"
+                <TextInput value={manner} placeholder="Манера/тон реплики" className="st-air-tx-imp"
                            onChange={({target}) => updateSubEvent(iEvent, {manner: target.value,} as IReplica)}/>
             </Row>
-            <TextWrite value={text} placeholder="Текст реплики" className="w-full grow *:border-none *:rounded-sm"
+            <TextWrite value={text} placeholder="Текст реплики" className="w-full grow *:border-none *:rounded-sm st-air-tx-imp"
                        fitToTextSize={true}
                        onChange={({target}) => updateSubEvent(iEvent, {text: target.value,} as IReplica)}/>
         </Col>

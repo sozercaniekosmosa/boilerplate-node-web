@@ -1,8 +1,6 @@
-import {IPart, IScene, IGenScene, IStoreBook, IStoreFolding, IStoreGenScene} from "../types.ts";
+import {IStoreFolding} from "../types.ts";
 import {create} from "zustand/react";
 import {persist} from "zustand/middleware";
-import {immer} from "zustand/middleware/immer";
-import {generateUID} from "../../../lib/utils.ts";
 
 export const useStoreFolding = create<IStoreFolding>()(
     persist((set, get) => ({

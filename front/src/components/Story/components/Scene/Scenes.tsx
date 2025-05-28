@@ -39,7 +39,7 @@ export const Scenes = ({iPart, iChapter, arrScene}: IScenesProps) => {
                     <SwitchHide id={id}/>
                     <DropdownButton
                         title={sceneID == '' ? 'Выберите сцену' : 'Сцена ' + (iScene + 1) + '. ' + (arrGenScene[mapID[sceneID]]?.name ?? 'Не выбрано')}>
-                        <div className="*:hover:bg-gray-500/50 *:p-1"
+                        <div className="py-3 *:hover:bg-gray-500/50 *:px-3 *:p-1 *:cursor-pointer"
                              onClick={(e: any) => updateScene(iPart, iChapter, iScene, {sceneID: arrGenScene[e.target.dataset.key].id})}>
                             {arrGenScene.map((GenScene, i) => <div key={i} data-key={i}>{GenScene.name}</div>)}
                         </div>

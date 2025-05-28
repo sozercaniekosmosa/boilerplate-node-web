@@ -58,7 +58,7 @@ const ChangeProp = ({iPart, iChapter, iScene, iEvent, arrEvent}) => {
                     </DropdownButton>
                 </Group>
             </Row>
-            <TextWrite value={value} placeholder="Значение свойства" className="w-full grow *:border-none *:rounded-sm"
+            <TextWrite value={value} placeholder="Значение свойства" className="w-full grow *:border-none *:rounded-sm st-air-tx-imp"
                        onChange={({target}) => updateSubEvent(iEvent, {value: target.value} as IChangeProperties)}/>
         </Col>
     );

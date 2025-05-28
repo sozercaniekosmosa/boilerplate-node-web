@@ -2,13 +2,6 @@
 
 @theme {
   --color-st-white: #fff;
-  --color-st-air: #6a7282;
-  --color-st-air-disable: #d1d5dc;
-  --color-st-bg: #e5e7eb;
-  --color-st-hover-bg: #d1d5dc;
-  --color-st-bg-dis: #f3f4f6;
-  --color-st-bg-red: #c10007;
-  --color-st-accept: #35530e;
 }
 
 //bg-white hover:bg-gray-100 text-gray-800 border border-gray-300
@@ -22,8 +15,12 @@
     @apply rounded-sm;
   }
 
+  .st-air-tx.st-air-tx-imp {
+    @apply text-gray-900;
+  }
+
   .st-air-tx {
-    @apply text-base text-gray-600;
+    @apply text-gray-500;
   }
 
   .st-air-bg {
@@ -72,7 +69,7 @@
 body {
   height: 100vh;
   overflow: hidden;
-  font-size: .8rem;
+  font-size: 1rem;
   display: flex;
   flex-direction: column;
   //background: #8c93a1;
