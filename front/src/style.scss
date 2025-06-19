@@ -53,11 +53,11 @@
   }
 
   .bg-checked {
-    @apply bg-gray-700  text-white/80;
+    @apply bg-gray-700 ;
   }
 
   .bg-unchecked {
-    @apply text-white;
+
   }
 }
 

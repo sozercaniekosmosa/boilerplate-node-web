@@ -181,7 +181,7 @@ export const arrMoveItem = (arr, fromIndex, toIndex) => {
     return arr;
 };
 
-//получает элемент из объектп по заданому пути
+//получает элемент из объекта по заданому пути
 const getObjectByPath = (obj, pathArr) => {
     for (let i = 0; i < pathArr.length - 1; i++) {
         const k = pathArr[i];

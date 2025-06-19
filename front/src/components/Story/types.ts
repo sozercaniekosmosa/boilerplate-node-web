@@ -1,9 +1,17 @@
-export interface IMapProp {
-    type?: string;
+export interface IMapPropBase {
+    section?: boolean;
     title?: string;
-    desc: string;
-    text?: string;
+    desc?: string;
+    value?: string;
     list?: string[];
+    ext?: boolean;
+    range?: [number, number];
+
+}
+
+export interface IMapProp extends IMapPropBase {
+    id?: string;
+    isChange?: boolean;
 }
 
 export interface IMap {
@@ -12,61 +20,54 @@ export interface IMap {
     arrMapProp: IMapProp[];
 }
 
+// Store gen
 export interface IStoreGen {
     arrGen: IMap[],
-    listID: { [key: string]: number },
+    listID: { [key: string]: any },
+    // listPropID: { [key: string]: [number, number] },
+
     addGen: (item?: IMap) => void,
     deleteGen: (i: number) => void,
-
     updateGenName: (i: number, name: string) => void
-    updateGenProp: (i: number, iItem: number, prop: any) => void
+    updateGenProp: (i: number, iItem: number, prop: IMapProp) => void
     addGenProp: (i: number, prop?: IMapProp) => void
     deleteGenProp: (i: number, iProp: number) => void
+
+    updateListID: () => void,
 
     getData: () => Promise<void>,
 }
 
-export interface ICharacter {
-    id: string
-    name: string
-}
+export type TProp = 'scene' | 'character' | 'item' | null;
 
-export interface IItem {
-    id: string
-    name: string
-}
-
-export interface IEventBase {
-    id: string
-    type: 'replica' | 'action' | 'change-prop'
-    subject: string; // Обьект который производит действия
-    object: string; // Обьект испытывающий действие
-}
-
-export interface IReplica extends IEventBase {
-    manner: string; // Манера с которой произносится реплика
-    text: string; // Текст реплики
-}
-
-export interface IChangeProperties extends IEventBase {
-    key: string; // Имя свойства
+//Book
+export interface IChangeProperties {
+    id: string;
+    order: number | null;
+    type: TProp;
+    targetID: string; // ID объект свойства которого меняем
+    propID: string; // ID свойства
     value: string; // Значение свойства
 }
 
-export interface IAction extends IEventBase {
-    desc: string; //описание действия
+export interface IEvent {
+    id: string
+    type: 'replica' | 'action';
+    subjectID: string; // Обьект который производит действия
+    objectID: string; // Обьект испытывающий действие
+    manner: string; // Манера с которой производится действие/реплика
+    desc: string; // Текст описание реплики/действия
+    arrChangeProp: IChangeProperties[];
 }
-
-export type TEvent = IReplica | IAction | IChangeProperties;
 
 export interface IScene {
     id: string,
     sceneID: string,
-    aim: string, //цель
-    text: string,
-    arrCharacter: ICharacter[],
-    arrItem: IItem[],
-    arrEvent: TEvent[]
+    aim: string,    // Цель
+    text: string,   // Текст литературно описывающий сцену
+    arrCharacterID: string[],
+    arrItemID: string[],
+    arrEvent: IEvent[]
 }
 
 export interface IChapter {
@@ -85,15 +86,21 @@ export interface IPath {
     iPart?: number,
     iChapter?: number,
     iScene?: number,
+    iCharacter?: number,
+    iItem?: number,
     iEvent?: number
+    iProp?: number
 }
 
+// Store book
 export interface IStoreBook {
     name: string;
     arrPart: IPart[];
+    listID: { [key: string]: IPath; },
+    listChangeProp: { [objectID: string]: string[]; },
     currScenePath: IPath | null;
 
-    // Other actions
+    // Other aux
     setCurrentScenePath: ({iPart, iChapter, iScene, iEvent}: IPath) => void;
     setName: (name: string) => void;
 
@@ -113,25 +120,46 @@ export interface IStoreBook {
     deleteScene?: (partIndex: number, chapterIndex: number, sceneIndex: number) => void;
 
     // Actions for characters
-    addCharacter?: (partIndex: number, chapterIndex: number, sceneIndex: number, character?: ICharacter) => void;
-    updateCharacter?: (partIndex: number, chapterIndex: number, sceneIndex: number, index: number, updatedCharacter: Partial<ICharacter>) => void;
-    deleteCharacter?: (partIndex: number, chapterIndex: number, sceneIndex: number, index: number) => void;
+    addCharacterID?: (partIndex: number, chapterIndex: number, sceneIndex: number, character?: string) => void;
+    updateCharacterID?: (partIndex: number, chapterIndex: number, sceneIndex: number, index: number, updatedCharacter: Partial<string>) => void;
+    deleteCharacterID?: (partIndex: number, chapterIndex: number, sceneIndex: number, index: number) => void;
 
     // Actions for items
-    addItem?: (partIndex: number, chapterIndex: number, sceneIndex: number, item?: IItem) => void;
-    updateItem?: (partIndex: number, chapterIndex: number, sceneIndex: number, index: number, updatedItem: Partial<IItem>) => void;
-    deleteItem?: (partIndex: number, chapterIndex: number, sceneIndex: number, index: number) => void;
+    addItemID?: (partIndex: number, chapterIndex: number, sceneIndex: number, item?: string) => void;
+    updateItemID?: (partIndex: number, chapterIndex: number, sceneIndex: number, index: number, updatedItem: Partial<string>) => void;
+    deleteItemID?: (partIndex: number, chapterIndex: number, sceneIndex: number, index: number) => void;
 
-    // Actions for events (TEvent)
-    addEvent?: (partIndex: number, chapterIndex: number, sceneIndex: number, event?: TEvent) => void;
-    updateEvent?: (partIndex: number, chapterIndex: number, sceneIndex: number, index: number, updatedEvent: Partial<TEvent>) => void;
+    // Actions for events
+    addEvent?: (partIndex: number, chapterIndex: number, sceneIndex: number, event?: IEvent) => void;
+    updateEvent?: (partIndex: number, chapterIndex: number, sceneIndex: number, index: number, updatedEvent: Partial<IEvent>) => void;
     deleteEvent?: (partIndex: number, chapterIndex: number, sceneIndex: number, index: number) => void;
 
+    // Actions for change props
+    addChangeProp: (iPart: number, iChapter: number, iScene: number, iEvent: number, prop?: IChangeProperties) => void;
+    updateChangeProp: (iPart: number, iChapter: number, iScene: number, iEvent: number, iProp: number, v) => void;
+    deleteChangeProp: (iPart: number, iChapter: number, iScene: number, iEvent: number, iProp: number) => void;
+
+    getItemByID: (id: string) => any;
+
+    updateListIDDebounce?: () => void;
+    updateListID?: () => void;
+    execByID?: (targetID: string, clb: (arr: any[], index: number) => void) => void;
+
+    status: () => void;
+    test: (s: number) => void;
     getData: () => Promise<void>;
 }
 
-export interface IStoreFolding {
-    listFolding: { [key: string]: boolean };
-    isHide: (id: string) => boolean;
-    switchVisibility: (id: string) => void;
+// Store state
+export interface IStoreState {
+    listState: { [key: string]: boolean };
+    isState: (id: string) => boolean;
+    switchState: (id: string) => void;
+    setState: (id: string, val: boolean) => void;
+}
+
+// ...
+export interface IStoreData {
+    data: { [key: string]: any };
+    setData: (id: string, val: any) => void;
 }

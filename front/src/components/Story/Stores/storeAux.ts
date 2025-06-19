@@ -1,13 +1,25 @@
-import {IStoreFolding} from "../types.ts";
+import {IStoreData, IStoreState} from "../types.ts";
 import {create} from "zustand/react";
 import {persist} from "zustand/middleware";
 
-export const useStoreFolding = create<IStoreFolding>()(
+export const useStoreState = create<IStoreState>()(
     persist((set, get) => ({
-        listFolding: {},
-        isHide: id => get().listFolding[id],
-        switchVisibility: id => set(state => ({
-            listFolding: {...state.listFolding, [id]: !state.listFolding[id]}
+        listState: {},
+        isState: id => get().listState?.[id] == undefined ? true : get().listState?.[id],
+        switchState: id => set(state => ({
+            listState: {...state.listState, [id]: state.listState?.[id] == undefined ? false : !state.listState?.[id]}
+        })),
+        setState: (id, val) => set(state => ({
+            listState: {...state.listState, [id]: val}
+        })),
+    }), {name: 'states', version: 0}))
+
+export const useStoreData = create<IStoreData>()(
+    persist((set, get) => ({
+        data: {},
+        setData: (id, val) => set(state => ({
+            data: {...state.data, [id]: val}
         }))
-    }), {name: 'folding', version: 0}))
+    }), {name: 'data', version: 0}))
+
 

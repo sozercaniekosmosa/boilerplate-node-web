@@ -4,16 +4,16 @@ import React, {useState, useEffect, useRef} from 'react';
 type DropdownVariant = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark';
 type DropdownSize = 'sm' | 'md' | 'lg';
 
-interface DropdownProps {
+interface DropdownProps extends React.HTMLAttributes<Element> {
     className?: string;
-    title?: string;
+    title?: string | any;
     variant?: DropdownVariant;
     size?: DropdownSize;
     children?: React.ReactNode;
 }
 
 const DropdownButton: React.FC<DropdownProps> =
-    ({className = '', title, variant = 'light', size = 'sm', children}) => {
+    ({className = '', title, variant = 'light', size = 'md', children}) => {
         const [isOpen, setIsOpen] = useState(false);
         const dropdownRef = useRef<HTMLButtonElement>(null);
 
@@ -33,12 +33,12 @@ const DropdownButton: React.FC<DropdownProps> =
         // Map sizes to Tailwind classes
         const sizeClasses: Record<DropdownSize, string> = {
             sm: 'text-xs px-2 py-1',
-            md: 'text-base px-3 py-2',
+            md: 'px-2 py-0',
             lg: 'text-lg px-4 py-2'
         };
 
         return (
-            <div className={clsx("relative inline-block text-left rounded-sm", className)}>
+            <div className={clsx("relative inline-block text-left rounded-sm")}>
                 <button
                     ref={dropdownRef}
                     type="button"
@@ -47,22 +47,22 @@ const DropdownButton: React.FC<DropdownProps> =
                         'relative text-left text-nowrap',
                         'inline-flex items-center justify-center w-full',
                         'rounded-[inherit]', variantClasses[variant], sizeClasses[size],
+                        className
                     )}
                 >
-                    {title}
-                    <svg className="-mr-1 ml-2 h-[16px] w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <div dangerouslySetInnerHTML={{__html: title}}></div>
+                    <svg className="-mr-1 ml-1 h-[16px] w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" clipRule="evenodd"
                               d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
                     </svg>
                 </button>
                 {isOpen && <div className="fixed left-0 top-0 w-screen h-screen opacity-0 z-10" onClick={() => setIsOpen(false)}></div>}
                 {isOpen && (
-                    <div style={{maxHeight: '50vh',}} onClick={() => setIsOpen(false)} className={clsx(
-                        "absolute origin-top-left left-0 mt-1 w-56 z-20",
+                    <div onClick={() => setIsOpen(false)} className={clsx(
+                        "fixed origin-top-left mt-1 z-20",
                         "rounded-sm shadow-xl/20",
-                        "bg-white ring-1 ring-gray-500/50",
                         "focus:outline-none ",
-                        "overflow-auto")}
+                    )}
                     >
                         {children}
                     </div>

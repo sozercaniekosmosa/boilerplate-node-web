@@ -1,50 +1,52 @@
 import React, {memo} from 'react';
-import {ButtonDelete, Col, Row, TextInput} from "../../Auxiliary.tsx";
+import {ButtonDelete, Col, Row, SelectCharacters, TextInput} from "../../Auxiliary.tsx";
 import Group from "../../../../Auxiliary/Group.tsx";
 import clsx from "clsx";
-import DropdownButton from "../../../../Auxiliary/DropdownButton.tsx";
-import {IReplica} from "../../../types.ts";
+import {IPath, IReplica} from "../../../types.ts";
 import TextWrite from "../../../../Auxiliary/TextWrite.tsx";
 import {useStoreBook} from "../../../Stores/storeBook.ts";
+import {useStoreGenCharacter, useStoreGenItem} from "../../../Stores/storeGenerators.ts";
 
 const Replica = ({iPart, iChapter, iScene, iEvent, arrEvent}) => {
 
-    const {text, manner} = arrEvent[iEvent] as IReplica;
+    const event: IReplica = arrEvent[iEvent];
+    const {text, manner, id, objectID, subjectID, type} = event;
 
     const deleteEvent = useStoreBook(state => state.deleteEvent);
 
     const updateSubEvent = (iEvent: number, subEvent: any) => useStoreBook.getState().updateEvent(iPart, iChapter, iScene, iEvent, {...arrEvent[iEvent], ...subEvent})
+
+    const arrPart = useStoreBook(state => state.arrPart);
+    const arrGenCharacter = useStoreGenCharacter(state => state.arrGen);
+    const listIDCharacter = useStoreGenCharacter(state => state.listID);
+    const arrGenItem = useStoreGenItem(state => state.arrGen);
+    const listIDItem = useStoreGenItem(state => state.listID);
+
+    const scene = arrPart[iPart].arrChapter[iPart].arrScene[iScene];
+
+
+    const getByID = (id: string) => {
+        var _u = undefined;
+        return listIDCharacter?.[id] != _u ? arrGenCharacter[listIDCharacter[id]] : listIDItem?.[id] != _u ? arrGenItem[listIDItem[id]] : null;
+    }
+
+    const path = {iPart, iChapter, iScene, iEvent} as IPath
 
     return (
         <Col className="grow bg-white">
             <Row className="grow">
                 <Group>
                     <div className={clsx(
-                        'bi-chat-left-fill',
+                        'bi-chat-square-fill',
                         'relative',
                         'flex justify-center items-center',
                         'h-fit p-1',
                         'st-air',
                     )}/>
                     <ButtonDelete onDelete={() => deleteEvent(iPart, iChapter, iScene, iEvent)}/>
-                    <DropdownButton title={"subject"}>
-                        <div className="*:hover:bg-black" onClick={(e: any) => {
-                            console.log(e.target)
-                        }}>
-                            <div>1</div>
-                            <div>2</div>
-                            <div>3</div>
-                        </div>
-                    </DropdownButton>
-                    <DropdownButton title={"object"}>
-                        <div className="*:hover:bg-black" onClick={(e: any) => {
-                            console.log(e.target)
-                        }}>
-                            <div>1</div>
-                            <div>2</div>
-                            <div>3</div>
-                        </div>
-                    </DropdownButton>
+                    <SelectCharacters path={path} id={subjectID} nameField="subject" event={event}/>
+                    <SelectCharacters path={path} id={objectID} nameField="object" event={event}/>
+
                 </Group>
                 <TextInput value={manner} placeholder="Манера/тон реплики" className="st-air-tx-imp"
                            onChange={({target}) => updateSubEvent(iEvent, {manner: target.value,} as IReplica)}/>

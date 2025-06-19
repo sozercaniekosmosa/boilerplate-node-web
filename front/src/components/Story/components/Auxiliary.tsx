@@ -2,8 +2,11 @@ import React from "react";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import ButtonEx from "../../Auxiliary/ButtonEx.tsx";
 import clsx from "clsx";
-import {useStoreFolding} from "../Stores/storeAux.ts";
-import {IReplica} from "../types.ts";
+import {useStoreState} from "../Stores/storeAux.ts";
+import {IEvent, IPath, TProp} from "../types.ts";
+import {useStoreGenCharacter, useStoreGenItem, useStoreGenScene} from "../Stores/storeGenerators.ts";
+import {useStoreBook} from "../Stores/storeBook.ts";
+import DropdownButton from "../../Auxiliary/DropdownButton.tsx";
 
 
 export const Text = ({children = null, className = ''}) => <div className={clsx(
@@ -30,17 +33,20 @@ export const Row = ({children, className = '', role = '', ...rest}: IComponentRo
     return <div role={role} className={clsx(className, "flex flex-row gap-1")} {...rest}>{children}</div>;
 }
 
-export const SwitchHide = ({id}) => <ButtonEx
-    className={clsx(useStoreFolding.getState().isHide(id) ? 'bi-caret-right-square' : 'bi-caret-down-square')}
-    onClick={() => useStoreFolding.getState().switchVisibility(id)}/>
+export const SwitchButton =
+    ({id, on = 'bi-caret-down-square', off = 'bi-caret-right-square', title = null, children = null, className = ''}) =>
+        <ButtonEx
+            title={title}
+            className={clsx(useStoreState.getState().isState(id) ? off : on, className)}
+            onClick={() => useStoreState.getState().switchState(id)} children={children}/>
 
-export const ButtonDelete = ({onDelete, className = ''}) => <ButtonEx
-    className={clsx("bi-x-lg flex-grow-0 st-danger", className)}
+export const ButtonDelete = ({onDelete, className = '', icon = 'bi-x-lg'}) => <ButtonEx
+    className={clsx("flex-grow-0 st-danger", className, icon)}
     description="Удалить"
     onConfirm={onDelete}/>
 
 export const TextInput =
-    ({value, placeholder, onChange, className=''}) => {
+    ({value, placeholder, onChange, className = ''}) => {
         return <input type="text" value={value} placeholder={placeholder}
                       role="text-input"
                       className={clsx("px-2 w-full",
@@ -52,3 +58,118 @@ export const TextInput =
                       onChange={onChange}/>;
     }
 
+interface ISelectItemProp {
+    path: IPath;
+    id: string;
+    nameField?: string;
+    arrDisplayed?: {
+        scene?: boolean;
+        character?: boolean;
+        item?: boolean;
+    },
+    label?: string;
+    update?: (iEvent: number, id: string, type?: TProp) => void;
+}
+
+export const SelectItem = ({path, id, label = 'Не выбрано', arrDisplayed = {character: true, scene: true}, update}: ISelectItemProp) => {
+
+    const arrPart = useStoreBook(state => state.arrPart);
+
+    const arrGenScene = useStoreGenScene(state => state.arrGen);
+    const listIDScene = useStoreGenScene(state => state.listID);
+    const arrGenCharacter = useStoreGenCharacter(state => state.arrGen);
+    const listIDCharacter = useStoreGenCharacter(state => state.listID);
+    const arrGenItem = useStoreGenItem(state => state.arrGen);
+    const listIDItem = useStoreGenItem(state => state.listID);
+
+    const scene = arrPart[path.iPart].arrChapter[path.iPart].arrScene[path.iScene];
+
+    const getObjectByID = (id: string) => {
+        var _u = undefined;
+        if (listIDScene?.[id] != _u) {
+            return arrGenScene[listIDScene[id]];
+        } else {
+            if (listIDCharacter?.[id] != _u) {
+                return arrGenCharacter[listIDCharacter[id]];
+            } else {
+                if (listIDItem?.[id] != _u) {
+                    return arrGenItem[listIDItem[id]];
+                } else {
+                    return null;
+                }
+            }
+        }
+    }
+
+    const arrCharacterID = scene.arrCharacterID;
+    const arrItemID = scene.arrItemID;
+
+    return <DropdownButton title={getObjectByID(id)?.name ?? label}>
+        <Row className={
+            clsx("*:cursor-pointer max-w-[75vw] max-h-[33vh]",
+                "rounded-sm shadow-xl/20",
+                "bg-white ring-1 ring-gray-500/50 !gap-0",
+            )
+        }
+             onClick={({target}: any) => {
+                 update(path.iEvent, target.dataset.id, target.dataset.type);
+             }}>
+            {arrDisplayed.scene && <Col noBorder={true} className="flex-1/3">
+                <div className="text-center p-1 pointer-events-none border-b border-r border-gray-200 bi-image"/>
+                <Col className="overflow-auto h-inherit *:text-center *:px-1 *:py-1 *:hover:bg-gray-500/50 !gap-0"
+                     noBorder={true}>
+                    {arrGenScene.map(({id, name}, i) => <div key={i} data-id={id} data-type="scene">{name}</div>)}
+                </Col>
+            </Col>}
+            {arrDisplayed.character && <Col noBorder={true} className="flex-1/3">
+                <div className="text-center p-1 pointer-events-none border-b border-r border-gray-200 bi-person-fill"/>
+                <Col className="overflow-auto h-inherit *:text-center *:px-1 *:py-1 *:hover:bg-gray-500/50 !gap-0"
+                     noBorder={true}>
+                    {arrGenCharacter.map(({id, name}, i) => arrCharacterID.includes(id) || arrItemID.includes(id) ?
+                        <div key={i} data-id={id} data-type="character">{name}</div> : null)}
+                </Col>
+            </Col>}
+            {arrDisplayed.item && <Col noBorder={true} className="flex-1/3">
+                <div className="text-center p-1 pointer-events-none border-b border-gray-200 bi-box"/>
+                <Col className="overflow-auto h-inherit *:text-center *:px-1 *:py-1 *:hover:bg-gray-500/50 !gap-0"
+                     noBorder={true}>
+                    {arrGenItem.map(({id, name}, i) => arrItemID.includes(id) || arrItemID.includes(id) ?
+                        <div key={i} data-id={id} data-type="item">{name}</div> : null)}
+                </Col>
+            </Col>}
+        </Row>
+    </DropdownButton>;
+}
+
+export const SelectCharacters = ({path, id, nameField}: ISelectItemProp) => {
+
+    const arrPart = useStoreBook(state => state.arrPart);
+    const arrGenCharacter = useStoreGenCharacter(state => state.arrGen);
+    const listIDCharacter = useStoreGenCharacter(state => state.listID);
+    const arrGenItem = useStoreGenItem(state => state.arrGen);
+    const listIDItem = useStoreGenItem(state => state.listID);
+
+    const scene = arrPart[path.iPart].arrChapter[path.iPart].arrScene[path.iScene];
+
+    const updateSubEvent = (iEvent: number, subEvent: any) => useStoreBook.getState().updateEvent(path.iPart, path.iChapter, path.iScene, path.iEvent, {...event, ...subEvent})
+
+    const getByID = (id: string) => {
+        var _u = undefined;
+        return listIDCharacter?.[id] != _u ? arrGenCharacter[listIDCharacter[id]] : listIDItem?.[id] != _u ? arrGenItem[listIDItem[id]] : null;
+    }
+
+    return <DropdownButton title={getByID(id)?.name ?? "subject"} className={clsx("h-full", 'bi-person-fill')}>
+        <div className={
+            clsx(
+                "py-3 *:hover:bg-gray-500/50 *:px-3 *:p-1",
+                "*:cursor-pointer w-80",
+                "rounded-sm shadow-xl/20",
+                "bg-white ring-1 ring-gray-500/50 !gap-0",
+            )
+        }
+             onClick={({target}: any) => updateSubEvent(path.iEvent, {[nameField + 'ID']: target.dataset.id} as IEvent)}>
+            {arrGenCharacter.map(({id, name}, i) => scene.arrCharacterID.includes(id) ?
+                <div key={i} data-id={id}>{name}</div> : null)}
+        </div>
+    </DropdownButton>;
+}

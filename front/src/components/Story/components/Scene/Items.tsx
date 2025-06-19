@@ -3,8 +3,8 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import ButtonEx from "../../../Auxiliary/ButtonEx.tsx";
 import clsx from "clsx";
 import {useStoreBook} from "../../Stores/storeBook.ts";
-import {useStoreFolding} from "../../Stores/storeAux.ts";
-import {Col, Row, SwitchHide, Text} from "../Auxiliary.tsx";
+import {useStoreState} from "../../Stores/storeAux.ts";
+import {Col, Row, SwitchButton, Text} from "../Auxiliary.tsx";
 import {IScene} from "../../types.ts";
 import Group from "../../../Auxiliary/Group.tsx";
 
@@ -16,9 +16,9 @@ interface IItemsProps {
 }
 
 const Items = ({iPart, iChapter, iScene, scene}: IItemsProps) => {
-    const {id, aim, arrItem, arrCharacter, arrEvent} = scene;
+    const {id, aim, arrItemID, arrCharacterID, arrEvent} = scene;
 
-    const {isHide} = useStoreFolding();
+    const {isState} = useStoreState();
     const addItem = useStoreBook(state => state.addItem);
     const updateItem = useStoreBook(state => state.updateItem);
     const deleteItem = useStoreBook(state => state.deleteItem);
@@ -26,16 +26,16 @@ const Items = ({iPart, iChapter, iScene, scene}: IItemsProps) => {
     return <Col role="items" className="" noBorder={true}>
         <Row role="menu-items">
             <Group>
-                <SwitchHide id={id + 'si'}/>
+                <SwitchButton id={id + 'si'}/>
                 <ButtonEx className={clsx("bi-box")} title="Добавить предмет/сущность"
                           onClick={() => addItem(iPart, iChapter, iScene)}/>
             </Group>
             <Text>Предметы</Text>
         </Row>
-        {!isHide(id + 'si') && arrItem.map(({id, name}, iItem) =>
+        {!isState(id + 'si') && arrItemID.map(({id, itemID}, iItem) =>
             <Row key={iItem}>
                 {/*Drop item*/}
-                {id} {name}
+                {id} {itemID}
             </Row>)}
     </Col>
 };

@@ -1,11 +1,11 @@
 import React, {memo} from 'react';
 import TextWrite from "../../Auxiliary/TextWrite.tsx";
-import {Col, Row, SwitchHide} from "./Auxiliary.tsx";
+import {Col, Row, SwitchButton} from "./Auxiliary.tsx";
 import {useStoreBook} from "../Stores/storeBook.ts";
 import {IPath} from "../types.ts";
 import {Tab, Tabs} from "../../Auxiliary/Tabs.tsx";
 import {useStoreGenScene} from "../Stores/storeGenerators.ts";
-import {useStoreFolding} from "../Stores/storeAux.ts";
+import {useStoreState} from "../Stores/storeAux.ts";
 import clsx from "clsx";
 
 
@@ -14,7 +14,7 @@ interface IDetails extends React.HTMLAttributes<HTMLDivElement> {
 
 const Details: React.FC<IDetails> = ({...rest}) => {
 
-    const {isHide} = useStoreFolding();
+    const {isState} = useStoreState();
     const arrPart = useStoreBook(state => state.arrPart);
     const {iPart, iChapter, iScene, iEvent}: IPath = useStoreBook(state => state.currScenePath);
     const updateScene = useStoreBook(state => state.updateScene);
@@ -23,7 +23,7 @@ const Details: React.FC<IDetails> = ({...rest}) => {
     const mapID = useStoreGenScene(state => state.listID);
 
     if (scene == undefined) return null;
-    const {id, aim, sceneID, arrItem, arrCharacter, arrEvent} = scene;
+    const {id, aim, sceneID, arrItemID, arrCharacterID, arrEvent} = scene;
     let iSceneSelected = mapID[sceneID];
     if (iSceneSelected == undefined) return null;
 
@@ -36,7 +36,7 @@ const Details: React.FC<IDetails> = ({...rest}) => {
         <Tab eventKey="scene" title="Сцена" className="flex flex-row p-1">
             <Col role="container-scenes" noBorder={true} className="w-full">
                 <Row>
-                    <SwitchHide id={id + 'prop'}/>
+                    <SwitchButton id={id + 'prop'}/>
                     <div className={clsx("content-center",
                         sceneName ?? 'text-black/60')}>
                         {sceneName ?? 'Не выбрано'}
@@ -46,15 +46,15 @@ const Details: React.FC<IDetails> = ({...rest}) => {
                         ({sceneAim ?? '...'})
                     </div>
                 </Row>
-                {!isHide(id + 'prop') && <Col className="ml-1">
-                    {arrGenScene[iSceneSelected].arrMapProp.map(({title, text}, i) => {
-                        if (!text) return null;
-                        return <Row role="scene-item" key={i}>
+                {!isState(id + 'prop') && <Col className="ml-1">
+                    {arrGenScene[iSceneSelected].arrMapProp.map(({title, value}, i) => {
+                        if (!value) return null;
+                        return <Col role="scene-item" key={i} noBorder={true}>
                             <div className="text-black/60 text-nowrap">{title}:</div>
                             <div className={clsx("text-black", "border border-none w-full", "pl-1")}>
-                                {text}
+                                {value}
                             </div>
-                        </Row>
+                        </Col>
                     })}
                 </Col>}
             </Col>

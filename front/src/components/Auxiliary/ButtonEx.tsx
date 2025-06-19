@@ -11,7 +11,7 @@ interface IButtonExProps extends PropsWithChildren {
     onAction?: (e?: React.MouseEvent<HTMLElement>) => Promise<number> | number | void,
     onClick?: (e?: React.MouseEvent<HTMLElement>) => void,
     onConfirm?: (e?: React.MouseEvent<HTMLElement>) => void,
-    dialogContent?: React.ReactElement,
+    dialogContent?: React.FC | React.ReactElement,
     disabled?: boolean,
     hidden?: boolean,
     title?: string,
