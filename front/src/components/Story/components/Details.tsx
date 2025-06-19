@@ -1,4 +1,4 @@
-import React, {memo} from 'react';
+import React, {memo, useState} from 'react';
 import TextWrite from "../../Auxiliary/TextWrite.tsx";
 import {Col, Row, SwitchButton} from "./Auxiliary.tsx";
 import {useStoreBook} from "../Stores/storeBook.ts";
@@ -13,6 +13,8 @@ interface IDetails extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Details: React.FC<IDetails> = ({...rest}) => {
+
+    const [shown, setShown] = useState(0)
 
     const {isState} = useStoreState();
     const arrPart = useStoreBook(state => state.arrPart);
@@ -50,7 +52,17 @@ const Details: React.FC<IDetails> = ({...rest}) => {
                     {arrGenScene[iSceneSelected].arrMapProp.map(({title, value}, i) => {
                         if (!value) return null;
                         return <Col role="scene-item" key={i} noBorder={true}>
-                            <div className="text-black/60 text-nowrap">{title}:</div>
+                            <Row>
+                                <div className={clsx(
+                                    "text-black/60 text-nowrap",
+                                    shown == 1 ? 'bi-square' : shown == 2 ? 'bi-check-square' : 'bi-square-fill'
+                                )} onClick={() => {
+                                    let _eye = shown + 1;
+                                    if (_eye > 2) _eye = 0;
+                                    setShown(_eye);
+                                }}/>
+                                <div className="text-black/60 text-nowrap">{title}:</div>
+                            </Row>
                             <div className={clsx("text-black", "border border-none w-full", "pl-1")}>
                                 {value}
                             </div>

@@ -98,11 +98,16 @@ export interface IStoreBook {
     arrPart: IPart[];
     listID: { [key: string]: IPath; },
     listChangeProp: { [objectID: string]: string[]; },
+    listShownProp: { [objectID: string]: string[]; },
     currScenePath: IPath | null;
 
     // Other aux
     setCurrentScenePath: ({iPart, iChapter, iScene, iEvent}: IPath) => void;
     setName: (name: string) => void;
+
+    // Actions for shown props
+    setPropShown: (id: string, state: number) => void;
+    deletePropShown: (id: string) => void;
 
     // Actions for parts
     addPart?: (part?: IPart) => void;

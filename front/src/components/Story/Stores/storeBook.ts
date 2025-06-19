@@ -98,6 +98,7 @@ export const useStoreBook = create<IStoreBook>()(
             arrPart: [],
             listID: {},
             listChangeProp: {},
+            listShownProp: {},
             currScenePath: {
                 iPart: 0, iChapter: 0, iScene: 0, iEvent: 0
             },
@@ -111,6 +112,13 @@ export const useStoreBook = create<IStoreBook>()(
                 iChapter != undefined && (state.currScenePath.iChapter = iChapter);
                 iScene != undefined && (state.currScenePath.iScene = iScene);
                 iEvent != undefined && (state.currScenePath.iEvent = iEvent);
+            }),
+
+            setPropShown: (id: string, state: number) => set(state => {
+
+            }),
+            deletePropShown: (id: string) => set(state => {
+
             }),
 
             addPart: (part?: IPart) => {
@@ -153,7 +161,15 @@ export const useStoreBook = create<IStoreBook>()(
 
             addScene: (iPart, iChapter, scene?: IScene) => {
                 set((s: IStoreBook) => {
-                    var def = {aim: '', arrCharacterID: [], arrEvent: [], arrItemID: [], id: getUID(), sceneID: '', text: ''};
+                    var def = {
+                        aim: '',
+                        arrCharacterID: [],
+                        arrEvent: [],
+                        arrItemID: [],
+                        id: getUID(),
+                        sceneID: '',
+                        text: ''
+                    };
                     s.arrPart[iPart]?.arrChapter[iChapter]?.arrScene.push(scene ?? def)
                 })
                 get().updateListIDDebounce();
@@ -216,7 +232,15 @@ export const useStoreBook = create<IStoreBook>()(
 
             addEvent: (iPart: number, iChapter: number, iScene: number, v?: any) => {
                 set((s: any) => {
-                    const def = {arrChangeProp: [], desc: '', id: getUID(), manner: '', objectID: '', subjectID: '', type: '', ...v};
+                    const def = {
+                        arrChangeProp: [],
+                        desc: '',
+                        id: getUID(),
+                        manner: '',
+                        objectID: '',
+                        subjectID: '',
+                        type: '', ...v
+                    };
                     s.arrPart[iPart]?.arrChapter[iChapter]?.arrScene[iScene]?.arrEvent.push(def);
                 })
                 get().updateListIDDebounce();
@@ -239,7 +263,14 @@ export const useStoreBook = create<IStoreBook>()(
                     let arrChangeProp = s.arrPart[iPart]?.arrChapter[iChapter]?.arrScene[iScene]?.arrEvent[iEvent]?.arrChangeProp;
                     let iProp = arrChangeProp.length;
                     const order = iPart * 1e12 + iChapter * 1e9 + iScene * 1e6 + iEvent * 1e3 + iProp;
-                    const def: IChangeProperties = {id: getUID(), order, targetID: '', propID: '', value: '', type: null, ...prop};
+                    const def: IChangeProperties = {
+                        id: getUID(),
+                        order,
+                        targetID: '',
+                        propID: '',
+                        value: '',
+                        type: null, ...prop
+                    };
                     arrChangeProp.push(def);
                     console.log('arrChangeProp', JSON.parse(JSON.stringify(arrChangeProp)))
                 })
@@ -368,9 +399,22 @@ export const useStoreBook = create<IStoreBook>()(
                                     listID[id] = {iPart, iChapter, iScene, iItem} as IPath;
                                 }
                                 for (let iEvent = 0; iEvent < lenEvent; iEvent++) {
-                                    const {arrChangeProp, desc, id, manner, objectID, subjectID, type} = arrEvent[iEvent] as IEvent;
+                                    const {
+                                        arrChangeProp,
+                                        desc,
+                                        id,
+                                        manner,
+                                        objectID,
+                                        subjectID,
+                                        type
+                                    } = arrEvent[iEvent] as IEvent;
 
-                                    listID[subjectID] = listID[objectID] = listID[id] = {iPart, iChapter, iScene, iEvent} as IPath;
+                                    listID[subjectID] = listID[objectID] = listID[id] = {
+                                        iPart,
+                                        iChapter,
+                                        iScene,
+                                        iEvent
+                                    } as IPath;
 
                                     let lenChangeProp = arrChangeProp.length;
                                     for (let iProp = 0; iProp < lenChangeProp; iProp++) {
@@ -426,7 +470,15 @@ export const useStoreBook = create<IStoreBook>()(
 
                             }
                             for (let iEvent = 0; iEvent < lenEvent; iEvent++) {
-                                const {arrChangeProp, desc, id, manner, objectID, subjectID, type} = arrEvent[iEvent] as IEvent;
+                                const {
+                                    arrChangeProp,
+                                    desc,
+                                    id,
+                                    manner,
+                                    objectID,
+                                    subjectID,
+                                    type
+                                } = arrEvent[iEvent] as IEvent;
                                 (id == tid || objectID == tid || subjectID == tid) && (_arr.push([arrCharacterID, iEvent]));
 
                                 let lenChangeProp = arrChangeProp.length;
