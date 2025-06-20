@@ -98,7 +98,7 @@ export const useStoreBook = create<IStoreBook>()(
             arrPart: [],
             listID: {},
             listChangeProp: {},
-            listShownProp: {},
+            listStatusDisplay: {},
             currScenePath: {
                 iPart: 0, iChapter: 0, iScene: 0, iEvent: 0
             },
@@ -114,11 +114,11 @@ export const useStoreBook = create<IStoreBook>()(
                 iEvent != undefined && (state.currScenePath.iEvent = iEvent);
             }),
 
-            setPropShown: (id: string, state: number) => set(state => {
-
+            setStatusDisplay: (id, idUsingScene, status) => set(s => {
+                s.listStatusDisplay[id] = {idUsingScene, status};
             }),
-            deletePropShown: (id: string) => set(state => {
-
+            deleteStatusDisplay: (id: string) => set(s => {
+                delete s.listStatusDisplay[id];
             }),
 
             addPart: (part?: IPart) => {

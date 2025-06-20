@@ -122,9 +122,8 @@ const EventItem = ({iPart, iChapter, iScene, iEvent, arrEvent}: IEventsProps) =>
                     <div data-type="replica" className={clsx('bi-chat-square-fill')}/>
                 </div>
             </DropdownButton>
-            <ButtonEx className={clsx('bi-plus-circle')} title="Добавить модификатор свойств" onClick={() => {
-                addChangeProp(iPart, iChapter, iScene, iEvent);
-            }}/>
+            <ButtonEx className={clsx('bi-plus-circle')} title="Добавить модификатор свойств"
+                      onClick={() => addChangeProp(iPart, iChapter, iScene, iEvent)}/>
             <SelectItem path={path} id={subjectID} update={(iEvent, id) => updateSubEvent(iEvent, {subjectID: id})}/>
             <SelectItem path={path} id={subjectID} update={(iEvent, id) => updateSubEvent(iEvent, {subjectID: id})}
                         arrDisplayed={{character: true}}/>
@@ -164,11 +163,17 @@ const EventItem = ({iPart, iChapter, iScene, iEvent, arrEvent}: IEventsProps) =>
                 <Row>
                     <Row className="w-full">
                         <Tooltip text="Модификатор свойства">
-                            <div className={clsx('bi-list-task', 'relative', 'flex justify-center items-center', 'h-fit p-1', 'st-air',)}/>
+                            <div
+                                className={clsx('bi-list-task', 'relative', 'flex justify-center items-center', 'h-fit p-1', 'st-air',)}/>
                         </Tooltip>
-                        <SelectItem path={path} id={targetID} label="Объект" update={(iEvent: number, id: string, type: TProp) => {
-                            updateChangeProp(iPart, iChapter, iScene, iEvent, iProp, {targetID: id, value: '', type});
-                        }} arrDisplayed={{scene: true, character: true, item: true}}/>
+                        <SelectItem path={path} id={targetID} label="Объект"
+                                    update={(iEvent: number, id: string, type: TProp) => {
+                                        updateChangeProp(iPart, iChapter, iScene, iEvent, iProp, {
+                                            targetID: id,
+                                            value: '',
+                                            type
+                                        });
+                                    }} arrDisplayed={{scene: true, character: true, item: true}}/>
                         <DropdownButton title={getPropByID(propID)?.title ?? 'Свойство'} className={clsx("h-full")}>
                             <div className={clsx(
                                 'overflow-auto max-h-[33vh]',
@@ -181,9 +186,16 @@ const EventItem = ({iPart, iChapter, iScene, iEvent, arrEvent}: IEventsProps) =>
                                      const _propID = e.target.dataset.id
                                      if (!_propID) return;
                                      // const value = getPropByID(_propID).value;
-                                     updateChangeProp(iPart, iChapter, iScene, iEvent, iProp, {propID: _propID, value: ''})
+                                     updateChangeProp(iPart, iChapter, iScene, iEvent, iProp, {
+                                         propID: _propID,
+                                         value: ''
+                                     })
                                  }}>
-                                {getObjectByID(targetID)?.arrMapProp.map(({id, title, isChange,}: IMapProp, i: number) => isChange &&
+                                {getObjectByID(targetID)?.arrMapProp.map(({
+                                                                              id,
+                                                                              title,
+                                                                              isChange,
+                                                                          }: IMapProp, i: number) => isChange &&
                                     <div key={i} data-id={id}>{title}</div>)}
                             </div>
                         </DropdownButton>

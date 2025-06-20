@@ -98,7 +98,12 @@ export interface IStoreBook {
     arrPart: IPart[];
     listID: { [key: string]: IPath; },
     listChangeProp: { [objectID: string]: string[]; },
-    listShownProp: { [objectID: string]: string[]; },
+    listStatusDisplay: {
+        [objectID: string]: {
+            idUsingScene: string;
+            status: boolean;
+        };
+    },
     currScenePath: IPath | null;
 
     // Other aux
@@ -106,8 +111,8 @@ export interface IStoreBook {
     setName: (name: string) => void;
 
     // Actions for shown props
-    setPropShown: (id: string, state: number) => void;
-    deletePropShown: (id: string) => void;
+    setStatusDisplay: (idProp: string, idUsingScene: string, state: boolean) => void;
+    deleteStatusDisplay: (id: string) => void;
 
     // Actions for parts
     addPart?: (part?: IPart) => void;

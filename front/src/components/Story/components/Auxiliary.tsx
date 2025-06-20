@@ -71,7 +71,9 @@ interface ISelectItemProp {
     update?: (iEvent: number, id: string, type?: TProp) => void;
 }
 
-export const SelectItem = ({path, id, label = 'Не выбрано', arrDisplayed = {character: true, scene: true}, update}: ISelectItemProp) => {
+export const SelectItem = (
+    {path, id, label = 'Не выбрано', arrDisplayed = {character: true, scene: true, item: true}, update}: ISelectItemProp
+) => {
 
     const arrPart = useStoreBook(state => state.arrPart);
 
@@ -104,6 +106,17 @@ export const SelectItem = ({path, id, label = 'Не выбрано', arrDisplaye
     const arrCharacterID = scene.arrCharacterID;
     const arrItemID = scene.arrItemID;
 
+    let listScene: React.JSX.Element[], listCharacter: React.JSX.Element[], listItem: React.JSX.Element[];
+
+    if (arrDisplayed.scene)
+        listScene = arrGenScene.map(({id, name}, i) => <div key={i} data-id={id} data-type="scene">{name}</div>);
+    if (arrDisplayed.character)
+        listCharacter = arrGenCharacter.map(({id, name}, i) => arrCharacterID.includes(id) || arrItemID.includes(id) ?
+            <div key={i} data-id={id} data-type="character">{name}</div> : null).filter(it => it);
+    if (arrDisplayed.item)
+        listItem = arrGenItem.map(({id, name}, i) => arrItemID.includes(id) || arrItemID.includes(id) ?
+            <div key={i} data-id={id} data-type="item">{name}</div> : null).filter(it => it);
+
     return <DropdownButton title={getObjectByID(id)?.name ?? label}>
         <Row className={
             clsx("*:cursor-pointer max-w-[75vw] max-h-[33vh]",
@@ -114,27 +127,25 @@ export const SelectItem = ({path, id, label = 'Не выбрано', arrDisplaye
              onClick={({target}: any) => {
                  update(path.iEvent, target.dataset.id, target.dataset.type);
              }}>
-            {arrDisplayed.scene && <Col noBorder={true} className="flex-1/3">
+            {listScene?.length > 0 && <Col noBorder={true} className="flex-1/3">
                 <div className="text-center p-1 pointer-events-none border-b border-r border-gray-200 bi-image"/>
                 <Col className="overflow-auto h-inherit *:text-center *:px-1 *:py-1 *:hover:bg-gray-500/50 !gap-0"
                      noBorder={true}>
-                    {arrGenScene.map(({id, name}, i) => <div key={i} data-id={id} data-type="scene">{name}</div>)}
+                    {listScene}
                 </Col>
             </Col>}
-            {arrDisplayed.character && <Col noBorder={true} className="flex-1/3">
+            {listCharacter?.length > 0 && <Col noBorder={true} className="flex-1/3">
                 <div className="text-center p-1 pointer-events-none border-b border-r border-gray-200 bi-person-fill"/>
                 <Col className="overflow-auto h-inherit *:text-center *:px-1 *:py-1 *:hover:bg-gray-500/50 !gap-0"
                      noBorder={true}>
-                    {arrGenCharacter.map(({id, name}, i) => arrCharacterID.includes(id) || arrItemID.includes(id) ?
-                        <div key={i} data-id={id} data-type="character">{name}</div> : null)}
+                    {listCharacter}
                 </Col>
             </Col>}
-            {arrDisplayed.item && <Col noBorder={true} className="flex-1/3">
+            {listItem?.length > 0 && <Col noBorder={true} className="flex-1/3">
                 <div className="text-center p-1 pointer-events-none border-b border-gray-200 bi-box"/>
                 <Col className="overflow-auto h-inherit *:text-center *:px-1 *:py-1 *:hover:bg-gray-500/50 !gap-0"
                      noBorder={true}>
-                    {arrGenItem.map(({id, name}, i) => arrItemID.includes(id) || arrItemID.includes(id) ?
-                        <div key={i} data-id={id} data-type="item">{name}</div> : null)}
+                    {listItem}
                 </Col>
             </Col>}
         </Row>

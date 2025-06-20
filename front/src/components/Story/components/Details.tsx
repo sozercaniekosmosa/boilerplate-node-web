@@ -7,14 +7,13 @@ import {Tab, Tabs} from "../../Auxiliary/Tabs.tsx";
 import {useStoreGenScene} from "../Stores/storeGenerators.ts";
 import {useStoreState} from "../Stores/storeAux.ts";
 import clsx from "clsx";
+import {Tooltip} from '../../Auxiliary/Tooltip.tsx';
 
 
 interface IDetails extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Details: React.FC<IDetails> = ({...rest}) => {
-
-    const [shown, setShown] = useState(0)
 
     const {isState} = useStoreState();
     const arrPart = useStoreBook(state => state.arrPart);
@@ -23,9 +22,12 @@ const Details: React.FC<IDetails> = ({...rest}) => {
     const scene = arrPart[iPart]?.arrChapter[iChapter]?.arrScene[iScene];
     const arrGenScene = useStoreGenScene(state => state.arrGen);
     const mapID = useStoreGenScene(state => state.listID);
+    const listStatusDisplay = useStoreBook(state => state.listStatusDisplay);
+    const setStatusDisplay = useStoreBook(state => state.setStatusDisplay);
+    const deleteStatusDisplay = useStoreBook(state => state.deleteStatusDisplay);
 
     if (scene == undefined) return null;
-    const {id, aim, sceneID, arrItemID, arrCharacterID, arrEvent} = scene;
+    const {id: idScene, aim, sceneID, arrItemID, arrCharacterID, arrEvent} = scene;
     let iSceneSelected = mapID[sceneID];
     if (iSceneSelected == undefined) return null;
 
@@ -38,7 +40,7 @@ const Details: React.FC<IDetails> = ({...rest}) => {
         <Tab eventKey="scene" title="Сцена" className="flex flex-row p-1">
             <Col role="container-scenes" noBorder={true} className="w-full">
                 <Row>
-                    <SwitchButton id={id + 'prop'}/>
+                    <SwitchButton id={idScene + 'prop'}/>
                     <div className={clsx("content-center",
                         sceneName ?? 'text-black/60')}>
                         {sceneName ?? 'Не выбрано'}
@@ -48,22 +50,30 @@ const Details: React.FC<IDetails> = ({...rest}) => {
                         ({sceneAim ?? '...'})
                     </div>
                 </Row>
-                {!isState(id + 'prop') && <Col className="ml-1">
-                    {arrGenScene[iSceneSelected].arrMapProp.map(({title, value}, i) => {
+                {!isState(idScene + 'prop') && <Col className="ml-1">
+                    {arrGenScene[iSceneSelected].arrMapProp.map(({title, value, id}, i) => {
+                        const {status, idUsingScene} = listStatusDisplay?.[id] ?? {status: false, idUsingScene: null};
                         if (!value) return null;
+                        let icon: string = 'bi-square-fill';
+                        if (!idUsingScene || idScene == idUsingScene) {
+                            icon = !status ? 'bi-square' : 'bi-check-square';
+                        }
                         return <Col role="scene-item" key={i} noBorder={true}>
                             <Row>
-                                <div className={clsx(
-                                    "text-black/60 text-nowrap",
-                                    shown == 1 ? 'bi-square' : shown == 2 ? 'bi-check-square' : 'bi-square-fill'
-                                )} onClick={() => {
-                                    let _eye = shown + 1;
-                                    if (_eye > 2) _eye = 0;
-                                    setShown(_eye);
-                                }}/>
+                                <Tooltip text={'Флаг/отметка — упоминание в тексте'}>
+                                    <div className={clsx("text-black/60 text-nowrap", icon)}
+                                         onClick={() => {
+                                             const _status = !status;
+                                             if (!idUsingScene || idScene == idUsingScene)
+                                                 if (_status)
+                                                     setStatusDisplay(id, idScene, true);
+                                                 else
+                                                     deleteStatusDisplay(id);
+                                         }}/>
+                                </Tooltip>
                                 <div className="text-black/60 text-nowrap">{title}:</div>
                             </Row>
-                            <div className={clsx("text-black", "border border-none w-full", "pl-1")}>
+                            <div className={clsx("text-black", "border border-none w-full", "pl-1 whitespace-pre-line")}>
                                 {value}
                             </div>
                         </Col>

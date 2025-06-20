@@ -6,7 +6,6 @@ import {useStoreState} from "../../Stores/storeAux.ts";
 import {ButtonDelete, Col, Row, SwitchButton, TextInput} from "../Auxiliary.tsx";
 import DropdownButton from "../../../Auxiliary/DropdownButton.tsx";
 import {IScene} from "../../types.ts";
-import Items from "./Items.tsx";
 import Events from "./Action/Events.tsx";
 import Group from "../../../Auxiliary/Group.tsx";
 import {useStoreGenCharacter, useStoreGenItem, useStoreGenScene} from "../../Stores/storeGenerators.ts";
