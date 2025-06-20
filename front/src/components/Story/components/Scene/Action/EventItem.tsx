@@ -124,7 +124,7 @@ const EventItem = ({iPart, iChapter, iScene, iEvent, arrEvent}: IEventsProps) =>
             </DropdownButton>
             <ButtonEx className={clsx('bi-plus-circle')} title="Добавить модификатор свойств"
                       onClick={() => addChangeProp(iPart, iChapter, iScene, iEvent)}/>
-            <SelectItem path={path} id={subjectID} update={(iEvent, id) => updateSubEvent(iEvent, {subjectID: id})}/>
+            <SelectItem path={path} id={objectID} update={(iEvent, id) => updateSubEvent(iEvent, {objectID: id})}/>
             <SelectItem path={path} id={subjectID} update={(iEvent, id) => updateSubEvent(iEvent, {subjectID: id})}
                         arrDisplayed={{character: true}}/>
             {/*</Group>*/}
@@ -205,19 +205,15 @@ const EventItem = ({iPart, iChapter, iScene, iEvent, arrEvent}: IEventsProps) =>
                         deleteChangeProp(iPart, iChapter, iScene, iEvent, iProp);
                     }}/>
                 </Row>
-                <TextWrite value={resultValue} placeholder="Значение свойства"
+                <TextWrite value={resultValue} placeholder="Значение свойства" fitToTextSize={true}
                            className={
                                clsx(
                                    "w-full grow *:border-none *:rounded-sm st-air-tx-imp",
                                    !changedValue || changedValue == beforeValue || changedValue != '' && resultValue == baseValue ? "ring-3 ring-orange-400" : "",
                                )
                            }
-                           onChange={({target}) => {
-                               updateChangeProp(iPart, iChapter, iScene, iEvent, iProp, {value: target.value});
-                               // console.log(listID['1UoYbY'])
-                               // console.log(getItemByID('1UpcCq'))
-                               // console.log(type)
-                           }}/>
+                           onChange={({target}) => updateChangeProp(iPart, iChapter, iScene, iEvent, iProp, {value: target.value})}
+                />
             </Col>
         })}
     </Col>

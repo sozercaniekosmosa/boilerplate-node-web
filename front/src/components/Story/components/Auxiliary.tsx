@@ -89,13 +89,13 @@ export const SelectItem = (
     const getObjectByID = (id: string) => {
         var _u = undefined;
         if (listIDScene?.[id] != _u) {
-            return arrGenScene[listIDScene[id]];
+            return {type: 'scene', item: arrGenScene[listIDScene[id]]};
         } else {
             if (listIDCharacter?.[id] != _u) {
-                return arrGenCharacter[listIDCharacter[id]];
+                return {type: 'character', item: arrGenCharacter[listIDCharacter[id]]};
             } else {
                 if (listIDItem?.[id] != _u) {
-                    return arrGenItem[listIDItem[id]];
+                    return {type: 'item', item: arrGenItem[listIDItem[id]]};
                 } else {
                     return null;
                 }
@@ -117,7 +117,11 @@ export const SelectItem = (
         listItem = arrGenItem.map(({id, name}, i) => arrItemID.includes(id) || arrItemID.includes(id) ?
             <div key={i} data-id={id} data-type="item">{name}</div> : null).filter(it => it);
 
-    return <DropdownButton title={getObjectByID(id)?.name ?? label}>
+    const obj = getObjectByID(id);
+    const name = obj?.item.name ?? label;
+    const icon = obj?.type == 'scene' ? 'bi-image' : obj?.type == 'character' ? 'bi-person-fill' : obj?.type == 'item' ? 'bi-box' : '';
+
+    return <DropdownButton title={name} className={clsx(icon, 'gap-1')}>
         <Row className={
             clsx("*:cursor-pointer max-w-[75vw] max-h-[33vh]",
                 "rounded-sm shadow-xl/20",
