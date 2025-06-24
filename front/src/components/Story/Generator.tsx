@@ -46,18 +46,18 @@ const PropertyHeader = ({iProp, setProps, iScene, props, storeGen, children, cla
     );
 
     let arrMapProp = arrGen[iScene].arrMapProp;
-    const {title, desc, isChange} = arrMapProp[iProp];
+    const {title, desc/*, isChange*/} = arrMapProp[iProp];
 
     return <Col role="scene-prop-content" key={iProp} className={clsx("bg-white w-[33%] !gap-0", className)}>
         <Row className="text-black/60">
             <Tooltip text={desc} className="bi-info-circle leading-6"/>
-            <ButtonEx
-                title="Изменяемое свойство"
-                className={clsx(
-                    !isChange ? "bi-toggle-off" : "bi-toggle-on",
-                    'ml-1 !p-0 text-[1.4rem]'
-                )}
-                onClick={() => updateGenProp(iScene, iProp, {isChange: !isChange})}/>
+            {/*<ButtonEx*/}
+            {/*    title="Изменяемое свойство"*/}
+            {/*    className={clsx(*/}
+            {/*        !isChange ? "bi-toggle-off" : "bi-toggle-on",*/}
+            {/*        'ml-1 !p-0 text-[1.4rem]'*/}
+            {/*    )}*/}
+            {/*    onClick={() => updateGenProp(iScene, iProp, {isChange: !isChange})}/>*/}
             <ButtonEx className={clsx("bi-pencil", 'text-sm')} title="Редактировать свойство"
                       description="Редактировать свойство"
                       data-key={iProp}
@@ -116,7 +116,7 @@ const Generator: React.FC<IGenSceneProp> = ({className, storeGen, title, titleAd
         </Row>
         {arrGen.map(((scene, iScene) => {
             const {id, name, arrMapProp} = scene;
-            const {desc, ext, isChange, list, range, section, value} = arrMapProp[iScene];
+            // const {desc, ext, /*isChange,*/ list, range, section, value} = arrMapProp[iScene];
 
             let extend = false;
             const lastIndex = arrMapProp.length - 1;
@@ -130,7 +130,7 @@ const Generator: React.FC<IGenSceneProp> = ({className, storeGen, title, titleAd
                         <SwitchButton id={id}/>
                         <ButtonEx className={clsx("bi-plus-circle")} title="Добавить новое свойство"
                                   description="Добавить новое свойство"
-                                  onClick={() => setProps({desc: '', title: '', value: '', isChange: false})}
+                                  onClick={() => setProps({desc: '', title: '', value: '', /*isChange: false*/})}
                                   onConfirm={() => addGenProp(iScene, props)} dialogContent={DialogContent({props, setProps})}/>
                         <ButtonDelete onDelete={() => {
                             execByID(id, (arr, i) => arr.splice(i, 1));
@@ -152,7 +152,7 @@ const Generator: React.FC<IGenSceneProp> = ({className, storeGen, title, titleAd
                 </Row>
                 {!isState(id) && <div className="pl-3 flex flex-wrap gap-0.5">
                     {arrMapProp.map((mapProp, iProp) => {
-                        const {title, desc, section, value, ext, list, range} = mapProp;
+                        const {title, desc, section, value, ext, list, range, disabledExt} = mapProp;
 
                         if (section && iProp && iProp == lastIndex) return null;
                         if (section) {
@@ -161,9 +161,9 @@ const Generator: React.FC<IGenSceneProp> = ({className, storeGen, title, titleAd
                             return <Row role="scene-prop-menu" className="w-full" key={iProp}>
                                 <SwitchButton id={sectionName}/>
                                 <Text>{title}</Text>
-                                {!isState(sectionName) && title != 'Дополнительные' &&
+                                {!isState(sectionName) && !disabledExt && title != 'Дополнительные' &&
                                     <ButtonEx
-                                        title="Изменяемое свойство"
+                                        title="Дополнительные"
                                         className={clsx(
                                             !ext ? "bi-toggle-off" : "bi-toggle-on",
                                             'ml-1 !p-0 text-[1.4rem]'

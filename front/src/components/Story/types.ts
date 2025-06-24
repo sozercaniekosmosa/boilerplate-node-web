@@ -7,11 +7,12 @@ export interface IMapPropBase {
     ext?: boolean;
     range?: [number, number];
 
+    disabledExt?: boolean;
 }
 
 export interface IMapProp extends IMapPropBase {
     id?: string;
-    isChange?: boolean;
+    // isChange?: boolean;
 }
 
 export interface IMap {
@@ -100,7 +101,7 @@ export interface IStoreBook {
     listChangeProp: { [objectID: string]: string[]; },
     listStatusDisplay: {
         [objectID: string]: {
-            idUsingScene: string;
+            idUsedIn: string;
             status: boolean;
         };
     },
@@ -111,7 +112,7 @@ export interface IStoreBook {
     setName: (name: string) => void;
 
     // Actions for shown props
-    setStatusDisplay: (idProp: string, idUsingScene: string, state: boolean) => void;
+    setStatusDisplay: (idProp: string, idUsedIn: string, state: boolean) => void;
     deleteStatusDisplay: (id: string) => void;
 
     // Actions for parts

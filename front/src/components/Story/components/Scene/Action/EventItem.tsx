@@ -194,8 +194,8 @@ const EventItem = ({iPart, iChapter, iScene, iEvent, arrEvent}: IEventsProps) =>
                                 {getObjectByID(targetID)?.arrMapProp.map(({
                                                                               id,
                                                                               title,
-                                                                              isChange,
-                                                                          }: IMapProp, i: number) => isChange &&
+                                                                              //isChange,
+                                                                          }: IMapProp, i: number) => title &&
                                     <div key={i} data-id={id}>{title}</div>)}
                             </div>
                         </DropdownButton>

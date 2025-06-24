@@ -114,8 +114,8 @@ export const useStoreBook = create<IStoreBook>()(
                 iEvent != undefined && (state.currScenePath.iEvent = iEvent);
             }),
 
-            setStatusDisplay: (id, idUsingScene, status) => set(s => {
-                s.listStatusDisplay[id] = {idUsingScene, status};
+            setStatusDisplay: (id, idUsedIn, status) => set(s => {
+                s.listStatusDisplay[id] = {idUsedIn, status};
             }),
             deleteStatusDisplay: (id: string) => set(s => {
                 delete s.listStatusDisplay[id];
