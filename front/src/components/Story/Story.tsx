@@ -8,7 +8,7 @@ import GenScene from "./Generator.tsx";
 import {useStoreGenCharacter, useStoreGenItem, useStoreGenScene} from "./Stores/storeGenerators.ts";
 
 const promptCharacter =
-    `Задача: Ты - лучший в мире талантлевый писатель с огромным опытом.
+    `Задача: Ты - лучший в мире талантливый писатель с огромным опытом.
     Особое внимание удели внутренним противоречиям персонажа и его уникальным чертам, которые сделают его запоминающимся для читателей
     Контекст: 
         - $desc$ 
