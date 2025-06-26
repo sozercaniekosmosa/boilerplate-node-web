@@ -10,6 +10,7 @@ import {Tooltip} from "../Auxiliary/Tooltip.tsx";
 import {useShallow} from "zustand/react/shallow";
 import {ExtractState, StoreApi} from "zustand/vanilla";
 import {useStoreBook} from "./Stores/storeBook.ts";
+import {template} from "../../lib/strings.ts";
 
 let sectionName = "";
 
@@ -26,6 +27,7 @@ interface IGenSceneProp extends React.HTMLAttributes<HTMLDivElement> {
     } & StoreApi<IStoreGen>;
     title?: string;
     titleAddNew?: string;
+    prompt?: string;
 }
 
 interface IPropertyProps extends React.HTMLAttributes<Element> {
@@ -90,7 +92,7 @@ let DialogContent = ({props, setProps}: IDialogContentProps) => <Col noBorder={t
                onChange={(e: any) => setProps(state => ({...state, desc: e.target.value}))}/>
 </Col>
 
-const Generator: React.FC<IGenSceneProp> = ({className, storeGen, title, titleAddNew, ...rest}) => {
+const Generator: React.FC<IGenSceneProp> = ({className, storeGen, title, titleAddNew, prompt, ...rest}) => {
 
     const [props, setProps] = useState<IMapProp>({desc: '', title: '', value: '', section: false, list: [], ext: true})
 
@@ -130,8 +132,6 @@ const Generator: React.FC<IGenSceneProp> = ({className, storeGen, title, titleAd
             const lastIndex = arrMapProp.length - 1;
 
             sectionName = "";
-
-
             return <Col role="scene-props" key={iScene} className="bg-gray-200">
                 <Row role="scene-props-menu" className="">
                     <Group>
@@ -155,8 +155,15 @@ const Generator: React.FC<IGenSceneProp> = ({className, storeGen, title, titleAd
 
                     />
                     <ButtonEx className="bi-stars" title="Сгенерировать" onClick={() => {
-                        console.log(scene)
-                        console.log(desc)
+                        // console.log(scene)
+                        // console.log(desc)
+                        const arrStruct =
+                            arrMapProp.filter(it => it?.section ? null : it)
+                                .map(({desc, value}) => ({desc, value}))
+                        const struct = JSON.stringify(arrStruct)
+                        const promptBuild = prompt ? template(prompt, {desc, struct}) : '';
+
+                        console.log(promptBuild)
                     }} disabled={!desc || desc?.length == 0}/>
                     {arrMapProp[0].section && <ButtonEx className="bi-chevron-expand" title="Развернуть все"
                                                         onClick={() => {

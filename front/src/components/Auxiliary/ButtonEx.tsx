@@ -8,7 +8,7 @@ import clsx from "clsx";
 interface IButtonExProps extends PropsWithChildren {
     style?: React.CSSProperties,
     className?: string,
-    onAction?: (e?: React.MouseEvent<HTMLElement>) => Promise<number> | number | void,
+    onAction?: (e?: React.MouseEvent<HTMLElement>) => Promise<number|any> | number | void,
     onClick?: (e?: React.MouseEvent<HTMLElement>) => void,
     onConfirm?: (e?: React.MouseEvent<HTMLElement>) => void,
     dialogContent?: React.FC | React.ReactElement,

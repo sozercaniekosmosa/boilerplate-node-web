@@ -69,6 +69,7 @@ export interface IScene {
     arrCharacterID: string[],
     arrItemID: string[],
     arrEvent: IEvent[]
+    listID: { [key: string]: any }, //
 }
 
 export interface IChapter {
@@ -99,12 +100,7 @@ export interface IStoreBook {
     arrPart: IPart[];
     listID: { [key: string]: IPath; },
     listChangeProp: { [objectID: string]: string[]; },
-    listStatusDisplay: {
-        [objectID: string]: {
-            idUsedIn: string;
-            status: boolean;
-        };
-    },
+    listStatusDisplay: { [objectID: string]: { [srcID: string]: boolean }, },
     currScenePath: IPath | null;
 
     // Other aux
@@ -112,7 +108,7 @@ export interface IStoreBook {
     setName: (name: string) => void;
 
     // Actions for shown props
-    setStatusDisplay: (idProp: string, idUsedIn: string, state: boolean) => void;
+    setStatusDisplay: (idProp: string, idUsedIn: string, status: boolean) => void;
     deleteStatusDisplay: (id: string) => void;
 
     // Actions for parts

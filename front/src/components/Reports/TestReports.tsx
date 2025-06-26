@@ -1,11 +1,11 @@
-import ButtonEx from "../ButtonEx/ButtonEx.tsx";
 import axios from "axios";
 import glob from "../../glob.ts";
 import React, {useEffect, useState} from "react";
 import Select from "../Select/Select.tsx";
 import {getCodeParam} from "../../lib/utils.ts";
-import styled, {createGlobalStyle} from "styled-components";
-import {Button, ButtonGroup} from "react-bootstrap";
+// import styled, {createGlobalStyle} from "styled-components";
+import ButtonEx from "../Auxiliary/ButtonEx.tsx";
+import Group from "../Auxiliary/Group.tsx";
 
 const listTypeReports = {'Excel': 'report-excel', 'Pdf': 'report-pdf',};
 
@@ -58,26 +58,26 @@ function buildGetUrl(baseUrl, directory, params) {
     return decodeURIComponent(url.toString());
 }
 
-const TestOptions = styled.div.attrs({className: "d-flex flex-row gap-1 mx-2 my-2"})``;
-const TestParams = styled.div.attrs({className: "position-relative border rounded mx-2 mt-3 px-2 pt-3 pb-1 mb-2"})`
-    background-color: #fcfcfc;
-`;
-const DescParam = styled.div.attrs({className: "position-absolute z-1 px-2 rounded-4 border bg-white no-select"})`
-    font-size: 1em;
-    line-height: 0.7;
-    padding: 3px 0 4px 0;
-    top: -0.7em;
-    left: 1em;
-    position: absolute;
-    display: flex;
-    flex-direction: row !important;
-`;
-const TypeReport = styled(Select).attrs({className: "form-select form-select-sm"})``;
-const Template = styled(Select).attrs({className: "form-select form-select-sm"})``;
-const FileName = styled.input.attrs({
-    className: "form-control form-control-sm",
-    placeholder: "Введите имя файла отчета"
-})``;
+// const TestOptions = styled.div.attrs({className: "d-flex flex-row gap-1 mx-2 my-2"})``;
+// const TestParams = styled.div.attrs({className: "position-relative border rounded mx-2 mt-3 px-2 pt-3 pb-1 mb-2"})`
+//     background-color: #fcfcfc;
+// `;
+// const DescParam = styled.div.attrs({className: "position-absolute z-1 px-2 rounded-4 border bg-white no-select"})`
+//     font-size: 1em;
+//     line-height: 0.7;
+//     padding: 3px 0 4px 0;
+//     top: -0.7em;
+//     left: 1em;
+//     position: absolute;
+//     display: flex;
+//     flex-direction: row !important;
+// `;
+// const TypeReport = styled(Select).attrs({className: "form-select form-select-sm"})``;
+// const Template = styled(Select).attrs({className: "form-select form-select-sm"})``;
+// const FileName = styled.input.attrs({
+//     className: "form-control form-control-sm",
+//     placeholder: "Введите имя файла отчета"
+// })``;
 
 function getFltFn(doc, nameTemplate: string) {
     if (!nameTemplate) return;
@@ -96,25 +96,25 @@ function getFltFn(doc, nameTemplate: string) {
 
 let arrFltFn = [];
 
-const URLReport = styled.div`
+// const URLReport = styled.div`
+//
+//     * {
+//         height: 2em;
+//         font-size: 1.1em;
+//         line-height: 0;
+//     }
+// `
 
-    * {
-        height: 2em;
-        font-size: 1.1em;
-        line-height: 0;
-    }
+// const BtnEx = styled(ButtonEx).attrs<{ $variant?: string; }>(props => ({
+//     className: `${props?.$variant} btn-sm flex-grow-0`
+// }))<{ $selected?: string }>`
+//     height: 2.2em;
 `
-
-const BtnEx = styled(ButtonEx).attrs<{ $variant?: string; }>(props => ({
-    className: `${props?.$variant} btn-sm flex-grow-0`
-}))<{ $selected?: string }>`
-    height: 2.2em;
-`
-const GlobalStyle = createGlobalStyle`
-    .selected-type {
-        background-color: #007652 !important;
-    }
-`
+// const GlobalStyle = createGlobalStyle`
+//     .selected-type {
+//         background-color: #007652 !important;
+//     }
+// `
 
 function TestReports({doc, code, data, setData}) {
     const [url, setUrl] = useState('');
@@ -172,37 +172,39 @@ function TestReports({doc, code, data, setData}) {
     };
 
     return <>
-        <GlobalStyle/>
-        <TestOptions>
+        {/*<GlobalStyle/>*/}
+        <div>
             <div>
-                <ButtonGroup>
-                    <BtnEx
+                <Group>
+                    <div
                         className={"btn btn-secondary bi-file-earmark-excel " + (type == 'report-excel' ? 'selected-type' : '')}
-                        onClick={(e) => selectTypeReport(e, 'report-excel')}>Excel</BtnEx>
-                    <BtnEx
+                        onClick={(e) => selectTypeReport(e, 'report-excel')}>Excel</div>
+                    <div
                         className={"btn btn-secondary bi-file-earmark-pdf " + (type == 'report-pdf' ? 'selected-type' : '')}
-                        onClick={(e) => selectTypeReport(e, 'report-pdf')}>Pdf</BtnEx>
-                </ButtonGroup>
+                        onClick={(e) => selectTypeReport(e, 'report-pdf')}>Pdf</div>
+                </Group>
             </div>
             {/*<TypeReport arrList={listTypeReports} onChange={(val) => setType(val)} value={type}/>*/}
-            <Template arrList={listReports} onChange={(val: string) => setNameTemplate(val)} value={nameTemplate}/>
-            <FileName type="text" value={nameFile} onChange={(e) => setNameFile(e.target.value)}/>
-        </TestOptions>
+            <Select arrList={listReports} onChange={(val: string) => setNameTemplate(val)} value={nameTemplate}/>
+            <input type="text" value={nameFile} onChange={(e) => setNameFile(e.target.value)}/>
+        </div>
 
-        <URLReport className="input-group mt-2 ms-2 mb-2">
+        <div className="input-group mt-2 ms-2 mb-2">
             <span className="input-group-text">URL</span>
             <input type="text" className="form-control" placeholder="Введите url запроса" value={url}
                    onChange={(e) => setUrl(e.target.value)}/>
             <ButtonEx className="btn btn-secondary bi-copy"
-                      onAction={async () => await navigator.clipboard.writeText(url)}></ButtonEx>
+                      onAction={async () => {
+                          await navigator.clipboard.writeText(url);
+                      }}></ButtonEx>
             <ButtonEx className="btn btn-secondary"
                       onAction={() => reqReport(buildGetUrl(url, [], 'innerData=1'))}>Тест</ButtonEx>
             <ButtonEx className="btn btn-secondary me-3"
                       onAction={() => reqReport(url)}>Отчет</ButtonEx>
-        </URLReport>
+        </div>
 
-        <TestParams>
-            <DescParam>Параметры</DescParam>
+        <div>
+            <div>Параметры</div>
             <div className="d-flex flex-row flex-wrap">
                 {Object.entries(paramReport).map(([key, value]) => {
                     return <div className="input-group input-group-sm mb-1 me-1 w-auto" key={key}>
@@ -215,9 +217,9 @@ function TestReports({doc, code, data, setData}) {
                     </div>
                 })}
             </div>
-        </TestParams>
+        </div>
         <div className="mx-2 mt-3 mb-1 position-relative">
-            <DescParam>Данные для SQL</DescParam>
+            <div>Данные для SQL</div>
             <textarea className="border rounded p-2 w-100" rows={10} value={data}
                       onChange={({target}) => setData(target.value)}/>
         </div>

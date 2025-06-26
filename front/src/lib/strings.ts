@@ -572,3 +572,55 @@ export const LZString = (function () {
 
 //@ts-ignore
 window.LZString = LZString;
+
+/**
+ * Шаблонизатор строк с поддержкой нумерованных (`$1`, `$2`) и именованных (`${key}`) плейсхолдеров.
+ *
+ * @param {string} str - Исходная строка с плейсхолдерами.
+ * @param {...any} values - Значения для замены (аргументы или объект).
+ * @returns {string} Строка с заменёнными плейсхолдерами.
+ * @throws {TypeError} Если первый аргумент не строка.
+ * @throws {Error} Если переданы некорректные плейсхолдеры.
+ */
+
+export function template(str, ...values) {
+    // 1. Валидация входных данных
+    if (typeof str !== 'string') {
+        throw new TypeError('Первый аргумент должен быть строкой');
+    }
+
+    // 2. Защита от null/undefined
+    const safeValues = values.map(v => (v == null) ? '' : v);
+
+    // 3. Обработка именованных плейсхолдеров ($marker_placeholder$)
+    if (safeValues.length === 1 &&
+        typeof safeValues[0] === 'object' &&
+        !Array.isArray(safeValues[0])) {
+
+        const namedParams = safeValues[0];
+
+        return str.replace(/\$([a-zA-Z_][a-zA-Z0-9_]*)\$/g, (match, key) => {
+            // 4. Проверка существования ключа
+            if (!(key in namedParams)) {
+                console.warn(`Плейсхолдер $${key}$ не найден в параметрах`);
+                return '';
+            }
+
+            // 5. Безопасное преобразование значения
+            return String(namedParams[key]);
+        });
+    }
+
+    // 6. Обработка нумерованных плейсхолдеров ($1, $2)
+    return str.replace(/\$(\d+)/g, (match, indexStr) => {
+        const index = parseInt(indexStr, 10) - 1;
+
+        // 7. Проверка выхода за границы массива
+        if (index < 0 || index >= safeValues.length || isNaN(index)) {
+            console.warn(`Плейсхолдер $${indexStr} выходит за границы параметров`);
+            return '';
+        }
+
+        return String(safeValues[index]);
+    });
+}

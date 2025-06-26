@@ -2,7 +2,7 @@ import {IChangeProperties, IChapter, IEvent, IPart, IPath, IScene, IStoreBook} f
 import {create} from "zustand/react";
 import {persist} from "zustand/middleware";
 import {immer} from "zustand/middleware/immer";
-import {debounce, generateUID as getUID} from "../../../lib/utils.ts";
+import {debounce, generateUID as getUID, isEmpty} from "../../../lib/utils.ts";
 
 const arrPart: IPart[] = [
     /*    {
@@ -115,7 +115,13 @@ export const useStoreBook = create<IStoreBook>()(
             }),
 
             setStatusDisplay: (id, idUsedIn, status) => set(s => {
-                s.listStatusDisplay[id] = {idUsedIn, status};
+                if (status) {
+                    if (!s.listStatusDisplay?.[id]) s.listStatusDisplay[id] = {};
+                    s.listStatusDisplay[id][idUsedIn] = true;
+                } else {
+                    delete s.listStatusDisplay[id][idUsedIn];
+                    if (isEmpty(s.listStatusDisplay[id])) delete s.listStatusDisplay[id];
+                }
             }),
             deleteStatusDisplay: (id: string) => set(s => {
                 delete s.listStatusDisplay[id];
@@ -168,7 +174,8 @@ export const useStoreBook = create<IStoreBook>()(
                         arrItemID: [],
                         id: getUID(),
                         sceneID: '',
-                        text: ''
+                        text: '',
+                        listID: {},
                     };
                     s.arrPart[iPart]?.arrChapter[iChapter]?.arrScene.push(scene ?? def)
                 })
@@ -506,31 +513,51 @@ export const useStoreBook = create<IStoreBook>()(
                     s.name = ""
                     s.arrPart = [
                         {
-                            "id": "1UrpFF",
+                            "id": "1UsuC1",
                             "name": "",
                             "arrChapter": [
                                 {
-                                    "id": "1UrpFI",
+                                    "id": "1UsuC4",
                                     "name": "",
                                     "arrScene": [
                                         {
-                                            "aim": "",
-                                            "arrCharacterID": [],
+                                            "aim": "Осмостреться понять что произошло и как дальше действовать",
+                                            "arrCharacterID": [
+                                                "1UuidB"
+                                            ],
                                             "arrEvent": [
                                                 {
                                                     "arrChangeProp": [],
                                                     "desc": "",
-                                                    "id": "1UrpFR",
+                                                    "id": "1UuiJx",
                                                     "manner": "",
-                                                    "objectID": "",
+                                                    "objectID": "1UuidB",
                                                     "subjectID": "",
                                                     "type": "action"
                                                 }
                                             ],
                                             "arrItemID": [],
-                                            "id": "1UrpFK",
-                                            "sceneID": "",
-                                            "text": ""
+                                            "id": "1UsuC6",
+                                            "sceneID": "1Usu5D",
+                                            "text": "",
+                                            "listID": {
+                                                "1Usu5x": false,
+                                                "1Usu5z": false
+                                            }
+                                        },
+                                        {
+                                            "aim": "",
+                                            "arrCharacterID": [],
+                                            "arrEvent": [],
+                                            "arrItemID": [],
+                                            "id": "1Uuoar",
+                                            "sceneID": "1Usu5D",
+                                            "text": "",
+                                            "listID": {
+                                                "1Usu5y": false,
+                                                "1Usu5z": true,
+                                                "1Usu5x": false
+                                            }
                                         }
                                     ]
                                 }
@@ -570,50 +597,10 @@ export const useStoreBook = create<IStoreBook>()(
                         "iScene": 0,
                         "iEvent": 0
                     };
+                    s.listStatusDisplay = {}
                 }
                 if (st == 1) {
-                    s.arrPart = [
-                        {
-                            "id": "1UrpFF",
-                            "name": "",
-                            "arrChapter": [
-                                {
-                                    "id": "1UrpFI",
-                                    "name": "",
-                                    "arrScene": [
-                                        {
-                                            "aim": "",
-                                            "arrCharacterID": [],
-                                            "arrEvent": [
-                                                {
-                                                    "arrChangeProp": [
-                                                        {
-                                                            "id": "1UrsrH",
-                                                            "order": 0,
-                                                            "targetID": "1UpYah",
-                                                            "propID": "1UpYab",
-                                                            "value": "",
-                                                            "type": "scene"
-                                                        }
-                                                    ],
-                                                    "desc": "",
-                                                    "id": "1UrpFR",
-                                                    "manner": "",
-                                                    "objectID": "",
-                                                    "subjectID": "",
-                                                    "type": "action"
-                                                }
-                                            ],
-                                            "arrItemID": [],
-                                            "id": "1UrpFK",
-                                            "sceneID": "",
-                                            "text": ""
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
+                    s.arrPart = []
                     s.listChangeProp = {
                         "1UpYah": [
                             "1UrsrH"
@@ -621,84 +608,7 @@ export const useStoreBook = create<IStoreBook>()(
                     };
                 }
                 if (st == 2) {
-                    s.arrPart = [
-                        {
-                            "id": "1UrpFF",
-                            "name": "",
-                            "arrChapter": [
-                                {
-                                    "id": "1UrpFI",
-                                    "name": "",
-                                    "arrScene": [
-                                        {
-                                            "aim": "",
-                                            "arrCharacterID": [],
-                                            "arrEvent": [
-                                                {
-                                                    "arrChangeProp": [
-                                                        {
-                                                            "id": "1UrsrH",
-                                                            "order": 0,
-                                                            "targetID": "1UpYah",
-                                                            "propID": "1UpYab",
-                                                            "value": "a12",
-                                                            "type": "scene"
-                                                        },
-                                                        {
-                                                            "id": "1UryVO",
-                                                            "order": 1,
-                                                            "targetID": "1UpYah",
-                                                            "propID": "1UpYab",
-                                                            "value": "a123",
-                                                            "type": "scene"
-                                                        }
-                                                    ],
-                                                    "desc": "",
-                                                    "id": "1UrpFR",
-                                                    "manner": "",
-                                                    "objectID": "",
-                                                    "subjectID": "",
-                                                    "type": "action"
-                                                }
-                                            ],
-                                            "arrItemID": [],
-                                            "id": "1UrpFK",
-                                            "sceneID": "",
-                                            "text": ""
-                                        },
-                                        {
-                                            "aim": "",
-                                            "arrCharacterID": [],
-                                            "arrEvent": [
-                                                {
-                                                    "arrChangeProp": [
-                                                        {
-                                                            "id": "1UryW5",
-                                                            "order": 1000000,
-                                                            "targetID": "1UpYah",
-                                                            "propID": "1UpYab",
-                                                            "value": "a1234",
-                                                            "type": "scene"
-                                                        }
-                                                    ],
-                                                    "desc": "",
-                                                    "id": "1UryW2",
-                                                    "manner": "",
-                                                    "objectID": "",
-                                                    "subjectID": "",
-                                                    "type": "action"
-                                                }
-                                            ],
-                                            "arrItemID": [],
-                                            "id": "1UryVX",
-                                            "sceneID": "",
-                                            "text": ""
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ];
+                    s.arrPart = [];
                     s.listChangeProp = {
                         "1UpYah": [
                             "1UrsrH",
