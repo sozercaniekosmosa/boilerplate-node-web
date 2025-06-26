@@ -18,6 +18,7 @@ export interface IMapProp extends IMapPropBase {
 export interface IMap {
     id: string;
     name: string;
+    desc: string; // Общее описание/смысл
     arrMapProp: IMapProp[];
 }
 
@@ -26,10 +27,9 @@ export interface IStoreGen {
     arrGen: IMap[],
     listID: { [key: string]: any },
     // listPropID: { [key: string]: [number, number] },
-
     addGen: (item?: IMap) => void,
     deleteGen: (i: number) => void,
-    updateGenName: (i: number, name: string) => void
+    updateGen: (i: number, prop: IMap) => void
     updateGenProp: (i: number, iItem: number, prop: IMapProp) => void
     addGenProp: (i: number, prop?: IMapProp) => void
     deleteGenProp: (i: number, iProp: number) => void

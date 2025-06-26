@@ -4,7 +4,7 @@ import {ButtonDelete, Col, Row, SwitchButton, Text, TextInput} from "./component
 import ButtonEx from "../Auxiliary/ButtonEx.tsx";
 import Group from "../Auxiliary/Group.tsx";
 import {useStoreState} from "./Stores/storeAux.ts";
-import {IMapProp, IStoreGen} from "./types.ts";
+import {IMap, IMapProp, IStoreGen} from "./types.ts";
 import TextWrite from "../Auxiliary/TextWrite.tsx";
 import {Tooltip} from "../Auxiliary/Tooltip.tsx";
 import {useShallow} from "zustand/react/shallow";
@@ -42,7 +42,11 @@ interface IPropertyProps extends React.HTMLAttributes<Element> {
 const PropertyHeader = ({iProp, setProps, iScene, props, storeGen, children, className}: IPropertyProps) => {
 
     const {arrGen, deleteGenProp, updateGenProp} = storeGen(
-        useShallow((state) => ({arrGen: state.arrGen, updateGenProp: state.updateGenProp, deleteGenProp: state.deleteGenProp}))
+        useShallow((state) => ({
+            arrGen: state.arrGen,
+            updateGenProp: state.updateGenProp,
+            deleteGenProp: state.deleteGenProp
+        }))
     );
 
     let arrMapProp = arrGen[iScene].arrMapProp;
@@ -90,9 +94,13 @@ const Generator: React.FC<IGenSceneProp> = ({className, storeGen, title, titleAd
 
     const [props, setProps] = useState<IMapProp>({desc: '', title: '', value: '', section: false, list: [], ext: true})
 
-    const {addGen, addGenProp, arrGen, deleteGen, updateGenName, updateGenProp} = storeGen(useShallow((state) => ({
-            arrGen: state.arrGen, addGen: state.addGen, updateGenName: state.updateGenName, updateGenProp: state.updateGenProp,
-            addGenProp: state.addGenProp, deleteGen: state.deleteGen
+    const {addGen, addGenProp, arrGen, deleteGen, updateGen, updateGenProp} = storeGen(useShallow((state) => ({
+            arrGen: state.arrGen,
+            addGen: state.addGen,
+            updateGen: state.updateGen,
+            updateGenProp: state.updateGenProp,
+            addGenProp: state.addGenProp,
+            deleteGen: state.deleteGen
         }))
     );
     const execByID = useStoreBook(useShallow(state => state.execByID))
@@ -115,7 +123,7 @@ const Generator: React.FC<IGenSceneProp> = ({className, storeGen, title, titleAd
                       })}/>
         </Row>
         {arrGen.map(((scene, iScene) => {
-            const {id, name, arrMapProp} = scene;
+            const {arrMapProp, id, name, desc} = scene as IMap;
             // const {desc, ext, /*isChange,*/ list, range, section, value} = arrMapProp[iScene];
 
             let extend = false;
@@ -125,20 +133,31 @@ const Generator: React.FC<IGenSceneProp> = ({className, storeGen, title, titleAd
 
 
             return <Col role="scene-props" key={iScene} className="bg-gray-200">
-                <Row role="scene-props-menu">
+                <Row role="scene-props-menu" className="">
                     <Group>
                         <SwitchButton id={id}/>
                         <ButtonEx className={clsx("bi-plus-circle")} title="Добавить новое свойство"
                                   description="Добавить новое свойство"
                                   onClick={() => setProps({desc: '', title: '', value: '', /*isChange: false*/})}
-                                  onConfirm={() => addGenProp(iScene, props)} dialogContent={DialogContent({props, setProps})}/>
+                                  onConfirm={() => addGenProp(iScene, props)}
+                                  dialogContent={DialogContent({props, setProps})}/>
                         <ButtonDelete onDelete={() => {
                             execByID(id, (arr, i) => arr.splice(i, 1));
                             deleteGen(iScene);
                         }}/>
                     </Group>
-                    <TextInput value={name} placeholder={title} className="st-air-tx-imp"
-                               onChange={(e: any) => updateGenName(iScene, e.target.value)}/>
+                    <TextInput value={name} placeholder={title}
+                               className="st-air-tx-imp !rounded-none border-r-1 border-b-1 border-black/5"
+                               onChange={(e: any) => updateGen(iScene, {name: e.target.value} as IMap)}/>
+                    <TextInput value={desc} placeholder="Общее описание"
+                               className="st-air-tx-imp !rounded-none border-r-1 border-b-1 border-black/5"
+                               onChange={(e: any) => updateGen(iScene, {desc: e.target.value} as IMap)}
+
+                    />
+                    <ButtonEx className="bi-stars" title="Сгенерировать" onClick={() => {
+                        console.log(scene)
+                        console.log(desc)
+                    }} disabled={!desc || desc?.length == 0}/>
                     {arrMapProp[0].section && <ButtonEx className="bi-chevron-expand" title="Развернуть все"
                                                         onClick={() => {
                                                             !isState(id) && arrMapProp.map(({title}) => setState(id + title, false));
@@ -181,7 +200,8 @@ const Generator: React.FC<IGenSceneProp> = ({className, storeGen, title, titleAd
                             const [from, max] = range;
 
                             return (
-                                <PropertyHeader key={iProp} iScene={iScene} iProp={iProp} props={props} setProps={setProps}
+                                <PropertyHeader key={iProp} iScene={iScene} iProp={iProp} props={props}
+                                                setProps={setProps}
                                                 storeGen={storeGen}>
                                     <input form={from + ''} max={max} className="mx-1" type="range"
                                            value={value != '' ? +value : 5}
@@ -194,7 +214,8 @@ const Generator: React.FC<IGenSceneProp> = ({className, storeGen, title, titleAd
                         if (list) {
                             let mm = value ? value.split(', ') : [];
                             return (
-                                <PropertyHeader key={iProp} iScene={iScene} iProp={iProp} props={props} setProps={setProps}
+                                <PropertyHeader key={iProp} iScene={iScene} iProp={iProp} props={props}
+                                                setProps={setProps}
                                                 storeGen={storeGen}
                                                 className="">
                                     <div className="flex flex-wrap">

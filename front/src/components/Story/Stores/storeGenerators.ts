@@ -20,7 +20,7 @@ const createStoreGen = (arrMap: IMapProp[], nameStore: string) => create<IStoreG
                     return {...item, id, value: ''} as IMapProp;
                 }));
                 let id = getUID();
-                state.arrGen.push(item ?? {id, name: formatDateTime(), arrMapProp});
+                state.arrGen.push(item ?? {id, name: formatDateTime(), desc: '', arrMapProp});
             });
 
             get().updateListID()
@@ -33,8 +33,8 @@ const createStoreGen = (arrMap: IMapProp[], nameStore: string) => create<IStoreG
             });
             get().updateListID();
         },
-        updateGenName: (i: number, name: string) => set((s) => {
-            s.arrGen[i].name = name;
+        updateGen: (i: number, prop: IMap) => set((s) => {
+            s.arrGen[i] = {...s.arrGen[i], ...prop};
         }),
         updateGenProp: (i: number, iProp: number, prop: any) => set((s) => {
             s.arrGen[i].arrMapProp[iProp] = {...s.arrGen[i].arrMapProp[iProp], ...prop};

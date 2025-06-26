@@ -43,6 +43,7 @@ const ButtonEx: FC<IButtonExProps> = ({
 
 
     let onAct = async (e: React.MouseEvent<HTMLElement>) => {
+        if (disabled) return;
         onClick && onClick(e);
         if (onConfirm) {
             if (e.ctrlKey) { //если с ctrl то без подтверждения
@@ -68,9 +69,12 @@ const ButtonEx: FC<IButtonExProps> = ({
                 'relative',
                 'flex justify-center items-center',
                 'p-1',
-                'st-air st-focus st-air-hover',
+                'st-air ',
+                disabled ? '' : 'st-focus ',
+                disabled ? '' : 'st-air-hover',
                 _state == 2 ? 'st-danger' : '',
-                _state == 1 || disabled ? 'bg-light-disabled' : '',
+                // _state == 1 || disabled ? 'bg-light-disabled' : '',
+                _state == 1 || disabled ? 'text-current/20' : '',
             )}
             onClick={onAct} hidden={hidden} {...rest}>
             {title && <Tooltip text={title} direction={dir} className="!absolute w-full h-full"/>}

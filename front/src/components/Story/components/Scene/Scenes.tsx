@@ -10,6 +10,7 @@ import Events from "./Action/Events.tsx";
 import Group from "../../../Auxiliary/Group.tsx";
 import {useStoreGenCharacter, useStoreGenItem, useStoreGenScene} from "../../Stores/storeGenerators.ts";
 import {GenSceneObject} from "./GenSceneObject.tsx";
+import ButtonEx from "../../../Auxiliary/ButtonEx.tsx";
 
 interface IScenesProps {
     iPart: number;
@@ -40,6 +41,9 @@ export const Scenes = ({iPart, iChapter, arrScene}: IScenesProps) => {
             <Row role="menu-scenes">
                 <Group>
                     <SwitchButton id={id}/>
+                    <ButtonEx className="bi-stars" title="Сгенерировать" onAction={() => {
+                        console.log(scene)
+                    }}/>
                     <DropdownButton
                         title={sceneID == '' ? 'Выберите сцену' : 'Сцена ' + (iScene + 1) + '. ' + (arrGenScene[mapID[sceneID]]?.name ?? 'Не выбрано')}>
                         <div className={clsx(
@@ -53,12 +57,13 @@ export const Scenes = ({iPart, iChapter, arrScene}: IScenesProps) => {
                 </Group>
                 <TextInput value={aim} onChange={(e: any) => {
                     updateScene(iPart, iChapter, iScene, {aim: e.target.value});
-                }} placeholder="Введите цель сцены"/>
+                }} placeholder="Введите цель сцены" className="truncate"/>
                 <ButtonDelete onDelete={() => deleteScene(iPart, iChapter, iScene)}/>
             </Row>
             {!isState(id) &&
                 <Col role="container-scenes" noBorder={true} className="ml-1">
-                    <GenSceneObject iPart={iPart} iChapter={iChapter} iScene={iScene} scene={scene} nameKey="CharacterID"
+                    <GenSceneObject iPart={iPart} iChapter={iChapter} iScene={iScene} scene={scene}
+                                    nameKey="CharacterID"
                                     useStoreGenObj={useStoreGenCharacter} nameObj="Персонажи" icon="bi-person-fill"/>
                     <GenSceneObject iPart={iPart} iChapter={iChapter} iScene={iScene} scene={scene} nameKey="ItemID"
                                     useStoreGenObj={useStoreGenItem} nameObj="Предметы" icon="bi-box"/>
