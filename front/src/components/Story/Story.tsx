@@ -6,21 +6,8 @@ import Details from "./components/Details.tsx";
 import GenScene from "./Generator.tsx";
 
 import {useStoreGenCharacter, useStoreGenItem, useStoreGenScene} from "./Stores/storeGenerators.ts";
+import {promptCharacter, promptItem, promptScene} from "./prompts.tsx";
 
-const promptCharacter =
-    `Задача: Ты - лучший в мире талантливый писатель с огромным опытом.
-    Особое внимание удели внутренним противоречиям персонажа и его уникальным чертам, которые сделают его запоминающимся для читателей
-    Контекст: 
-        - $desc$ 
-        Структура:
-         $struct$
-    Ограничения: 
-        - Если в элементе структуры уже есть поле \`value\`, его нельзя изменять или дополнять. Оставь его как есть.
-        - Не добавляй никакую дополнительную информацию в уже заполненные поля \`value\`.
-        - Если поле \`value\` пустое, заполни его в соответствии с контекстом и требованиями.
-    Формат ответа: 
-        - Необходимо представить в виде такой же структуры ничего больше добавлять не нужно
-    Тестирование: Еще раз проверь соответствие всех требований особенно ограничения`
 
 const Story: React.FC<any> = () => {
 
@@ -32,7 +19,7 @@ const Story: React.FC<any> = () => {
         </Tab>
         <Tab eventKey="gen-scene" title="Сцены" style={{flex: 1}} className="">
             <GenScene storeGen={useStoreGenScene} title="Название сцены" titleAddNew="Добавить новую сцену"
-                      className="overflow-x-hidden overflow-y-auto grow p-1"/>
+                      className="overflow-x-hidden overflow-y-auto grow p-1" prompt={promptScene}/>
         </Tab>
         <Tab eventKey="gen-character" title="Персонажи" style={{flex: 1}} className="">
             <GenScene storeGen={useStoreGenCharacter} title="Имя персонажа" titleAddNew="Добавить нового персонажа"
@@ -40,7 +27,7 @@ const Story: React.FC<any> = () => {
         </Tab>
         <Tab eventKey="gen-item" title=" Предметы" style={{flex: 1}} className="">
             <GenScene storeGen={useStoreGenItem} title="Название предмета" titleAddNew="Добавить новоый предмет"
-                      className="overflow-x-hidden overflow-y-auto grow p-1"/>
+                      className="overflow-x-hidden overflow-y-auto grow p-1" prompt={promptItem}/>
         </Tab>
     </Tabs>
 };

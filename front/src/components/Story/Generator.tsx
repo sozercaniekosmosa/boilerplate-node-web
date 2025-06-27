@@ -155,8 +155,6 @@ const Generator: React.FC<IGenSceneProp> = ({className, storeGen, title, titleAd
 
                     />
                     <ButtonEx className="bi-stars" title="Сгенерировать" onClick={() => {
-                        // console.log(scene)
-                        // console.log(desc)
                         const arrStruct =
                             arrMapProp.filter(it => it?.section ? null : it)
                                 .map(({desc, value}) => ({desc, value}))
