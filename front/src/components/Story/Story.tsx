@@ -25,7 +25,7 @@ const Story: React.FC<any> = () => {
             <GenScene storeGen={useStoreGenCharacter} title="Имя персонажа" titleAddNew="Добавить нового персонажа"
                       className="overflow-x-hidden overflow-y-auto grow p-1" prompt={promptCharacter}/>
         </Tab>
-        <Tab eventKey="gen-item" title=" Предметы" style={{flex: 1}} className="">
+        <Tab eventKey="gen-item" title="Предметы" style={{flex: 1}} className="">
             <GenScene storeGen={useStoreGenItem} title="Название предмета" titleAddNew="Добавить новоый предмет"
                       className="overflow-x-hidden overflow-y-auto grow p-1" prompt={promptItem}/>
         </Tab>

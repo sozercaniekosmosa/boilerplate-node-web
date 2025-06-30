@@ -11,6 +11,8 @@ import {useShallow} from "zustand/react/shallow";
 import {ExtractState, StoreApi} from "zustand/vanilla";
 import {useStoreBook} from "./Stores/storeBook.ts";
 import {template} from "../../lib/strings.ts";
+import axios from "axios";
+import glob from "../../glob.ts";
 
 let sectionName = "";
 
@@ -39,6 +41,21 @@ interface IPropertyProps extends React.HTMLAttributes<Element> {
         (): ExtractState<StoreApi<IStoreGen>>,
         <U>(selector: (state: ExtractState<StoreApi<IStoreGen>>) => U): U
     } & StoreApi<IStoreGen>;
+}
+
+export async function toGPT(promptCmd = null, textContent?: string) {
+    // textContent = glob.selectedText ?? textContent;
+    try {
+        const {data: text} = await axios.post(glob.hostAPI + 'gpt', {
+            text: textContent,
+            prompt: promptCmd ?? prompt
+        });
+
+        return text;
+    } catch (e) {
+        console.log(e)
+        return null;
+    }
 }
 
 const PropertyHeader = ({iProp, setProps, iScene, props, storeGen, children, className}: IPropertyProps) => {
@@ -145,6 +162,14 @@ const Generator: React.FC<IGenSceneProp> = ({className, storeGen, title, titleAd
                             execByID(id, (arr, i) => arr.splice(i, 1));
                             deleteGen(iScene);
                         }}/>
+                        <ButtonEx className="bi-eraser-fill"
+                                  description="Очистить"
+                                  onConfirm={() => {
+                                      for (let i = 0; i < arrMapProp.length; i++) {
+                                          updateGenProp(iScene, i, {value: ''});
+                                      }
+                                  }}
+                        ></ButtonEx>
                     </Group>
                     <TextInput value={name} placeholder={title}
                                className="st-air-tx-imp !rounded-none border-r-1 border-b-1 border-black/5"
@@ -154,14 +179,29 @@ const Generator: React.FC<IGenSceneProp> = ({className, storeGen, title, titleAd
                                onChange={(e: any) => updateGen(iScene, {desc: e.target.value} as IMap)}
 
                     />
-                    <ButtonEx className="bi-stars" title="Сгенерировать" onClick={() => {
+                    <ButtonEx className="bi-stars" title="Сгенерировать" onAction={async () => {
+                        // const _arrMapProp = [...arrMapProp];
+                        // const _arrMapProp = JSON.parse(JSON.stringify(arrMapProp));
                         const arrStruct =
-                            arrMapProp.filter(it => it?.section ? null : it)
-                                .map(({desc, value}) => ({desc, value}))
+                            arrMapProp.filter(it => it?.section ? null : it).map(({desc, value}) => ({desc, value}))
                         const struct = JSON.stringify(arrStruct)
                         const promptBuild = prompt ? template(prompt, {desc, struct}) : '';
 
-                        console.log(promptBuild)
+                        const arrMapPropGptData = (await toGPT(promptBuild));
+                        let iProp = 0;
+                        for (let i = 0; i < arrMapProp.length; i++) {
+                            if (!arrMapProp[i]?.section) {
+                                if (Array.isArray(arrMapPropGptData)) {
+                                    updateGenProp(iScene, i, {value: arrMapPropGptData[iProp].value});
+                                    iProp++
+                                } else {
+                                    return 2;
+                                }
+                            }
+                        }
+
+                        return 0;
+                        // console.log(promptBuild)
                     }} disabled={!desc || desc?.length == 0}/>
                     {arrMapProp[0].section && <ButtonEx className="bi-chevron-expand" title="Развернуть все"
                                                         onClick={() => {

@@ -45,7 +45,46 @@ export async function arliGPT(prompt, text, arliai_api_key) {
     }
 }
 
+
 export async function mistralGPT(prompt, text, mistral_api_key) {
+
+    const url = 'https://api.mistral.ai/v1/chat/completions ';
+
+    const data = {
+        // model: 'mistral-large-latest',
+        model: 'mistral-medium-2505',
+        messages: prompt && text ? [
+            {role: "system", content: prompt},
+            {role: "user", content: text}
+        ] : [
+            {role: "user", content: prompt ?? text}
+        ],
+        response_format: {"type": "json_object"}
+    };
+
+    const headers = {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${mistral_api_key}`,
+    };
+
+    try {
+        const response = await axios.post(url, data, {headers});
+        console.log(response.data);
+
+        return response.data.choices.map(({message: {content}}) => content).join('\n');
+
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error('Axios error:', error.response?.data || error.message);
+        } else {
+            console.error('Unexpected error:', error);
+        }
+    }
+}
+
+
+export async function mistralGPT2(prompt, text, mistral_api_key) {
     try {
         const {data} = await axios.post('https://api.mistral.ai/v1/chat/completions', {
             model: 'mistral-large-latest',//'mistral-small-latest',

@@ -10,17 +10,26 @@ import clsx from "clsx";
 import {Tooltip} from '../../Auxiliary/Tooltip.tsx';
 
 
-function PropertyOfDetails({path, idScene, itGen, listID}) {
+function PropertyOfDetails({path, idScene, itGen, listID, size = 1}) {
     const updateScene = useStoreBook(state => state.updateScene);
     const setStatusDisplay = useStoreBook(state => state.setStatusDisplay);
     const listStatusDisplay = useStoreBook(state => state.listStatusDisplay);
 
-    return <Col className="ml-1">
+    // const ss = [
+    //     {},
+    //     {gap: '', w: '', noborder: true},
+    //     {gap: 'gap-[.5%]', w: 'w-[49.5%]', noborder: false},
+    //     {gap: 'gap-[.5%]', w: 'w-[32.5%]', noborder: false},
+    //     {gap: 'gap-[.5%]', w: 'w-[24.5%]', noborder: false},
+    //     {gap: 'gap-[.4%]', w: 'w-[16%]', noborder: false}
+    // ];
+
+    return <Col className={clsx(`ml-1`)}>
         {itGen.arrMapProp.map(({title, value, id}, i) => {
 
             if (!value) return null;
 
-            return <Col role="scene-item" key={i} noBorder={true}>
+            const content = <Col role="scene-item" key={i} noBorder={false} className={clsx(``)}>
                 <Row className="relative pl-1">
                     <Tooltip text={'— упоминание в тексте'}>
                         <div
@@ -32,16 +41,21 @@ function PropertyOfDetails({path, idScene, itGen, listID}) {
                             }}/>
                         {listStatusDisplay?.[id] && !listStatusDisplay?.[id]?.[idScene] &&
                             <div className="absolute top-0 bi-stop-fill pointer-events-none text-black/30"></div>}
-                            {/*<div className="absolute -left-2.5 top-0 bi-three-dots-vertical pointer-events-none text-black/60"></div>}*/}
+                        {/*<div className="absolute -left-2.5 top-0 bi-three-dots-vertical pointer-events-none text-black/60"></div>}*/}
                     </Tooltip>
-                    <div className="text-black/60 text-nowrap">{title}:</div>
+                    <div className="text-black/60 text-nowrap truncate">{title}:</div>
                 </Row>
                 <div
                     className={clsx("text-black", "border border-none w-full", "pl-1 whitespace-pre-line")}>
                     {value}
                 </div>
-            </Col>
-        })}
+            </Col>;
+
+            const aa = (i % size == 0)
+            return aa ? <Row>{content}</Row> : content;
+        })
+        }
+
     </Col>
 }
 
@@ -91,9 +105,9 @@ const Details: React.FC<IDetails> = ({...rest}) => {
                         ({sceneAim ?? '...'})
                     </div>
                 </Row>
-                {!isState(idScene + 'd-scene') &&
+                {!isState(idScene + 'd-scene') && //TODO: тут выбираются не правильные персонажи и вообще он один и ...
                     <PropertyOfDetails itGen={arrGenScene[iSceneSelected]} idScene={idScene} listID={listID} path={
-                        {iPart, iChapter, iScene}}/>}
+                        {iPart, iChapter, iScene}} size={1}/>}
             </Col>
 
             <Col role="container-charact" noBorder={true} className="mt-1 w-full">
@@ -101,19 +115,40 @@ const Details: React.FC<IDetails> = ({...rest}) => {
                     <SwitchButton id={idScene + 'd-char'}/>
                     <div>Персонажи</div>
                 </Row>
-                {!isState(idScene + 'd-char') &&
-                    <PropertyOfDetails itGen={arrGenCharacter[iSceneSelected]} idScene={idScene} listID={listID} path={
-                        {iPart, iChapter, iScene}}/>}
+                {!isState(idScene + 'd-char') && arrCharacterID.map((idChar, idi) => {
+                    let itGen = arrGenCharacter[listIDCharacter[idChar]];
+                    return <Col key={idi} noBorder={true}>
+                        <Row>
+                            <SwitchButton id={idScene + idChar + 'd-char'}/>
+                            <div>{itGen.name}</div>
+                        </Row>
+                        {!isState(idScene + idChar + 'd-char') &&
+                            <PropertyOfDetails itGen={itGen} idScene={idScene} listID={listID} path={
+                                {iPart, iChapter, iScene}} size={3}/>
+                        }
+                    </Col>
+                })}
             </Col>
 
             <Col role="container-item" noBorder={true} className="mt-1 w-full">
+
                 <Row>
                     <SwitchButton id={idScene + 'd-item'}/>
                     <div>Предметы</div>
                 </Row>
-                {!isState(idScene + 'd-item') &&
-                    <PropertyOfDetails itGen={arrGenItem[iSceneSelected]} idScene={idScene} listID={listID} path={
-                        {iPart, iChapter, iScene}}/>}
+                {!isState(idScene + 'd-item') && arrItemID.map((idItem, idi) => {
+                    let itGen = arrGenItem[listIDItem[idItem]];
+                    return <Col key={idi} noBorder={true} className="pl-1">
+                        <Row>
+                            <SwitchButton id={idScene + idItem + 'd-item'}/>
+                            <div>{itGen.name}</div>
+                        </Row>
+                        {!isState(idScene + idItem + 'd-item') &&
+                            <PropertyOfDetails itGen={itGen} idScene={idScene} listID={listID} path={
+                                {iPart, iChapter, iScene}} size={5}/>
+                        }
+                    </Col>
+                })}
             </Col>
         </Tab>
         <Tab eventKey="text" title="Текст" className="flex flex-row p-1">

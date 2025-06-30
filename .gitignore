@@ -45,3 +45,5 @@ dist-ssr
 /back/lib/lm/models/
 /back/lib/reports/.env
 /assemblyScript/assembly/index.ts
+/back/iam.json
+/back/.env

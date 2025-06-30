@@ -32,6 +32,8 @@ glob.port = port
 glob.webDir = path.join(__dirname, WEB_DIR);
 glob.db = new noSQL('..\\data\\db.json');
 
+console.log(WEB_DIR + ' !!!')
+
 const {ws} = createWebServer({
     port: 3000, webDir: glob.webDir,
     clbRouter: (app: Express) => {
