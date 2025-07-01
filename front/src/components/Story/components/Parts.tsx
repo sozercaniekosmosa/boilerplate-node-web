@@ -4,7 +4,7 @@ import ButtonEx from "../../Auxiliary/ButtonEx.tsx";
 import clsx from "clsx";
 import {useStoreBook} from "../Stores/storeBook.ts";
 import {useStoreState} from "../Stores/storeAux.ts";
-import {ButtonDelete, Col, Row, SwitchButton, Text, TextInput} from "./Auxiliary.tsx";
+import {ButtonDelete, ChangeFontSize, Col, Row, SwitchButton, Text, TextInput} from "./Auxiliary.tsx";
 import Chapters from "./Chapters.tsx";
 import Group from "../../Auxiliary/Group.tsx";
 
@@ -28,15 +28,8 @@ const Parts = ({className = ''}) => {
         window.useStoreBook = useStoreBook;
     }, []);
 
-    return <Col role="parts" noBorder={true} className={clsx(
-        className, "h-full", "bg-white", "transition-all"
-    )} style={{fontSize: (listState['gen:fs'] || 1) + 'em'}}>
-        <Row>
-            <ButtonEx className={'bi-fonts'}
-                      onClick={() => setState('gen:fs', listState['gen:fs'] || 1 + 0.025)}>+</ButtonEx>
-            <ButtonEx className={'bi-fonts'}
-                      onClick={() => setState('gen:fs', listState['gen:fs'] || 1 - 0.025)}>-</ButtonEx>
-        </Row>
+    return <Col role="parts" noBorder={true} className={clsx(className, "h-full", "bg-white")} id="gen:fs">
+        <ChangeFontSize id={'gen:fs'}/>
         <Row role="menu-book">
             <ButtonEx className={clsx("bi-plus-circle")} title="Добавить часть" onClick={() => addPart()}/>
             <Text>Книга:</Text>

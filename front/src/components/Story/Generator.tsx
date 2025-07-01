@@ -1,6 +1,6 @@
 import React, {Dispatch, memo, SetStateAction, useState} from 'react';
 import clsx from "clsx";
-import {ButtonDelete, Col, Row, SwitchButton, Text, TextInput} from "./components/Auxiliary.tsx";
+import {ButtonDelete, ChangeFontSize, Col, Row, SwitchButton, Text, TextInput} from "./components/Auxiliary.tsx";
 import ButtonEx from "../Auxiliary/ButtonEx.tsx";
 import Group from "../Auxiliary/Group.tsx";
 import {useStoreState} from "./Stores/storeAux.ts";
@@ -126,9 +126,10 @@ const Generator: React.FC<IGenSceneProp> = ({className, storeGen, title, titleAd
 
     const {isState, setState} = useStoreState();
 
-    return <Col role="scenes-gen" noBorder={true} className={clsx(className, " h-full", " bg-white")}>
+    return <Col role="scenes-gen" noBorder={true} className={clsx(className, " h-full", " bg-white")} id={'gen.' + title + ':fs'}>
         <Row role="scenes-menu">
             <ButtonEx className={clsx(" bi-plus-circle")} title={titleAddNew} onClick={() => addGen()}/>
+            {/*<ChangeFontSize id={'gen.' + title + ':fs'}/>*/}
             <Text className=" w-full"></Text>
             <ButtonEx className="bi-chevron-expand" title="Развернуть все"
                       onClick={() => arrGen.map(({id, arrMapProp}) => {

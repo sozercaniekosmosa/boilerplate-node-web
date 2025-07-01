@@ -189,19 +189,23 @@ export const SelectCharacters = ({path, id, nameField}: ISelectItemProp) => {
     </DropdownButton>;
 }
 
-export function ChangeFontSize({id}) {
+export function ChangeFontSize({id, ...rest}) {
     const {listState, setState} = useStoreState();
     const refNodeParent = useRef<HTMLElement>();
     useEffect(() => {
         refNodeParent.current = document.getElementById(id);
+        refNodeParent.current.classList.add("transition-all");
+        refNodeParent.current.style.fontSize = ((listState[id] || 1)) + 'em';
     }, []);
 
-    const setFontSize = useCallback((val: number) => {
-        setState(id, val);
+    // const setFontSize = useCallback((val: number) => {
+    const setFontSize = (val: number) => {
+        setState(id, Math.trunc(val * 1000) / 1000);
         refNodeParent.current.style.fontSize = val + 'em';
-    }, []);
+    }
+    // }, []);
 
-    return <Row>
+    return <Row style={{fontSize: '14px', lineHeight: '14px'}} {...rest}>
         <ButtonEx className={"bi-fonts"}
                   onClick={({ctrlKey}) => setFontSize((listState[id] || 1) + 0.025 * (ctrlKey ? 10 : 1))}>+</ButtonEx>
         <ButtonEx className={"bi-fonts"}

@@ -21,7 +21,7 @@ function chunk<T>(array: T[], chunkSize: number): T[][] {
     });
 }
 
-function PropertyOfDetails({path, idScene, itGen, listID, size = 1}) {
+function PropertyOfDetails({path, idScene, itGen, listID, size = 1, ...rest}) {
     const updateScene = useStoreBook(state => state.updateScene);
     const setStatusDisplay = useStoreBook(state => state.setStatusDisplay);
     const listStatusDisplay = useStoreBook(state => state.listStatusDisplay);
@@ -32,14 +32,14 @@ function PropertyOfDetails({path, idScene, itGen, listID, size = 1}) {
         return arr.map(({value}) => (value.length / sum) * 100);
     });
 // debugger
-    return <Col className={clsx(`ml-1`)} noBorder={true}>
+    return <Col className={clsx(`ml-1`, rest?.className ?? '')} noBorder={true}>
         {arrChunked.map((arrGroup, idCh) => {
             return <Row key={idCh}> {arrGroup.map(({title, value, id}, i) => {
 
                 if (!value) return null;
-
+                // style={{'flex': '1 1 ' + arrPrc[idCh][i] + '%'}}
                 return <Col role="scene-item" key={i} noBorder={false} className={clsx(``)}
-                            style={{'flex': arrPrc[idCh][i]}}>
+                            style={{'width': arrPrc[idCh][i] + '%', 'minWidth': 'min-content'}}>
                     <Row className="relative pl-1">
                         <Tooltip text={'— упоминание в тексте'}>
                             <div
@@ -62,7 +62,7 @@ function PropertyOfDetails({path, idScene, itGen, listID, size = 1}) {
                         <div className="text-black/60 text-nowrap truncate">{title}</div>
                     </Row>
                     <div
-                        className={clsx("text-black", "border border-none w-full", "pl-1 whitespace-pre-line")}>
+                        className={clsx("text-black", "border border-none w-full", "pl-1 whitespace-pre-line leading-[.9rem]")}>
                         {value}
                     </div>
                 </Col>;
@@ -107,15 +107,10 @@ const Details: React.FC<IDetails> = ({...rest}) => {
 
     return <Tabs defaultActiveKey="scene" className="h-full" {...rest}>
         <Tab eventKey="scene" title="Сцена" className="flex flex-col overflow-x-hidden overflow-y-auto grow p-1">
-            <div style={{fontSize: (listState['det.prop:fs'] || 1) + 'em'}} className="transition-all">
+            <div id="det.prop:fs">
                 <Col role="container-scenes" noBorder={true}
                      className={`w-full`}>
-                    <Row>
-                        <ButtonEx className={'bi-fonts'}
-                                  onClick={() => setState('det.prop:fs', (listState['det.prop:fs'] || 1) + 0.025)}>+</ButtonEx>
-                        <ButtonEx className={'bi-fonts'}
-                                  onClick={() => setState('det.prop:fs', (listState['det.prop:fs'] || 1) - 0.025)}>-</ButtonEx>
-                    </Row>
+                    <ChangeFontSize id={'det.prop:fs'}/>
                     <Row>
                         <SwitchButton id={idScene + 'd-scene'}/>
                         <div className={clsx("content-center",
@@ -139,14 +134,14 @@ const Details: React.FC<IDetails> = ({...rest}) => {
                     </Row>
                     {!isState(idScene + 'd-char') && arrCharacterID.map((idChar, idi) => {
                         let itGen = arrGenCharacter[listIDCharacter[idChar]];
-                        return <Col key={idi} noBorder={true}>
+                        return <Col key={idi} noBorder={true} className="pl-2">
                             <Row>
                                 <SwitchButton id={idScene + idChar + 'd-char'}/>
                                 <div>{itGen.name}</div>
                             </Row>
                             {!isState(idScene + idChar + 'd-char') &&
                                 <PropertyOfDetails itGen={itGen} idScene={idScene} listID={listID} path={
-                                    {iPart, iChapter, iScene}} size={4}/>
+                                    {iPart, iChapter, iScene}} size={4} className="pl-2"/>
                             }
                         </Col>
                     })}
@@ -167,7 +162,7 @@ const Details: React.FC<IDetails> = ({...rest}) => {
                             </Row>
                             {!isState(idScene + idItem + 'd-item') &&
                                 <PropertyOfDetails itGen={itGen} idScene={idScene} listID={listID} path={
-                                    {iPart, iChapter, iScene}} size={6}/>
+                                    {iPart, iChapter, iScene}} size={6} className="pl-2"/>
                             }
                         </Col>
                     })}
@@ -175,9 +170,9 @@ const Details: React.FC<IDetails> = ({...rest}) => {
             </div>
         </Tab>
         <Tab eventKey="text" title="Текст" className="flex flex-row p-1">
-            <Col noBorder={true} className="w-full transition-all" id={'det.text:fs'}
+            <Col noBorder={true} className="w-full" id={'det.text:fs'}
             >
-                <ChangeFontSize id={'det.text:fs'}/>
+                <ChangeFontSize id="det.text:fs"/>
                 <div>{sceneName} </div>
                 <div>{sceneAim}</div>
                 <TextWrite value={scene?.text} className="h-full" placeholder="Введите текст описывающий сцену"
