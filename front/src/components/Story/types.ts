@@ -159,10 +159,10 @@ export interface IStoreBook {
 
 // Store state
 export interface IStoreState {
-    listState: { [key: string]: boolean };
+    listState: { [key: string]: any };
     isState: (id: string) => boolean;
     switchState: (id: string) => void;
-    setState: (id: string, val: boolean) => void;
+    setState: (id: string, val: any) => void;
 }
 
 // ...

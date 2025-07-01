@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback, useEffect, useRef} from "react";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import ButtonEx from "../../Auxiliary/ButtonEx.tsx";
 import clsx from "clsx";
@@ -187,4 +187,26 @@ export const SelectCharacters = ({path, id, nameField}: ISelectItemProp) => {
                 <div key={i} data-id={id}>{name}</div> : null)}
         </div>
     </DropdownButton>;
+}
+
+export function ChangeFontSize({id}) {
+    const {listState, setState} = useStoreState();
+    const refNodeParent = useRef<HTMLElement>();
+    useEffect(() => {
+        refNodeParent.current = document.getElementById(id);
+    }, []);
+
+    const setFontSize = useCallback((val: number) => {
+        setState(id, val);
+        refNodeParent.current.style.fontSize = val + 'em';
+    }, []);
+
+    return <Row>
+        <ButtonEx className={"bi-fonts"}
+                  onClick={({ctrlKey}) => setFontSize((listState[id] || 1) + 0.025 * (ctrlKey ? 10 : 1))}>+</ButtonEx>
+        <ButtonEx className={"bi-fonts"}
+                  onClick={({ctrlKey}) => setFontSize((listState[id] || 1) - 0.025 * (ctrlKey ? 10 : 1))}>-</ButtonEx>
+        <ButtonEx className={"bi-arrow-counterclockwise"}
+                  onClick={() => setFontSize(1)}/>
+    </Row>;
 }

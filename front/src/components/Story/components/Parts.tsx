@@ -18,7 +18,7 @@ const Parts = ({className = ''}) => {
     const updatePart = useStoreBook(state => state.updatePart);
     const deletePart = useStoreBook(state => state.deletePart);
     const addChapter = useStoreBook(state => state.addChapter);
-    const {isState} = useStoreState();
+    const {isState, listState, setState} = useStoreState();
 
     useEffect(() => {
         useStoreBook.getState().getData().then(() => {
@@ -29,8 +29,14 @@ const Parts = ({className = ''}) => {
     }, []);
 
     return <Col role="parts" noBorder={true} className={clsx(
-        className, "h-full", "bg-white"
-    )}>
+        className, "h-full", "bg-white", "transition-all"
+    )} style={{fontSize: (listState['gen:fs'] || 1) + 'em'}}>
+        <Row>
+            <ButtonEx className={'bi-fonts'}
+                      onClick={() => setState('gen:fs', listState['gen:fs'] || 1 + 0.025)}>+</ButtonEx>
+            <ButtonEx className={'bi-fonts'}
+                      onClick={() => setState('gen:fs', listState['gen:fs'] || 1 - 0.025)}>-</ButtonEx>
+        </Row>
         <Row role="menu-book">
             <ButtonEx className={clsx("bi-plus-circle")} title="Добавить часть" onClick={() => addPart()}/>
             <Text>Книга:</Text>
