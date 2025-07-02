@@ -69,18 +69,18 @@ const PropertyHeader = ({iProp, setProps, iScene, props, storeGen, children, cla
     );
 
     let arrMapProp = arrGen[iScene].arrMapProp;
-    const {title, desc/*, isChange*/} = arrMapProp[iProp];
+    const {title, desc, isChange} = arrMapProp[iProp];
 
     return <Col role="scene-prop-content" key={iProp} className={clsx("bg-white w-[33%] !gap-0", className)}>
         <Row className="text-black/60">
             <Tooltip text={desc} className="bi-info-circle leading-6"/>
-            {/*<ButtonEx*/}
-            {/*    title="Изменяемое свойство"*/}
-            {/*    className={clsx(*/}
-            {/*        !isChange ? "bi-toggle-off" : "bi-toggle-on",*/}
-            {/*        'ml-1 !p-0 text-[1.4rem]'*/}
-            {/*    )}*/}
-            {/*    onClick={() => updateGenProp(iScene, iProp, {isChange: !isChange})}/>*/}
+            <ButtonEx
+                title="Изменяемое свойство"
+                className={clsx(
+                    !isChange ? "bi-toggle-off" : "bi-toggle-on",
+                    'ml-1 !p-0 text-[1.4rem]'
+                )}
+                onClick={() => updateGenProp(iScene, iProp, {isChange: !isChange})}/>
             <ButtonEx className={clsx("bi-pencil", 'text-sm')} title="Редактировать свойство"
                       description="Редактировать свойство"
                       data-key={iProp}
@@ -126,7 +126,8 @@ const Generator: React.FC<IGenSceneProp> = ({className, storeGen, title, titleAd
 
     const {isState, setState} = useStoreState();
 
-    return <Col role="scenes-gen" noBorder={true} className={clsx(className, " h-full", " bg-white")} id={'gen.' + title + ':fs'}>
+    return <Col role="scenes-gen" noBorder={true} className={clsx(className, " h-full", " bg-white")}
+                id={'gen.' + title + ':fs'}>
         <Row role="scenes-menu">
             <ButtonEx className={clsx(" bi-plus-circle")} title={titleAddNew} onClick={() => addGen()}/>
             {/*<ChangeFontSize id={'gen.' + title + ':fs'}/>*/}
@@ -144,7 +145,7 @@ const Generator: React.FC<IGenSceneProp> = ({className, storeGen, title, titleAd
         </Row>
         {arrGen.map(((scene, iScene) => {
             const {arrMapProp, id, name, desc} = scene as IMap;
-            // const {desc, ext, /*isChange,*/ list, range, section, value} = arrMapProp[iScene];
+            const {ext, isChange, list, range, section, value} = arrMapProp[iScene];
 
             let extend = false;
             const lastIndex = arrMapProp.length - 1;

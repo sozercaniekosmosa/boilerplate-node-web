@@ -12,7 +12,7 @@ export interface IMapPropBase {
 
 export interface IMapProp extends IMapPropBase {
     id?: string;
-    // isChange?: boolean;
+    isChange?: boolean;
 }
 
 export interface IMap {
