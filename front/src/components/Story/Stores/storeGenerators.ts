@@ -17,7 +17,7 @@ const createStoreGen = (arrMap: IMapProp[], nameStore: string) => create<IStoreG
                 const arrMapProp: IMapProp[] = (arrMap.map((item, i) => {
                     const id = getUID();
                     // state.listPropID[id] = [state.arrGen.length, i];
-                    return {...item, id, value: ''} as IMapProp;
+                    return {...item, id, value: '', isVisible: !item?.ext} as IMapProp;
                 }));
                 let id = getUID();
                 state.arrGen.push(item ?? {id, name: formatDateTime(), desc: '', arrMapProp});

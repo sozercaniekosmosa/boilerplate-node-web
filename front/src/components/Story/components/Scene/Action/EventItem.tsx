@@ -191,11 +191,11 @@ const EventItem = ({iPart, iChapter, iScene, iEvent, arrEvent}: IEventsProps) =>
                                          value: ''
                                      })
                                  }}>
-                                {getObjectByID(targetID)?.arrMapProp.map(({
-                                                                              id,
-                                                                              title,
-                                                                              isChange,
-                                                                          }: IMapProp, i: number) => title &&
+                                {getObjectByID(targetID)?.arrMapProp.filter(({section}) => !section).map(({
+                                                                                                              id,
+                                                                                                              title,
+                                                                                                              isVisible,
+                                                                                                          }: IMapProp, i: number) => title &&
                                     <div key={i} data-id={id}>{title}</div>)}
                             </div>
                         </DropdownButton>

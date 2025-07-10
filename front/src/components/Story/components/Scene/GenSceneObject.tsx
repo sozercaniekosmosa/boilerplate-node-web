@@ -47,7 +47,7 @@ export const GenSceneObject = ({iPart, iChapter, iScene, scene, nameKey, nameObj
                     <Row key={i} className="border border-black/20 rounded px-1 bg-white items-center min-w-0">
                         <div className={clsx(icon, 'st-air-tx')}/>
                         <div className="select-none truncate w-full">{arrGenObj?.[listID?.[id]]?.name}</div>
-                        <ButtonDelete className="!p-0 st-danger" onDelete={() => deleteObj(iPart, iChapter, iScene, i)} icon="bi-x"/>
+                        <ButtonDelete className="!p-0 st-hover-danger" onDelete={() => deleteObj(iPart, iChapter, iScene, i)} icon="bi-x"/>
                     </Row>)
             }</div>
         }

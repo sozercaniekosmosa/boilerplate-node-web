@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import ButtonEx from "../../Auxiliary/ButtonEx.tsx";
 import clsx from "clsx";
@@ -7,6 +7,7 @@ import {IEvent, IPath, TProp} from "../types.ts";
 import {useStoreGenCharacter, useStoreGenItem, useStoreGenScene} from "../Stores/storeGenerators.ts";
 import {useStoreBook} from "../Stores/storeBook.ts";
 import DropdownButton from "../../Auxiliary/DropdownButton.tsx";
+import * as ReactDOM from "react-dom";
 
 
 export const Text = ({children = null, className = ''}) => <div className={clsx(
@@ -41,7 +42,7 @@ export const SwitchButton =
             onClick={() => useStoreState.getState().switchState(id)} children={children}/>
 
 export const ButtonDelete = ({onDelete, className = '', icon = 'bi-x-lg'}) => <ButtonEx
-    className={clsx("flex-grow-0 st-danger", className, icon)}
+    className={clsx("flex-grow-0 st-hover-danger", className, icon)}
     description="Удалить"
     onConfirm={onDelete}/>
 
@@ -123,7 +124,7 @@ export const SelectItem = (
 
     return <DropdownButton title={name} className={clsx(icon, 'gap-1')}>
         <Row className={
-            clsx("*:cursor-pointer max-w-[75vw] max-h-[33vh]",
+            clsx("*:cursor-pointer max-w-[75vw] max-h-[33vh] min-w-[33vw]",
                 "rounded-sm shadow-xl/20",
                 "bg-white ring-1 ring-gray-500/50 !gap-0",
             )
@@ -214,3 +215,15 @@ export function ChangeFontSize({id, ...rest}) {
                   onClick={() => setFontSize(1)}/>
     </Row>;
 }
+
+export const ModalPortal = ({children}) => {
+    const [container, setContainer] = useState(null);
+
+    useEffect(() => {
+        setContainer(document.getElementById('modalPortal'));
+    }, []);
+
+    if (!container) return null;
+
+    return ReactDOM.createPortal(children, container);
+};

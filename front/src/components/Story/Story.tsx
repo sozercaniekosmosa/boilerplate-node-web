@@ -6,7 +6,7 @@ import Details from "./components/Details.tsx";
 import GenScene from "./Generator.tsx";
 
 import {useStoreGenCharacter, useStoreGenItem, useStoreGenScene} from "./Stores/storeGenerators.ts";
-import {promptCharacter, promptItem, promptScene} from "./prompts.tsx";
+import {promptCharacter, promptItem, promptScene} from "./Prompts/genPrompts.tsx";
 
 
 const Story: React.FC<any> = () => {

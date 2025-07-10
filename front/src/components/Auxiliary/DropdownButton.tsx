@@ -1,11 +1,14 @@
 import clsx from 'clsx';
 import React, {useState, useEffect, useRef} from 'react';
+import * as ReactDOM from 'react-dom';
+import Spinner from "./Spinner.tsx";
 
 type DropdownVariant = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark';
 type DropdownSize = 'sm' | 'md' | 'lg';
 
 interface DropdownProps extends React.HTMLAttributes<Element> {
     className?: string;
+    isSpinner?: boolean;
     title?: string | any;
     variant?: DropdownVariant;
     size?: DropdownSize;
@@ -13,8 +16,9 @@ interface DropdownProps extends React.HTMLAttributes<Element> {
 }
 
 const DropdownButton: React.FC<DropdownProps> =
-    ({className = '', title, variant = 'light', size = 'md', children}) => {
+    ({className = '', title, variant = 'light', size = 'md', isSpinner = false, children}) => {
         const [isOpen, setIsOpen] = useState(false);
+        const [position, setPosition] = useState<DOMRect | null>(null)
         const dropdownRef = useRef<HTMLButtonElement>(null);
 
         // Map variants to Tailwind classes
@@ -38,11 +42,16 @@ const DropdownButton: React.FC<DropdownProps> =
         };
 
         return (
-            <div className={clsx("relative inline-block text-left rounded-sm")}>
+            <div className={clsx("relative inline-block text-left rounded-sm z-50")}>
+                {isSpinner && <div className="pl-[.2em]"><Spinner/></div>}
                 <button
                     ref={dropdownRef}
                     type="button"
-                    onClick={() => setIsOpen(true)}
+                    onClick={() => {
+                        const domRect = dropdownRef.current.getBoundingClientRect();
+                        setPosition(domRect);
+                        setIsOpen(true);
+                    }}
                     className={clsx(
                         'relative text-left text-nowrap',
                         'inline-flex items-center justify-center w-full',
@@ -56,20 +65,19 @@ const DropdownButton: React.FC<DropdownProps> =
                               d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
                     </svg>
                 </button>
-                {isOpen && <div className="fixed left-0 top-0 w-screen h-screen opacity-0 z-10" onClick={() => setIsOpen(false)}></div>}
-                {isOpen && (
-                    <div onClick={() => setIsOpen(false)} className={clsx(
-                        "fixed origin-top-left mt-1 z-20",
-                        "rounded-sm shadow-xl/20",
-                        "focus:outline-none ",
-                    )}
-                    >
-                        {children}
-                    </div>
-                )}
+                {isOpen && <>
+                    <div className="fixed left-0 top-0 w-screen h-screen opacity-0" onClick={() => setIsOpen(false)}
+                         style={{zIndex: '99998'}}/>
+                    <div onClick={() => setIsOpen(false)}
+                         className={clsx("fixed origin-top-left mt-1", "rounded-sm shadow-xl/20", "focus:outline-none ")}
+                         style={{
+                             left: `${position.left}px`,
+                             top: `${position.top + position.height}px`,
+                             zIndex: '99999'
+                         }}>{children}</div>
+                </>}
             </div>
         )
-            ;
     };
 
 export default DropdownButton;

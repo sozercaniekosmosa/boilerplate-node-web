@@ -80,6 +80,14 @@ function Index() {
 
     return (
         <div className="flex flex-col h-full">
+            <div id="modalPortal" style={{
+                display: 'contents',
+                position: 'absolute',
+                left: '0',
+                top: '0',
+                width: '100vw',
+                height: '100vh',
+            }}></div>
             {progress >= 0 && <ProgressBar progress={progress}/>}
             <Tabs defaultActiveKey="story" className="mb-1 h-full">
 
@@ -95,6 +103,7 @@ function Index() {
                     {/*<input type="file" accept=".xlsx, .xlsm, .xltx, .xltm" onChange={e => readExcel(e)}/>*/}
                     {/*<Storytelling/>*/}
                     <Story/>
+                    {/*<div id="modalPortal" className="absolute left-0 top-0 w-screen h-screen opacity-0 z-10"></div>*/}
                     {/*<Zustand/>*/}
                 </Tab>
 

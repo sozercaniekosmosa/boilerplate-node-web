@@ -1,6 +1,10 @@
 import axios from "axios";
 import path from "path";
 import {readFileAsync, writeFileAsync} from "../filesystem.js";
+import OpenAI from "openai";
+import {config} from "dotenv";
+
+const {parsed: {FOLDER_ID, OAUTH_TOKEN, ARLIAI_API_KEY, MISTRAL_API_KEY, BOTHUB_API_KEY}} = config();
 
 export async function yandexGPT(prompt, text, folder_id) {
     const iam_token = await getIAM();
@@ -45,6 +49,64 @@ export async function arliGPT(prompt, text, arliai_api_key) {
     }
 }
 
+export async function bothubGPT(prompt, text) {
+
+    try {
+        const openai = new OpenAI({
+            apiKey: BOTHUB_API_KEY,
+            baseURL: 'https://bothub.chat/api/v2/openai/v1'
+        });
+
+        // до 100
+        const model = 'gemini-2.0-flash-001'//9s
+        // const model = 'gpt-4.1-nano'//14s
+
+        // model: 'deepseek-chat', //42s
+        // model: 'grok-3-mini-beta',//19s
+        // model: 'gpt-4o-mini',//27s
+        // model: 'gpt-4.1-mini',//28s
+
+        // >100
+        // const model = 'o1-mini'//11s
+        // const model = 'o3-mini'//41s
+        // const model = 'o4-mini'//27s
+        // const model = 'gpt-4.1'//21s
+        // const model = 'gpt-4o-search-preview'//21s
+
+        console.log(model);
+
+        const response = await openai.chat.completions.create({
+            model,
+            messages: prompt && text ? [
+                {role: "system", content: prompt},
+                {role: "user", content: text}
+            ] : [
+                {role: "user", content: prompt ?? text}
+            ],
+            // temperature: 0.9,
+            // response_format: {"type": "json_object"},
+            stream: true
+        });
+
+
+        let result = '';
+        for await (const chunk of response) {
+            const part: string | null = chunk.choices[0].delta?.content ?? null;
+            result += part;
+        }
+
+        // console.log(result);
+        return result.startsWith('\`\`\`json') ? result.substring(7, result.length - 4) : result;
+
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error('Axios error:', error.response?.data || error.message);
+        } else {
+            console.error('Unexpected error:', error);
+        }
+        throw error;
+    }
+}
 
 export async function mistralGPT(prompt, text, mistral_api_key) {
 
@@ -80,6 +142,7 @@ export async function mistralGPT(prompt, text, mistral_api_key) {
         } else {
             console.error('Unexpected error:', error);
         }
+        throw error;
     }
 }
 

@@ -38,6 +38,10 @@
   }
 
   .st-danger {
+    @apply bg-red-700 text-white transition;
+  }
+
+  .st-hover-danger {
     @apply hover:bg-red-700 hover:text-white transition;
   }
 
@@ -148,20 +152,4 @@ body {
 
 .header-set {
   outline: 1px dashed #6c6c6c;
-}
-
-.two-columns {
-  display: grid;
-  grid-template-columns: auto auto; /* Две колонки */
-  gap: 5px; /* Расстояние между колонками */
-  /*align-items: start; !* Выравнивание по верхнему краю *!*/
-  height: 100%;
-}
-
-.two-columns > * {
-  //height: 0;
-  min-height: 100%;
-  overflow-y: auto;
-  outline: 1px solid gray;
-  outline-offset: -1px;
 }

@@ -26,7 +26,9 @@ function PropertyOfDetails({path, idScene, itGen, listID, size = 1, ...rest}) {
     const setStatusDisplay = useStoreBook(state => state.setStatusDisplay);
     const listStatusDisplay = useStoreBook(state => state.listStatusDisplay);
 
-    const arrChunked = chunk(itGen.arrMapProp.filter(it => !it?.section), size);
+    const arrChunked = chunk(itGen.arrMapProp.filter(({isVisible, section, value}: IMapProp) => {
+        return !section && value && isVisible;
+    }), size) as IMapProp[][];
     const arrPrc = arrChunked.map((arr: IMapProp[]) => {
         const sum = arr.reduce((acc: number, {value}) => acc + value.length, 0) as number;
         return arr.map(({value}) => (value.length / sum) * 100);
@@ -34,12 +36,12 @@ function PropertyOfDetails({path, idScene, itGen, listID, size = 1, ...rest}) {
 // debugger
     return <Col className={clsx(`ml-1`, rest?.className ?? '')} noBorder={true}>
         {arrChunked.map((arrGroup, idCh) => {
-            return <Row key={idCh}> {arrGroup.map(({title, value, id}, i) => {
+            return <Row key={idCh}> {arrGroup.map(({title, value, id, isVisible}, i) => {
 
-                if (!value) return null;
+                if (!value || !isVisible) return null;
                 // style={{'flex': '1 1 ' + arrPrc[idCh][i] + '%'}}
-                return <Col role="scene-item" key={i} noBorder={false} className={clsx(``)}
-                            style={{'width': arrPrc[idCh][i] + '%', 'minWidth': 'min-content'}}>
+                return <Col role="scene-item" key={i} noBorder={false} className={clsx(`truncate`)}
+                            style={{'width': arrPrc[idCh][i] + '%', 'minWidth': '15%'}}>
                     <Row className="relative pl-1">
                         <Tooltip text={'— упоминание в тексте'}>
                             <div
